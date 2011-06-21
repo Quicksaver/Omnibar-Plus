@@ -63,7 +63,9 @@ var OmnibarPlus = {
 		OmnibarPlus.engineFocus.events.removeListener("change", OmnibarPlus.toggleEngineFocus);
 		OmnibarPlus.popupStyle.events.removeListener("change", OmnibarPlus.toggleAnimated);
 		
-		gURLBar.removeEventListener('keydown', OmnibarPlus.urlBarKeyDown, true);
+		if(OmnibarPlus.organizing) {
+			gURLBar.removeEventListener('keydown', OmnibarPlus.urlBarKeyDown, true);
+		}
 	},
 	
 	// Toggle middle click functionality
@@ -86,7 +88,7 @@ var OmnibarPlus = {
 			OmnibarPlus.setWatchers(gURLBar);
 			
 			OmnibarPlus.originalOnTextEntered = gURLBar.getAttribute('ontextentered');
-			gURLBar.setAttribute('ontextentered', 'OmnibarPlus.fireOnSelect();');
+			OmnibarPlus.checkOnTextEntered();
 			
 			LocationBarHelpers.__searchComplete = LocationBarHelpers._searchComplete;	
 			LocationBarHelpers._searchComplete = function() {
@@ -132,6 +134,13 @@ var OmnibarPlus = {
 		}
 	},
 	
+	// Set urlbar ontextentered attribute to work with our handler
+	checkOnTextEntered: function() {
+		if(gURLBar.getAttribute('ontextentered').indexOf('OmnibarPlus') < 0) {
+			gURLBar.setAttribute('ontextentered', 'OmnibarPlus.fireOnSelect();');
+		}
+	},
+			
 	// Handler for when the autocomplete pops up
 	popupshowing: function() {
 		OmnibarPlus.popupshowingTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
@@ -233,6 +242,9 @@ var OmnibarPlus = {
 				return;
 			
 			case e.DOM_VK_RETURN:
+				// Sometimes the ontextentered attribute is reset (for some reason), this leads to double tabs being opened
+				OmnibarPlus.checkOnTextEntered();
+				
 				OmnibarPlus.overrideURL = false;
 				
 				// Peers compatibility (hitting enter not firing a search sometimes)
@@ -242,6 +254,9 @@ var OmnibarPlus = {
 				return;
 				
 			default:
+				// Sometimes the ontextentered attribute is reset (for some reason), this leads to double tabs being opened
+				OmnibarPlus.checkOnTextEntered();
+				
 				OmnibarPlus.overrideURL = true;
 				return;
 		}
