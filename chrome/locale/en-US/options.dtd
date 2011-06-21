@@ -1,0 +1,11 @@
+<!ENTITY omnibarPlusorganizePopup.label "Organize suggestion list">
+<!ENTITY omnibarPlusF6.label "Focus the location bar by hitting F6">
+<!ENTITY omnibarPlusmiddleClick.label "Middle Click or Ctrl/Alt + Left Click on search engine opens its homepage">
+<!ENTITY omnibarPlusengineFocus.label "Focus the location bar when changing the search engine">
+<!ENTITY omnibarPlusanimated.label "Compact, animated style by frog">
+
+<!ENTITY omnibarPlusmain.label "Omnibar">
+<!ENTITY omnibarPlusplus.label "Plus">
+
+<!ENTITY omnibarPlussuggestionList.label "Suggestions Popup">
+<!ENTITY omnibarPlusfunctionality.label "Shortcuts">

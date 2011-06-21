@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay SYSTEM "chrome://omnibarplus/locale/options.dtd">
+
+<overlay id="OmnibarPlus-options-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script id="OmnibarPlus_options_script" type="application/x-javascript" src="chrome://omnibarplus/content/options.js"/>
+	
+	<prefpane id="mainPane">
+		<preferences>
+			<preference id="extensions.omnibarplus.organizePopup" name="extensions.omnibarplus.organizePopup" type="bool" />
+			<preference id="extensions.omnibarplus.middleClick" name="extensions.omnibarplus.middleClick" type="bool" />
+			<preference id="extensions.omnibarplus.animated" name="extensions.omnibarplus.animated" type="bool" />
+			<preference id="extensions.omnibarplus.f6" name="extensions.omnibarplus.f6" type="bool" />
+			<preference id="extensions.omnibarplus.engineFocus" name="extensions.omnibarplus.engineFocus" type="bool" />
+		</preferences>
+		
+		<tabbox id="omnibarTabBox" flex="1">
+
+			<tabs id="tabsElement">
+				<tab id="omnibarTab" label="&omnibarPlusmain.label;"/>
+				<tab id="plusTab" label="&omnibarPlusplus.label;"/>
+			</tabs>
+			
+			<tabpanels id="tabPanels" flex="1">
+				<tabpanel id="omnibarTab" orient="vertical"/>
+				
+				<tabpanel id="plusTab" orient="vertical">
+					<groupbox align="start">
+						<caption label="&omnibarPlussuggestionList.label;"/>
+						<checkbox label="&omnibarPlusorganizePopup.label;" preference="extensions.omnibarplus.organizePopup"/>
+						<checkbox label="&omnibarPlusanimated.label;" preference="extensions.omnibarplus.animated"/>
+					</groupbox>
+					<groupbox align="start">
+						<caption label="&omnibarPlusfunctionality.label;"/>
+						<checkbox label="&omnibarPlusF6.label;" preference="extensions.omnibarplus.f6"/>
+						<checkbox label="&omnibarPlusmiddleClick.label;" preference="extensions.omnibarplus.middleClick"/>
+						<checkbox label="&omnibarPlusengineFocus.label;" preference="extensions.omnibarplus.engineFocus"/>
+					</groupbox>
+				</tabpanel>
+			</tabpanels>
+		</tabbox>
+	</prefpane>
+</overlay>

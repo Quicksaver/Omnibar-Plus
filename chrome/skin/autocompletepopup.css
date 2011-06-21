@@ -1,0 +1,113 @@
+/*AwesomeBar_Popup by frog V5.2 for fx3.6+*/
+#PopupAutoCompleteRichResult[animatedPopup]:not(.omnibar-style-slim) richlistitem.autocomplete-richlistitem:not([current]) .ac-url-box {
+	visibility: collapse !important;
+	opacity: 0 !important;
+	-moz-transform: translateX(-1em) !important;
+}
+#PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox > scrollbox {
+	overflow: visible !important;
+	width: -moz-available !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] {
+	padding: 0 !important;
+	margin-top: -1px !important; 
+	background-color: white !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox {
+	display: block !important;
+	background: -moz-linear-gradient(left, rgb(242,242,242) 26px, transparent 0) repeat-y !important;
+	margin: 1px !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] * {
+	font: inherit !important;
+	font-family: "segoe ui", sans-serif !important; 
+	color: inherit !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] .ac-site-icon {
+	margin: 0 8px 0 0 !important;
+}
+#PopupAutoCompleteRichResult[animatedPopup] .ac-title-box {
+	margin: 0 !important;
+	padding: 0 !important;
+	color: hsl(0,0%,0%) !important;
+}
+#PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox .autocomplete-richlistitem .ac-url-box {
+	margin: 0 !important;
+	padding: 0 0 1px 0 !important; 
+	-moz-transition: opacity .3s linear 0.05s, -moz-transform .22s ease-out 0.03s !important; 
+	color: hsl(0,0%,44%) !important;
+	font-size: 1.9ex !important;
+}
+#PopupAutoCompleteRichResult[animatedPopup] .ac-extra {
+	color: hsla(213,57%,34%,1) !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem,
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"],
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"] {
+	border: 1px solid transparent !important;
+	border-bottom-color: transparent !important;
+	border-top: 1px dotted rgba(242,242,242,.75) !important;
+	box-shadow: none !important; 
+	padding: 2px 4px !important;
+	background: none !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem:first-child,
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"]:first-child,
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"]:first-child {
+	border-top-color: transparent !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type*="omnibar-suggestion"] {
+	background: none !important;
+} 
+
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[actiontype="switchtab"],
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"][actiontype="switchtab"],
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][actiontype="switchtab"] {
+	background: border-box transparent -moz-linear-gradient(left, hsla(213,13%,82%,0) 26px, hsla(213,39%,90%,1) 26px, hsla(213,60%,94.5%,1) 28px, hsla(213,100%,95%,0) 180px) repeat-y !important;
+	text-shadow: hsla(0,0%,100%,.5) 0 0 2px, hsla(0,0%,100%,.5) 0 1px 0 !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current=true],
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"][current=true],
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][current=true] {
+	border: 1px solid hsla(213,57%,69%,1) !important;
+	background: border-box -moz-linear-gradient(left, hsla(213,100%,2%,.06) 26px, transparent 0px, transparent 100%) repeat-y, padding-box -moz-linear-gradient(hsla(213,100%,96%,1) 0%, hsla(213,100%,91%,1) 100%) repeat-x !important;
+	border-radius: 2.5px !important;
+	-moz-transition: box-shadow .23s ease 0.02s !important; 
+	box-shadow: inset rgba(256,256,256,.43) 0 0 0 1px !important;
+	text-shadow: hsla(0,0%,100%,.5) 0 0 2px, hsla(0,0%,100%,.5) 0 1px 0 !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current]:not([selected=true]),
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"][current]:not([selected=true]),
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][current]:not([selected=true])  {
+	border-color: rgb(190,190,190) !important;
+	background-image: -moz-linear-gradient(left, rgba(0,0,0,.055) 26px, transparent 0px, transparent 100%), -moz-linear-gradient(rgb(248,248,248) 0%, rgb(229,229,229) 100%) !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[selected]:active,
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"][selected]:active,
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][selected]:active {
+	background-image: -moz-linear-gradient(left, hsla(213,100%,2%,.06) 26px, transparent 0px, transparent 100%), -moz-linear-gradient(hsla(213,89%,93%,1) 0, hsla(213,94%,88%,1) 100%) !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup] span.ac-emphasize-text {
+	font-weight: normal !important;
+	background: hsla(60,91%,75%,.38) -moz-linear-gradient(bottom, hsla(37,100%,55%,.15) 4px, hsla(40,100%,60%,.2) 0px, hsla(60,100%,80%,.07) 100%) border-box !important; 
+	text-decoration: none !important;
+	box-shadow: inset hsla(60,100%,35%,.2) 0 0 0 1px, inset hsla(0,0%,100%,.15) 0 0 0 2px !important; 
+	border-radius: 2px !important;
+}
+
+/* Fix for Peers 2 entries */
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"],
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"] {
+	margin-top: 0px !important;
+}

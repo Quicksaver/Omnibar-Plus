@@ -1,0 +1,7 @@
+content   omnibarplus                 chrome/content/
+locale    omnibarplus   en-US         chrome/locale/en-US/
+skin      omnibarplus   classic/1.0   chrome/skin/
+
+overlay   chrome://browser/content/browser.xul   chrome://omnibarplus/content/overlay.xul
+overlay   chrome://omnibar/content/options.xul   chrome://omnibarplus/content/omnibarOptions.xul
+style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/autocompletepopup.css

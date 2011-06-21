@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<overlay id="OmnibarPlus-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script id="OmnibarPlus_overlay_script" type="application/x-javascript" src="chrome://omnibarplus/content/overlay.js"/>
+	
+	<keyset id="mainKeyset">
+		<key 	id="key_omnibarplus_f6"
+				label="Focus Awesomebar"
+				oncommand="if(!gURLBar.focused) { openLocation(); } else { gBrowser.mCurrentBrowser.focus(); }"
+				keycode="VK_F6"
+				disabled="true"/>
+	</keyset>
+</overlay>
