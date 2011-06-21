@@ -21,7 +21,7 @@ var OmnibarPlus = {
 		// 'omnibar' is for omnibar added search suggestions
 		// 'EE' is for everything else; 
 		// 'collapsed' is for elements that are collapsed, they are better positioned at the end of the list
-		OmnibarPlus.types = [ 'EE', 'agrenon', 'smarterwiki', 'omnibar', 'collapsed' ]; 
+		OmnibarPlus.types = [ 'EE', 'agrenon', 'smarterwiki', 'omnibar' ]; 
 		OmnibarPlus.organizing = false;
 		OmnibarPlus.overrideURL = true;
 		OmnibarPlus.fired = false;
@@ -32,7 +32,6 @@ var OmnibarPlus = {
 		
 		OmnibarPlus.engineName = document.getElementById('omnibar-defaultEngineName');
 		OmnibarPlus.panel = document.getElementById('PopupAutoCompleteRichResult');
-		OmnibarPlus.setWatchers(OmnibarPlus.panel);
 		OmnibarPlus.setWatchers(OmnibarPlus.engineName);
 		
 		OmnibarPlus.urlbar = document.getElementById('urlbar');
@@ -101,6 +100,7 @@ var OmnibarPlus = {
 		else if(OmnibarPlus.organizing) {
 			gURLBar.removeEventListener('keydown', OmnibarPlus.urlBarKeyDown, true);
 			gURLBar.setAttribute("ontextentered", OmnibarPlus.originalOnTextEntered);
+			
 			LocationBarHelpers._searchComplete = LocationBarHelpers.__searchComplete;
 			
 			OmnibarPlus.organizing = false;
@@ -140,7 +140,7 @@ var OmnibarPlus = {
 			gURLBar.setAttribute('ontextentered', 'OmnibarPlus.fireOnSelect();');
 		}
 	},
-			
+	
 	// Handler for when the autocomplete pops up
 	popupshowing: function() {
 		OmnibarPlus.popupshowingTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
@@ -157,33 +157,22 @@ var OmnibarPlus = {
 		// First we see what order the nodes should be in
 		for(var type in OmnibarPlus.types) {
 			nodes[OmnibarPlus.types[type]] = [];
-			
-			for(var i=0; i<OmnibarPlus.richlist.length; i++) {
-				if(OmnibarPlus.types[type] == 'EE') {
-					if(OmnibarPlus.isSomethingElse(OmnibarPlus.richlist[i].getAttribute('type'), type)) {
-						nodes[OmnibarPlus.types[type]].push(OmnibarPlus.richlist[i]);
-						continue;
-					}
-				}
-				else if(OmnibarPlus.types[type] == 'collapsed') {
-					if(OmnibarPlus.richlist[i].collapsed) {
-						nodes[OmnibarPlus.types[type]].push(OmnibarPlus.richlist[i]);
-						continue;
-					}
-				}
-				else {
-					if(OmnibarPlus.richlist[i].getAttribute('type').indexOf(OmnibarPlus.types[type]) > -1) {
-						nodes[OmnibarPlus.types[type]].push(OmnibarPlus.richlist[i]);
-						continue;
-					}	
-				}
-			}
+		}
+		
+		for(var i=0; i<OmnibarPlus.richlist.length; i++) {
+			var type = OmnibarPlus.getEntryType(OmnibarPlus.richlist[i].getAttribute('type'));
+			nodes[OmnibarPlus.types[type]].push(OmnibarPlus.richlist[i]);
 		}
 		
 		// Now we append all of them
 		for(var type in OmnibarPlus.types) {
 			for(var node in nodes[OmnibarPlus.types[type]]) {
-				OmnibarPlus.richlistbox.appendChild(nodes[OmnibarPlus.types[type]][node]);
+				if(nodes[OmnibarPlus.types[type]][node].collapsed) {
+					// Remove collapsed entries so they're not triggered when hitting the up and down keys
+					OmnibarPlus.richlistbox.removeChild(nodes[OmnibarPlus.types[type]][node]);
+				} else {
+					nodes[OmnibarPlus.types[type]][node] = OmnibarPlus.richlistbox.appendChild(nodes[OmnibarPlus.types[type]][node]);
+				}
 			}
 		}
 		
@@ -193,11 +182,25 @@ var OmnibarPlus = {
 		}
 	},
 	
-	isSomethingElse: function(nodetype, type) {
-		for(var j=type+1; j<OmnibarPlus.types.length; j++) {
-			if(nodetype.indexOf(OmnibarPlus.types[j]) > -1 ) { return false; }
+	getEntryType: function(aType) {
+		for(var type in OmnibarPlus.types) {
+			if(OmnibarPlus.types[type] == 'EE') {
+				var returnEE = type;
+			}
+			else if(aType.indexOf(OmnibarPlus.types[type]) > -1) {
+				return type;
+			}
 		}
-		return true;
+		return returnEE;
+	},
+	
+	removeEntry: function(str) {
+		for(var i=0; i<OmnibarPlus.types.length; i++) {
+			if(OmnibarPlus.types[i] == str) {
+				OmnibarPlus.types.splice(i, 1);
+				return;
+			}
+		}
 	},
 	
 	urlBarKeyDown: function(e) {
@@ -277,15 +280,6 @@ var OmnibarPlus = {
 		gURLBar.reset();
 	},
 		
-	removeEntry: function(str) {
-		for(var i=0; i<OmnibarPlus.types.length; i++) {
-			if(OmnibarPlus.types[i] == str) {
-				OmnibarPlus.types.splice(i, 1);
-				return;
-			}
-		}
-	},
-	
 	// Left click: default omnibar functionality; Middle Click: open the search engine homepage
 	onButtonClick: function (event) {
 		if(event.button == 0 && !event.altKey && !event.ctrlKey) {
