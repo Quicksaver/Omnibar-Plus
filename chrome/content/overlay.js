@@ -86,7 +86,6 @@ var OmnibarPlus = {
 			gURLBar.addEventListener('keydown', OmnibarPlus.urlBarKeyDown, true);
 			OmnibarPlus.setWatchers(gURLBar);
 			
-			OmnibarPlus.originalOnTextEntered = gURLBar.getAttribute('ontextentered');
 			OmnibarPlus.checkOnTextEntered();
 			
 			LocationBarHelpers.__searchComplete = LocationBarHelpers._searchComplete;	
@@ -137,6 +136,7 @@ var OmnibarPlus = {
 	// Set urlbar ontextentered attribute to work with our handler
 	checkOnTextEntered: function() {
 		if(gURLBar.getAttribute('ontextentered').indexOf('OmnibarPlus') < 0) {
+			OmnibarPlus.originalOnTextEntered = gURLBar.getAttribute('ontextentered');
 			gURLBar.setAttribute('ontextentered', 'OmnibarPlus.fireOnSelect();');
 		}
 	},
