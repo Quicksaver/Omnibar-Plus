@@ -32,6 +32,9 @@ var OmnibarPlus = {
 		if(typeof(agrenonLoader) == 'undefined') { OmnibarPlus.removeEntry('agrenon'); }
 		if(typeof(SmarterWiki) == 'undefined') { OmnibarPlus.removeEntry('smarterwiki'); }
 		
+		// OS string
+		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
+		
 		OmnibarPlus.engineName = document.getElementById('omnibar-defaultEngineName');
 		OmnibarPlus.panel = document.getElementById('PopupAutoCompleteRichResult');
 		OmnibarPlus.setWatchers(OmnibarPlus.engineName);
@@ -284,13 +287,15 @@ var OmnibarPlus = {
 		
 	// Left click: default omnibar functionality; Middle Click: open the search engine homepage
 	onButtonClick: function (event) {
-		if(event.button == 0 && !event.altKey && !event.ctrlKey) {
+		var modKey = (OmnibarPlus.OS == 'Darwin') ? event.metaKey : event.ctrlKey;
+		
+		if(event.button == 0 && !event.altKey && !modKey) {
 			document.getElementById('omnibar-engine-menu').openPopup(Omnibar._imageElBox, "after_end", -1, -1);
 			event.preventDefault();
 			event.stopPropagation();
 		}
 		else if(event.button == 1
-		|| (event.button == 0 && (event.altKey || event.ctrlKey)) ) {
+		|| (event.button == 0 && (event.altKey || modKey)) ) {
 			OmnibarPlus.where = 'current';
 			if(event.button == 1 || event.altKey || (Omnibar._prefSvc.getBoolPref("browser.search.openintab") && gBrowser.getBrowserForTab(gBrowser.selectedTab).currentURI.spec != "about:blank")) {
 				OmnibarPlus.where = 'tab';
