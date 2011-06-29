@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE overlay SYSTEM "chrome://omnibarplus/locale/options.dtd">
+<!DOCTYPE window [
+  <!ENTITY % optionsDTD SYSTEM "chrome://omnibarplus/locale/options.dtd">
+  %optionsDTD;
+  <!ENTITY % platformDTD SYSTEM "chrome://omnibarplus-os/locale/options.dtd">
+  %platformDTD;
+]>
 
 <overlay id="OmnibarPlus-options-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script id="OmnibarPlus_options_script" type="application/x-javascript" src="chrome://omnibarplus/content/options.js"/>
