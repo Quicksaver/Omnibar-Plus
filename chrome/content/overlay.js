@@ -82,12 +82,12 @@ var OmnibarPlus = {
 	toggleMiddleClick: function() {
 		document.getElementById('omnibar-in-urlbar').removeAttribute('onclick'); // We need to remove this first
 		if(OmnibarPlus.middleClick.value) {
-			document.getElementById('omnibar-in-urlbar').removeEventListener('click', Omnibar.onEngineClick, false);
+			document.getElementById('omnibar-in-urlbar').removeEventListener('click', Omnibar.onButtonClick, false);
 			document.getElementById('omnibar-in-urlbar').addEventListener('click', OmnibarPlus.onEngineClick, false);
 		}
 		else {
 			document.getElementById('omnibar-in-urlbar').removeEventListener('click', OmnibarPlus.onEngineClick, false); 
-			document.getElementById('omnibar-in-urlbar').addEventListener('click', Omnibar.onEngineClick, false);
+			document.getElementById('omnibar-in-urlbar').addEventListener('click', Omnibar.onButtonClick, false);
 		}
 	},
 	
