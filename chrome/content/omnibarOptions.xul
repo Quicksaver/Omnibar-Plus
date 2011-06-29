@@ -16,6 +16,10 @@
 			<preference id="extensions.omnibarplus.animated" name="extensions.omnibarplus.animated" type="bool" />
 			<preference id="extensions.omnibarplus.f6" name="extensions.omnibarplus.f6" type="bool" />
 			<preference id="extensions.omnibarplus.engineFocus" name="extensions.omnibarplus.engineFocus" type="bool" />
+			<preference id="extensions.omnibarplus.organize.1" name="extensions.omnibarplus.organize.1" type="string" />
+			<preference id="extensions.omnibarplus.organize.2" name="extensions.omnibarplus.organize.2" type="string" />
+			<preference id="extensions.omnibarplus.organize.3" name="extensions.omnibarplus.organize.3" type="string" />
+			<preference id="extensions.omnibarplus.organize.4" name="extensions.omnibarplus.organize.4" type="string" />
 		</preferences>
 		
 		<tabbox id="omnibarTabBox" flex="1">
@@ -31,8 +35,47 @@
 				<tabpanel id="plusTab" orient="vertical">
 					<groupbox align="start">
 						<caption label="&omnibarPlussuggestionList.label;"/>
-						<checkbox label="&omnibarPlusorganizePopup.label;" preference="extensions.omnibarplus.organizePopup"/>
 						<checkbox label="&omnibarPlusanimated.label;" preference="extensions.omnibarplus.animated"/>
+						<groupbox align="center">
+							<caption><checkbox id="organizeCheckbox" 
+								label="&omnibarPlusorganizePopup.label;" 
+								preference="extensions.omnibarplus.organizePopup"
+								oncommand="OmnibarPlusOptions.toggleOrganize();"/></caption>
+							<textbox hidden="true" id="hiddenOrderListLabel_EE" value="&omnibarPlusorganizeList.EE;"/>
+							<textbox hidden="true" id="hiddenOrderListLabel_agrenon" value="&omnibarPlusorganizeList.agrenon;"/>
+							<textbox hidden="true" id="hiddenOrderListLabel_smarterwiki" value="&omnibarPlusorganizeList.smarterwiki;"/>
+							<textbox hidden="true" id="hiddenOrderListLabel_omnibar" value="&omnibarPlusorganizeList.omnibar;"/>
+							<hbox style="margin: 0 5px;">
+								<tree id="orderList" class="organize" flex="1" rows="4" width="350" seltype="single" hidecolumnpicker="true">
+									<treecols style="visibility: hidden; height: 0;">
+										<treecol label="" flex="1" style="text-align: right;"/>
+										<treecol label="" flex="5"/>
+									</treecols>
+									<treechildren id="orderListChildren">
+										<treeitem><treerow>
+											<treecell style="text-align: right;" label="1"/>
+											<treecell label="First"/>
+										</treerow></treeitem>
+										<treeitem><treerow>
+											<treecell style="text-align: right;" label="2"/>
+											<treecell label="Second"/>
+										</treerow></treeitem>
+										<treeitem><treerow>
+											<treecell style="text-align: right;" label="3"/>
+											<treecell label="Third"/>
+										</treerow></treeitem>
+										<treeitem><treerow>
+											<treecell style="text-align: right;" label="4"/>
+											<treecell label="Fourth"/>
+										</treerow></treeitem>
+									</treechildren>
+								</tree>
+								<vbox align="center" style="padding: 3px 0;">
+									<button id="ListUpButton" class="organize" oncommand="OmnibarPlusOptions.moveListRow(false);"/>
+									<button id="ListDownButton" class="organize" oncommand="OmnibarPlusOptions.moveListRow(true);"/>
+								</vbox>
+							</hbox>
+						</groupbox>
 					</groupbox>
 					<groupbox align="start">
 						<caption label="&omnibarPlusfunctionality.label;"/>

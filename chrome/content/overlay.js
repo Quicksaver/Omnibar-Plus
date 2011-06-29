@@ -16,19 +16,18 @@ var OmnibarPlus = {
 		OmnibarPlus.animated = Application.prefs.get("extensions.omnibarplus.animated");
 		OmnibarPlus.engineFocus = Application.prefs.get("extensions.omnibarplus.engineFocus");
 		OmnibarPlus.popupStyle = Application.prefs.get("extensions.omnibar.popupstyle");
+		OmnibarPlus.organizeList = {
+			organize1: Application.prefs.get("extensions.omnibarplus.organize.1"),
+			organize2: Application.prefs.get("extensions.omnibarplus.organize.2"),
+			organize3: Application.prefs.get("extensions.omnibarplus.organize.3"),
+			organize4: Application.prefs.get("extensions.omnibarplus.organize.4")
+		};
 		
-		// entries are sorted in the order they appear in this list
-		// 'agrenon' is for Peers extension entries
-		// 'smarterwiki' is for FastestFox extension entries
-		// 'omnibar' is for omnibar added search suggestions
-		// 'EE' is for everything else; 
-		OmnibarPlus.types = [ 'EE', 'agrenon', 'smarterwiki', 'omnibar' ]; 
+		OmnibarPlus.agrenon = Application.prefs.get("extensions.omnibarplus.agrenon");
+		OmnibarPlus.smarterwiki = Application.prefs.get("extensions.omnibarplus.smarterwiki");
+		
 		OmnibarPlus.organizing = false;
 		OmnibarPlus.overrideURL = true;
-		
-		// Remove entries that aren't needed as to reduce the number of loops
-		if(typeof(agrenonLoader) == 'undefined') { OmnibarPlus.removeEntry('agrenon'); }
-		if(typeof(SmarterWiki) == 'undefined') { OmnibarPlus.removeEntry('smarterwiki'); }
 		
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
@@ -48,6 +47,14 @@ var OmnibarPlus = {
 		OmnibarPlus.animated.events.addListener("change", OmnibarPlus.toggleAnimated);
 		OmnibarPlus.engineFocus.events.addListener("change", OmnibarPlus.toggleEngineFocus);
 		OmnibarPlus.popupStyle.events.addListener("change", OmnibarPlus.toggleAnimated);
+		OmnibarPlus.organizeList.organize1.events.addListener("change", OmnibarPlus.getTypes);
+		OmnibarPlus.organizeList.organize2.events.addListener("change", OmnibarPlus.getTypes);
+		OmnibarPlus.organizeList.organize3.events.addListener("change", OmnibarPlus.getTypes);
+		OmnibarPlus.organizeList.organize4.events.addListener("change", OmnibarPlus.getTypes);
+		
+		// Grab types of entries to populate the organize list
+		// Also sets whether Peers/FastestFox is enabled
+		OmnibarPlus.getTypes();
 		
 		OmnibarPlus.toggleF6();
 		OmnibarPlus.toggleMiddleClick();		
@@ -65,6 +72,10 @@ var OmnibarPlus = {
 		OmnibarPlus.animated.events.removeListener("change", OmnibarPlus.toggleAnimated);
 		OmnibarPlus.engineFocus.events.removeListener("change", OmnibarPlus.toggleEngineFocus);
 		OmnibarPlus.popupStyle.events.removeListener("change", OmnibarPlus.toggleAnimated);
+		OmnibarPlus.organizeList.organize1.events.removeListener("change", OmnibarPlus.getTypes);
+		OmnibarPlus.organizeList.organize2.events.removeListener("change", OmnibarPlus.getTypes);
+		OmnibarPlus.organizeList.organize3.events.removeListener("change", OmnibarPlus.getTypes);
+		OmnibarPlus.organizeList.organize4.events.removeListener("change", OmnibarPlus.getTypes);
 	},
 	
 	// Toggle middle click functionality
@@ -143,6 +154,34 @@ var OmnibarPlus = {
 		OmnibarPlus.popupshowingTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
 		OmnibarPlus.popupshowingTimer.init(OmnibarPlus.organize, 100, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
 		return true;
+	},
+	
+	getTypes: function() {
+		// entries are sorted in the order they appear in this list
+		// 'agrenon' is for Peers extension entries
+		// 'smarterwiki' is for FastestFox extension entries
+		// 'omnibar' is for omnibar added search suggestions
+		// 'EE' is for everything else; 
+		OmnibarPlus.types = [
+			OmnibarPlus.organizeList.organize1.value,
+			OmnibarPlus.organizeList.organize2.value,
+			OmnibarPlus.organizeList.organize3.value,
+			OmnibarPlus.organizeList.organize4.value
+		];
+		
+		// Remove entries that aren't needed as to reduce the number of loops
+		if(typeof(agrenonLoader) == 'undefined') { 
+			OmnibarPlus.removeEntry('agrenon');
+			OmnibarPlus.agrenon.value = false;
+		} else {
+			OmnibarPlus.agrenon.value = true;
+		}
+		if(typeof(SmarterWiki) == 'undefined') { 
+			OmnibarPlus.removeEntry('smarterwiki'); 
+			OmnibarPlus.smarterwiki.value = false;
+		} else {
+			OmnibarPlus.smarterwiki.value = true;
+		}
 	},
 	
 	// Goes by each 'type' to be organized and organizes each entry of type 'type'

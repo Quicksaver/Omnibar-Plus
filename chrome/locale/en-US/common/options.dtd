@@ -8,3 +8,8 @@
 
 <!ENTITY omnibarPlussuggestionList.label "Suggestions Popup">
 <!ENTITY omnibarPlusfunctionality.label "Shortcuts">
+
+<!ENTITY omnibarPlusorganizeList.EE "Everything Else (bookmarks, history, etc...)">
+<!ENTITY omnibarPlusorganizeList.agrenon "Peers Suggestions">
+<!ENTITY omnibarPlusorganizeList.smarterwiki "FastestFox Suggestions">
+<!ENTITY omnibarPlusorganizeList.omnibar "Omnibar Search Suggestions">

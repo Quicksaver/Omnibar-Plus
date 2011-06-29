@@ -1,0 +1,24 @@
+#ListUpButton,
+#ListDownButton {
+	min-width: 0;
+	min-height: 0;
+	width: 24px; 
+	height: 32px; 
+	padding: 5px 0;
+	list-style-image: url('chrome://omnibarplus/skin/arrows.png');
+}
+
+#ListUpButton .button-box,
+#ListDownButton .button-box {
+	padding: 0 !important;
+	/* This important tag is necessary for when the button is disabled */
+}
+
+#ListUpButton image,
+#ListDownButton image {
+	width: 16px;
+	height: 16px;
+}
+
+#ListUpButton { -moz-image-region: rect(0px 24px 24px 0px); }
+#ListDownButton { -moz-image-region: rect(24px 24px 48px 0px); }

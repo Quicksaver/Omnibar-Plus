@@ -8,3 +8,4 @@ locale    omnibarplus-os  en-US         chrome/locale/en-US/mac/     os=Darwin
 overlay   chrome://browser/content/browser.xul   chrome://omnibarplus/content/overlay.xul
 overlay   chrome://omnibar/content/options.xul   chrome://omnibarplus/content/omnibarOptions.xul
 style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/autocompletepopup.css
+style     chrome://omnibar/content/options.xul   chrome://omnibarplus/skin/options.css
