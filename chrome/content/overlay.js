@@ -22,11 +22,9 @@ var OmnibarPlus = {
 		// 'smarterwiki' is for FastestFox extension entries
 		// 'omnibar' is for omnibar added search suggestions
 		// 'EE' is for everything else; 
-		// 'collapsed' is for elements that are collapsed, they are better positioned at the end of the list
 		OmnibarPlus.types = [ 'EE', 'agrenon', 'smarterwiki', 'omnibar' ]; 
 		OmnibarPlus.organizing = false;
 		OmnibarPlus.overrideURL = true;
-		OmnibarPlus.fired = false;
 		
 		// Remove entries that aren't needed as to reduce the number of loops
 		if(typeof(agrenonLoader) == 'undefined') { OmnibarPlus.removeEntry('agrenon'); }
@@ -35,6 +33,7 @@ var OmnibarPlus = {
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
 		
+		OmnibarPlus.goButton = document.getElementById('go-button');
 		OmnibarPlus.engineName = document.getElementById('omnibar-defaultEngineName');
 		OmnibarPlus.panel = document.getElementById('PopupAutoCompleteRichResult');
 		OmnibarPlus.setWatchers(OmnibarPlus.engineName);
@@ -66,32 +65,30 @@ var OmnibarPlus = {
 		OmnibarPlus.animated.events.removeListener("change", OmnibarPlus.toggleAnimated);
 		OmnibarPlus.engineFocus.events.removeListener("change", OmnibarPlus.toggleEngineFocus);
 		OmnibarPlus.popupStyle.events.removeListener("change", OmnibarPlus.toggleAnimated);
-		
-		if(OmnibarPlus.organizing) {
-			gURLBar.removeEventListener('keydown', OmnibarPlus.urlBarKeyDown, true);
-		}
 	},
 	
 	// Toggle middle click functionality
 	toggleMiddleClick: function() {
 		document.getElementById('omnibar-in-urlbar').removeAttribute('onclick'); // We need to remove this first
 		if(OmnibarPlus.middleClick.value) {
-			document.getElementById('omnibar-in-urlbar').removeEventListener('click', Omnibar.onButtonClick, false);
-			document.getElementById('omnibar-in-urlbar').addEventListener('click', OmnibarPlus.onButtonClick, false);
+			document.getElementById('omnibar-in-urlbar').removeEventListener('click', Omnibar.onEngineClick, false);
+			document.getElementById('omnibar-in-urlbar').addEventListener('click', OmnibarPlus.onEngineClick, false);
 		}
 		else {
-			document.getElementById('omnibar-in-urlbar').removeEventListener('click', OmnibarPlus.onButtonClick, false); 
-			document.getElementById('omnibar-in-urlbar').addEventListener('click', Omnibar.onButtonClick, false);
+			document.getElementById('omnibar-in-urlbar').removeEventListener('click', OmnibarPlus.onEngineClick, false); 
+			document.getElementById('omnibar-in-urlbar').addEventListener('click', Omnibar.onEngineClick, false);
 		}
 	},
 	
 	// Toggle Organize Functionality, we'll use a delay to let the popup fill up before organizing it
 	toggleOrganize: function() {
-		if(OmnibarPlus.organizePopup.value) {
-			gURLBar.addEventListener('keydown', OmnibarPlus.urlBarKeyDown, true);
-			OmnibarPlus.setWatchers(gURLBar);
+		if(OmnibarPlus.organizePopup.value && !OmnibarPlus.organizing) {
+			gURLBar._onKeyPress = gURLBar.onKeyPress;
+			gURLBar.onKeyPress = function(aEvent) {
+				return OmnibarPlus.urlBarKeyDown(aEvent) || gURLBar._onKeyPress(aEvent);
+			}
 			
-			OmnibarPlus.checkOnTextEntered();
+			OmnibarPlus.checkOnHandlers();
 			
 			LocationBarHelpers.__searchComplete = LocationBarHelpers._searchComplete;	
 			LocationBarHelpers._searchComplete = function() {
@@ -101,9 +98,12 @@ var OmnibarPlus = {
 			
 			OmnibarPlus.organizing = true;
 		} 
-		else if(OmnibarPlus.organizing) {
-			gURLBar.removeEventListener('keydown', OmnibarPlus.urlBarKeyDown, true);
-			gURLBar.setAttribute("ontextentered", OmnibarPlus.originalOnTextEntered);
+		else if(!OmnibarPlus.organizePopup.value && OmnibarPlus.organizing) {
+			gURLBar.onKeyPress = gURLBar._onKeyPress;
+			
+			// Changed in checkOnHandlers()
+			gURLBar.setAttribute("ontextentered", gURLBar._ontextentered);
+			OmnibarPlus.goButton.setAttribute('onclick', OmnibarPlus.goButton._onclick);
 			
 			LocationBarHelpers._searchComplete = LocationBarHelpers.__searchComplete;
 			
@@ -138,14 +138,6 @@ var OmnibarPlus = {
 		}
 	},
 	
-	// Set urlbar ontextentered attribute to work with our handler
-	checkOnTextEntered: function() {
-		if(gURLBar.getAttribute('ontextentered').indexOf('OmnibarPlus') < 0) {
-			OmnibarPlus.originalOnTextEntered = gURLBar.getAttribute('ontextentered');
-			gURLBar.setAttribute('ontextentered', 'OmnibarPlus.fireOnSelect();');
-		}
-	},
-	
 	// Handler for when the autocomplete pops up
 	popupshowing: function() {
 		OmnibarPlus.popupshowingTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
@@ -157,6 +149,8 @@ var OmnibarPlus = {
 	organize: function() {
 		if(!OmnibarPlus.panel.popupOpen) { return; }
 		
+		var originalSelectedIndex = OmnibarPlus.richlistbox.selectIndex;
+		var originalCurrentIndex = OmnibarPlus.richlistbox.currentIndex;
 		var nodes = [];
 		
 		// First we see what order the nodes should be in
@@ -183,7 +177,14 @@ var OmnibarPlus = {
 		
 		// Speak words auto select first result compatibility
 		if(OmnibarPlus.panel._appendCurrentResult.toString().indexOf('orig.apply') > -1 && !gURLBar.willHandle) {
-			OmnibarPlus.richlistbox.selectedIndex = 0;
+			if(!OmnibarPlus.richlist[originalSelectedIndex]) {
+				originalSelectedIndex = 0;
+			}
+			if(!OmnibarPlus.richlist[originalCurrentIndex]) {
+				originalCurrentIndex = 0;
+			}
+			OmnibarPlus.richlistbox.selectedIndex = originalSelectedIndex;
+			OmnibarPlus.richlistbox.currentIndex = originalCurrentIndex;
 		}
 	},
 	
@@ -208,85 +209,109 @@ var OmnibarPlus = {
 		}
 	},
 	
+	// Our takes on key navigation from gURLBar.onkeypress(event), if returns false, original onkeypress is called
 	urlBarKeyDown: function(e) {
-		switch(e.keyCode) {
+		// Sometimes the ontextentered attribute is reset (for some reason), this leads to double tabs being opened
+		OmnibarPlus.checkOnHandlers();
+		
+		// Just discriminating using the same criteria the original onKeyPress does
+		if (e.target.localName != "textbox") { return false; }
+		if (e.getPreventDefault()) { return false; }
+		
+		var key = e.keyCode;
+		if(key == e.DOM_VK_TAB && this.tabScrolling && this.popup.mPopupOpen) {
+			key = (e.shiftKey) ? e.DOM_VK_UP : e.DOM_VK_DOWN;
+		}
+   		
+   		switch(key) {
 			// Some times the list is unresponsive when using PageUp or PageDown after organizing, so I'm disabling them altogether
 			case e.DOM_VK_PAGE_UP:
 			case e.DOM_VK_PAGE_DOWN:
-				e.preventDefault();
-				e.stopPropagation();
-				return false;
-				break;
-			
 			case e.DOM_VK_UP:
 			case e.DOM_VK_DOWN:
-				if(!OmnibarPlus.panel.popupOpen) { return; }
-				
-				var currentIndex = OmnibarPlus.richlistbox.currentIndex;
-				switch(e.keyCode) {
+				// No point in doing anything if popup isn't open
+				if(!OmnibarPlus.panel.popupOpen) { return false; }
+		
+				// Just discriminating using the same criteria the original onKeyPress does
+				if (this.disableKeyNavigation || e.ctrlKey || e.altKey) { return false; }
+   				
+   				var currentIndex = OmnibarPlus.richlistbox.currentIndex;
+				switch(key) {
+					case e.DOM_VK_PAGE_UP:
 					case e.DOM_VK_UP:
-						currentIndex--;
+						if(currentIndex > -1) {
+							currentIndex = (key == e.DOM_VK_PAGE_UP) ? Math.max(currentIndex -5, -1) : currentIndex -1;
+						} else {
+							currentIndex = OmnibarPlus.richlist.length-1;
+						}
 						break;
+					case e.DOM_VK_PAGE_DOWN:
 					case e.DOM_VK_DOWN:
-						currentIndex++;
+						if(currentIndex < OmnibarPlus.richlist.length-1) {
+							currentIndex = (key == e.DOM_VK_PAGE_DOWN) ? Math.min(currentIndex +5, OmnibarPlus.richlist.length-1) : currentIndex +1;
+						} else {
+							currentIndex = -1;
+						}
 						break;
 					default: break;
 				}
 				
-				if(currentIndex == -1 
-				|| typeof(OmnibarPlus.richlist[currentIndex]) == 'undefined'
-				|| OmnibarPlus.richlist[currentIndex].collapsed) { return; }
+				OmnibarPlus.richlistbox.currentIndex = currentIndex;
+				OmnibarPlus.richlistbox.selectedIndex = currentIndex;
 				
-				OmnibarPlus.currentURL = OmnibarPlus.richlist[currentIndex].getAttribute('url');
+				if(currentIndex > -1 && OmnibarPlus.richlist[currentIndex] && OmnibarPlus.richlist[currentIndex].getAttribute('url')) {
+					gURLBar.value = OmnibarPlus.richlist[currentIndex].getAttribute('url');
+				} 
+				else if(OmnibarPlus.richlist[0]) {
+					gURLBar.value = OmnibarPlus.richlist[0].getAttribute('text');
+				}
 				
-				gURLBar.addPropertyWatcher('value', function() {
-					if(gURLBar.value != OmnibarPlus.currentURL) {
-						gURLBar.removePropertyWatcher('value', arguments.callee);
-						gURLBar.value = OmnibarPlus.currentURL;
-					}
-				});
-						
-				OmnibarPlus.overrideURL = true;
-				return;
-			
+				return true;
+				
 			case e.DOM_VK_RETURN:
-				// Sometimes the ontextentered attribute is reset (for some reason), this leads to double tabs being opened
-				OmnibarPlus.checkOnTextEntered();
-				
 				OmnibarPlus.overrideURL = false;
+				return false;
 				
-				// Peers compatibility (hitting enter not firing a search sometimes)
-				OmnibarPlus.fireOnSelect(null);
-				e.preventDefault();
-				e.stopPropagation();
-				return;
-				
-			default:
-				// Sometimes the ontextentered attribute is reset (for some reason), this leads to double tabs being opened
-				OmnibarPlus.checkOnTextEntered();
-				
-				OmnibarPlus.overrideURL = true;
-				return;
+			default: return false;
 		}
 	},
 	
+	// Set urlbar ontextentered attribute to work with our handler
+	checkOnHandlers: function() {
+		if(gURLBar.getAttribute('ontextentered').indexOf('OmnibarPlus') < 0) {
+			gURLBar._ontextentered = gURLBar.getAttribute('ontextentered');
+			gURLBar.setAttribute('ontextentered', 'OmnibarPlus.fireOnSelect();');
+		}
+		if(OmnibarPlus.goButton.getAttribute('onclick').indexOf('OmnibarPlus') < 0) {
+			OmnibarPlus.goButton._onclick = OmnibarPlus.goButton.getAttribute('onclick');
+			OmnibarPlus.goButton.setAttribute('onclick', 'OmnibarPlus.onGoClick(event);'); 
+		}	
+	},
+	
 	fireOnSelect: function(param) {
-		// Peers compatibility (hitting enter not firing a search sometimes)
-		if(OmnibarPlus.fired) { return; }
-		OmnibarPlus.fired = true;
-		OmnibarPlus.firedTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-		OmnibarPlus.firedTimer.init(function() { OmnibarPlus.fired = false; }, 100, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-		
+		// This is for mouse clicks instead of keyboard navigation
 		if(OmnibarPlus.overrideURL && OmnibarPlus.richlistbox.currentIndex != -1) {
 			gURLBar.value = OmnibarPlus.richlist[OmnibarPlus.richlistbox.currentIndex].getAttribute('url');
 		}
+		OmnibarPlus.overrideURL = true;
+		
 		gURLBar.blur();
 		Omnibar._handleURLBarCommand(param);
-		gURLBar.reset();
+	},
+	
+	onGoClick: function(aEvent) {
+		// This comes from TMP_goButtonClick() (from Tab Mix Plus), the original onclick is simply gURLBar.handleCommand()
+		if(OmnibarPlus.goButton._onclick.indexOf('TMP') > -1 && aEvent.button == 1 && gURLBar.value == gBrowser.currentURI.spec) {
+			gBrowser.duplicateTab(gBrowser.mCurrentTab);
+		}
+		else if(aEvent.button != 2) {
+			OmnibarPlus.overrideURL = false;
+			OmnibarPlus.fireOnSelect(aEvent);
+		}
 	},
 		
 	// Left click: default omnibar functionality; Middle Click: open the search engine homepage
-	onButtonClick: function (event) {
+	onEngineClick: function(event) {
 		var modKey = (OmnibarPlus.OS == 'Darwin') ? event.metaKey : event.ctrlKey;
 		
 		if(event.button == 0 && !event.altKey && !modKey) {
