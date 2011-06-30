@@ -106,6 +106,12 @@ var OmnibarPlus = {
 				LocationBarHelpers.__searchComplete();
 			};
 			
+			gURLBar._appendChild = gURLBar.appendChild;
+			gURLBar.appendChild = function(aNode) {
+				OmnibarPlus.popupshowing();
+				return gURLBar._appendChild(aNode);
+			}
+			
 			OmnibarPlus.organizing = true;
 		} 
 		else if(!OmnibarPlus.organizePopup.value && OmnibarPlus.organizing) {
@@ -116,6 +122,7 @@ var OmnibarPlus = {
 			OmnibarPlus.goButton.setAttribute('onclick', OmnibarPlus.goButton._onclick);
 			
 			LocationBarHelpers._searchComplete = LocationBarHelpers.__searchComplete;
+			gURLBar.appendChild = gURLBar._appendChild;
 			
 			OmnibarPlus.organizing = false;
 		}
