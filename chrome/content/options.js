@@ -54,6 +54,10 @@ var OmnibarPlusOptions = {
 				nodes[i].setAttribute('disabled', 'true');
 			}
 		}
+		
+		if(!o) {
+			document.getElementById('orderList').view.selection.clearSelection();
+		}
 	},
 	
 	fillListRows: function() {
