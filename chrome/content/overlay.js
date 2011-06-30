@@ -363,7 +363,16 @@ var OmnibarPlus = {
 		}
 		
 		gURLBar.blur();
+		var opener = gBrowser.mCurrentBrowser;
+		
 		Omnibar._handleURLBarCommand(param);
+		
+		// Attempt to set the correct values in the urlbars of both the opened browser and the opening browser
+		gURLBar.reset();
+		gBrowser.mCurrentBrowser._userTypedValue = null;
+		if(gBrowser.mCurrentBrowser != opener) {
+			opener._userTypedValue = null;
+		}
 	},
 	
 	onGoClick: function(aEvent) {
