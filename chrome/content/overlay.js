@@ -99,6 +99,7 @@ var OmnibarPlus = {
 			}
 			
 			OmnibarPlus.checkOnHandlers();
+			OmnibarPlus.fixContextMenu(true);
 			
 			LocationBarHelpers.__searchComplete = LocationBarHelpers._searchComplete;	
 			LocationBarHelpers._searchComplete = function() {
@@ -120,6 +121,8 @@ var OmnibarPlus = {
 			// Changed in checkOnHandlers()
 			gURLBar.setAttribute("ontextentered", gURLBar._ontextentered);
 			OmnibarPlus.goButton.setAttribute('onclick', OmnibarPlus.goButton._onclick);
+			
+			OmnibarPlus.fixContextMenu(false);
 			
 			LocationBarHelpers._searchComplete = LocationBarHelpers.__searchComplete;
 			gURLBar.appendChild = gURLBar._appendChild;
@@ -330,7 +333,10 @@ var OmnibarPlus = {
 			
 			default: 
 				var ret = gURLBar._onKeyPress(e);
-				OmnibarPlus.overrideURL = gURLBar.value;
+				// Needs to be on a timer to correctly handle Ctrl+V (paste)
+				// Otherwise the paste would occur after this
+				OmnibarPlus.keyTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+				OmnibarPlus.keyTimer.init(function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
 				return ret;
 		}
 	},
@@ -369,6 +375,47 @@ var OmnibarPlus = {
 			OmnibarPlus.fireOnSelect(aEvent);
 		}
 	},
+	
+	// Make sure all the paste commands trigger our .overrideURL
+	// Note that all the returns and checks are just prevention, I have no reason to put them here other than just making sure it works correctly
+	fixContextMenu: function(organize) {
+		var contextMenu = document.getAnonymousElementByAttribute(gURLBar.inputBox, 'anonid', 'input-box-contextmenu');
+		if(!contextMenu) { return; }
+		
+		var pasteItem = contextMenu.getElementsByAttribute('cmd', 'cmd_paste')[0];
+		if(pasteItem) {
+			if(organize) {
+				pasteItem.addEventListener('command', OmnibarPlus.paste, false);
+			} else {
+				pasteItem.removeEventListener('command', OmnibarPlus.paste, false);
+			}
+		}
+		
+		var pasteAndGoItem = contextMenu.getElementsByAttribute('anonid', 'paste-and-go')[0];
+		if(pasteAndGoItem) {
+			if(organize) {
+				pasteAndGoItem._oncommand = pasteAndGoItem.getAttribute('oncommand');
+				pasteAndGoItem.setAttribute('oncommand', 'OmnibarPlus.pasteAndGo(event);');
+			}
+			else if(pasteAndGoItem._oncommand) {
+				pasteAndGoItem.setAttribute('oncommand', pasteAndGoItem._oncommand);
+			}
+		}
+	},
+	
+	pasteAndGo: function(event) {
+		gURLBar.select();
+		goDoCommand('cmd_paste');
+		OmnibarPlus.richlistbox.currentIndex = -1;
+		OmnibarPlus.fireOnSelect(event);
+	},
+	
+	paste: function() {
+		// Needs to be on a timer to correctly handle paste
+		// Otherwise the paste would occur after this
+		OmnibarPlus.pasteTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+		OmnibarPlus.pasteTimer.init(function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+	},	
 		
 	// Left click: default omnibar functionality; Middle Click: open the search engine homepage
 	onEngineClick: function(event) {
