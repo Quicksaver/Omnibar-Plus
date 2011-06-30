@@ -27,7 +27,6 @@ var OmnibarPlus = {
 		OmnibarPlus.smarterwiki = Application.prefs.get("extensions.omnibarplus.smarterwiki");
 		
 		OmnibarPlus.organizing = false;
-		OmnibarPlus.overrideURL = true;
 		
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
@@ -96,7 +95,7 @@ var OmnibarPlus = {
 		if(OmnibarPlus.organizePopup.value && !OmnibarPlus.organizing) {
 			gURLBar._onKeyPress = gURLBar.onKeyPress;
 			gURLBar.onKeyPress = function(aEvent) {
-				return OmnibarPlus.urlBarKeyDown(aEvent) || gURLBar._onKeyPress(aEvent);
+				return OmnibarPlus.urlBarKeyDown(aEvent);
 			}
 			
 			OmnibarPlus.checkOnHandlers();
@@ -255,71 +254,68 @@ var OmnibarPlus = {
 		
 		// Just discriminating using the same criteria the original onKeyPress does
 		if (e.target.localName != "textbox") { return false; }
-		if (e.getPreventDefault()) { return false; }
+		if (e.defaultPrevented || e.getPreventDefault()) { return false; }
 		
 		var key = e.keyCode;
 		if(key == e.DOM_VK_TAB && this.tabScrolling && this.popup.mPopupOpen) {
 			key = (e.shiftKey) ? e.DOM_VK_UP : e.DOM_VK_DOWN;
 		}
    		
-   		switch(key) {
-			// Some times the list is unresponsive when using PageUp or PageDown after organizing, so I'm disabling them altogether
-			case e.DOM_VK_PAGE_UP:
-			case e.DOM_VK_PAGE_DOWN:
-			case e.DOM_VK_UP:
-			case e.DOM_VK_DOWN:
-				// No point in doing anything if popup isn't open
-				if(!OmnibarPlus.panel.popupOpen) { return false; }
-		
-				// Just discriminating using the same criteria the original onKeyPress does
-				if (this.disableKeyNavigation || e.ctrlKey || e.altKey) { return false; }
-   				
-   				var currentIndex = OmnibarPlus.richlistbox.currentIndex;
-				switch(key) {
-					case e.DOM_VK_PAGE_UP:
-					case e.DOM_VK_UP:
-						if(currentIndex > -1) {
-							currentIndex = (key == e.DOM_VK_PAGE_UP) ? Math.max(currentIndex -5, -1) : currentIndex -1;
-						} else {
-							currentIndex = OmnibarPlus.richlist.length-1;
-						}
-						break;
-					case e.DOM_VK_PAGE_DOWN:
-					case e.DOM_VK_DOWN:
-						if(currentIndex < OmnibarPlus.richlist.length-1) {
-							currentIndex = (key == e.DOM_VK_PAGE_DOWN) ? Math.min(currentIndex +5, OmnibarPlus.richlist.length-1) : currentIndex +1;
-						} else {
-							currentIndex = -1;
-						}
-						break;
-					default: break;
-				}
-				
-				OmnibarPlus.richlistbox.currentIndex = currentIndex;
-				OmnibarPlus.richlistbox.selectedIndex = currentIndex;
-				
-				if(currentIndex > -1 && OmnibarPlus.richlist[currentIndex] && OmnibarPlus.richlist[currentIndex].getAttribute('url')) {
-					gURLBar.value = OmnibarPlus.richlist[currentIndex].getAttribute('url');
-				} 
-				else if(OmnibarPlus.richlist[0]) {
-					gURLBar.value = OmnibarPlus.richlist[0].getAttribute('text');
-				}
-				
-				return true;
-				
-			case e.DOM_VK_RETURN:
-				OmnibarPlus.overrideURL = false;
-				return false;
-				
-			default: return false;
+   		if(key == e.DOM_VK_PAGE_UP || key == e.DOM_VK_PAGE_DOWN || key == e.DOM_VK_UP || key == e.DOM_VK_DOWN) {
+			// No point in doing anything if popup isn't open
+			if(!OmnibarPlus.panel.popupOpen) { return false; }
+	
+			// Just discriminating using the same criteria the original onKeyPress does
+			if (this.disableKeyNavigation || e.ctrlKey || e.altKey) { return false; }
+			
+			var currentIndex = OmnibarPlus.richlistbox.currentIndex;
+			switch(key) {
+				case e.DOM_VK_PAGE_UP:
+				case e.DOM_VK_UP:
+					if(currentIndex > -1) {
+						currentIndex = (key == e.DOM_VK_PAGE_UP) ? Math.max(currentIndex -5, -1) : currentIndex -1;
+					} else {
+						currentIndex = OmnibarPlus.richlist.length-1;
+					}
+					break;
+				case e.DOM_VK_PAGE_DOWN:
+				case e.DOM_VK_DOWN:
+					if(currentIndex < OmnibarPlus.richlist.length-1) {
+						currentIndex = (key == e.DOM_VK_PAGE_DOWN) ? Math.min(currentIndex +5, OmnibarPlus.richlist.length-1) : currentIndex +1;
+					} else {
+						currentIndex = -1;
+					}
+					break;
+				default: break;
+			}
+			
+			OmnibarPlus.richlistbox.currentIndex = currentIndex;
+			OmnibarPlus.richlistbox.selectedIndex = currentIndex;
+			
+			if(currentIndex > -1 && OmnibarPlus.richlist[currentIndex] && OmnibarPlus.richlist[currentIndex].getAttribute('url')) {
+				gURLBar.value = OmnibarPlus.richlist[currentIndex].getAttribute('url');
+			} 
+			else if(OmnibarPlus.richlist[0]) {
+				gURLBar.value = OmnibarPlus.richlist[0].getAttribute('text');
+			}
+			OmnibarPlus.overrideURL = gURLBar.value;
+			gURLBar.focus();
+			
+			return true;
 		}
+		
+		var ret = gURLBar._onKeyPress(e)
+		if(key != e.DOM_VK_RETURN) {
+			OmnibarPlus.overrideURL = gURLBar.value;
+		}
+		return ret;
 	},
 	
 	// Set urlbar ontextentered attribute to work with our handler
 	checkOnHandlers: function() {
 		if(gURLBar.getAttribute('ontextentered').indexOf('OmnibarPlus') < 0) {
 			gURLBar._ontextentered = gURLBar.getAttribute('ontextentered');
-			gURLBar.setAttribute('ontextentered', 'OmnibarPlus.fireOnSelect();');
+			gURLBar.setAttribute('ontextentered', 'OmnibarPlus.fireOnSelect(param);');
 		}
 		if(OmnibarPlus.goButton.getAttribute('onclick').indexOf('OmnibarPlus') < 0) {
 			OmnibarPlus.goButton._onclick = OmnibarPlus.goButton.getAttribute('onclick');
@@ -328,11 +324,18 @@ var OmnibarPlus = {
 	},
 	
 	fireOnSelect: function(param) {
-		// This is for mouse clicks instead of keyboard navigation
-		if(OmnibarPlus.overrideURL && OmnibarPlus.richlistbox.currentIndex != -1) {
+		if(param && param.type == 'keydown' && param.keyCode == param.DOM_VK_RETURN) { 
+			OmnibarPlus.richlistbox.currentIndex = -1;
+			if(OmnibarPlus.overrideURL) {
+				gURLBar.value = OmnibarPlus.overrideURL;
+				OmnibarPlus.overrideURL = null;
+			}
+		}
+		
+		// We need to make sure the correct value is passed along
+		if(OmnibarPlus.richlistbox.currentIndex != -1) {
 			gURLBar.value = OmnibarPlus.richlist[OmnibarPlus.richlistbox.currentIndex].getAttribute('url');
 		}
-		OmnibarPlus.overrideURL = true;
 		
 		gURLBar.blur();
 		Omnibar._handleURLBarCommand(param);
@@ -344,7 +347,6 @@ var OmnibarPlus = {
 			gBrowser.duplicateTab(gBrowser.mCurrentTab);
 		}
 		else if(aEvent.button != 2) {
-			OmnibarPlus.overrideURL = false;
 			OmnibarPlus.fireOnSelect(aEvent);
 		}
 	},
