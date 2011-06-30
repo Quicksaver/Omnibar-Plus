@@ -212,8 +212,13 @@ var OmnibarPlus = {
 		for(var type in OmnibarPlus.types) {
 			for(var node in nodes[OmnibarPlus.types[type]]) {
 				if(nodes[OmnibarPlus.types[type]][node].collapsed) {
-					// Remove collapsed entries so they're not triggered when hitting the up and down keys
-					OmnibarPlus.richlistbox.removeChild(nodes[OmnibarPlus.types[type]][node]);
+					if(nodes[OmnibarPlus.types[type]][node].getAttribute('text') == gURLBar.value) {
+						nodes[OmnibarPlus.types[type]][node].removeAttribute('collapsed');
+						nodes[OmnibarPlus.types[type]][node] = OmnibarPlus.richlistbox.appendChild(nodes[OmnibarPlus.types[type]][node]);
+					} else {
+						// Remove collapsed entries so they're not triggered when hitting the up and down keys
+						OmnibarPlus.richlistbox.removeChild(nodes[OmnibarPlus.types[type]][node]);
+					}
 				} else {
 					nodes[OmnibarPlus.types[type]][node] = OmnibarPlus.richlistbox.appendChild(nodes[OmnibarPlus.types[type]][node]);
 				}
