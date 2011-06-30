@@ -4,7 +4,7 @@
     <em:id>omnibarplus@quicksaver</em:id>
     <em:type>2</em:type>
     <em:name>Omnibar Plus</em:name>
-    <em:version>0.3.10</em:version>
+    <em:version>0.4</em:version>
     <em:creator>Quicksaver</em:creator>
     <em:description>Extra functionality for your Omnibar.</em:description>
     <em:iconURL>chrome://omnibarplus/skin/icon.png</em:iconURL>
