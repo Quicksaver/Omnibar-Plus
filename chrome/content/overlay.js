@@ -391,6 +391,24 @@ var OmnibarPlus = {
 		var contextMenu = document.getAnonymousElementByAttribute(gURLBar.inputBox, 'anonid', 'input-box-contextmenu');
 		if(!contextMenu) { return; }
 		
+		var undoItem = contextMenu.getElementsByAttribute('cmd', 'cmd_undo')[0];
+		if(undoItem) {
+			if(organize) {
+				undoItem.addEventListener('command', OmnibarPlus.paste, false);
+			} else {
+				undoItem.removeEventListener('command', OmnibarPlus.paste, false);
+			}
+		}
+		
+		var cutItem = contextMenu.getElementsByAttribute('cmd', 'cmd_cut')[0];
+		if(cutItem) {
+			if(organize) {
+				cutItem.addEventListener('command', OmnibarPlus.paste, false);
+			} else {
+				cutItem.removeEventListener('command', OmnibarPlus.paste, false);
+			}
+		}
+		
 		var pasteItem = contextMenu.getElementsByAttribute('cmd', 'cmd_paste')[0];
 		if(pasteItem) {
 			if(organize) {
