@@ -27,6 +27,7 @@ var OmnibarPlus = {
 		OmnibarPlus.smarterwiki = Application.prefs.get("extensions.omnibarplus.smarterwiki");
 		
 		OmnibarPlus.organizing = false;
+		OmnibarPlus.willOrganize = false;
 		
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
@@ -101,6 +102,12 @@ var OmnibarPlus = {
 			OmnibarPlus.checkOnHandlers();
 			OmnibarPlus.fixContextMenu(true);
 			
+			LocationBarHelpers.__searchBegin = LocationBarHelpers._searchBegin;
+			LocationBarHelpers._searchBegin = function() {
+				OmnibarPlus.willOrganize = false;
+				LocationBarHelpers.__searchBegin();
+			};
+			
 			LocationBarHelpers.__searchComplete = LocationBarHelpers._searchComplete;	
 			LocationBarHelpers._searchComplete = function() {
 				OmnibarPlus.popupshowing();
@@ -109,7 +116,7 @@ var OmnibarPlus = {
 			
 			gURLBar._appendChild = gURLBar.appendChild;
 			gURLBar.appendChild = function(aNode) {
-				OmnibarPlus.popupshowing();
+				if(OmnibarPlus.willOrganize) { OmnibarPlus.popupshowing(); }
 				return gURLBar._appendChild(aNode);
 			}
 			
@@ -160,6 +167,7 @@ var OmnibarPlus = {
 	
 	// Handler for when the autocomplete pops up
 	popupshowing: function() {
+		OmnibarPlus.willOrganize = true;
 		OmnibarPlus.popupshowingTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
 		OmnibarPlus.popupshowingTimer.init(OmnibarPlus.organize, 100, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
 		return true;
