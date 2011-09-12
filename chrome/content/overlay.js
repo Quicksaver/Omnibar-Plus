@@ -151,7 +151,7 @@ var OmnibarPlus = {
 		if(OmnibarPlus.engineFocus.value) {
 			OmnibarPlus.engineName.addPropertyWatcher('value', openLocation);
 		} else {
-			OmnibarPlus.engineName.removePropertyWatcher('value');
+			OmnibarPlus.engineName.removePropertyWatcher('value', openLocation);
 		}
 	},
 	
