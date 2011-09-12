@@ -319,6 +319,11 @@ var OmnibarPlus = {
 			
 			case e.DOM_VK_RETURN:
 				OmnibarPlus.richlistbox.currentIndex = -1;
+				if(!OmnibarPlus.panel.popupOpen) {
+					OmnibarPlus.richlistbox.selectedIndex = -1;
+					OmnibarPlus.overrideURL = null;
+				}
+				
 				if(OmnibarPlus.overrideURL) {
 					gURLBar.value = OmnibarPlus.overrideURL;
 					OmnibarPlus.overrideURL = null;
