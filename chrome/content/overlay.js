@@ -1,14 +1,11 @@
 var OmnibarPlus = {
 	preinit: function() {
-		OmnibarPlus.initTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-		OmnibarPlus.initTimer.init(OmnibarPlus.init, 500, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-		window.removeEventListener("load", OmnibarPlus.preinit, false);
+		OmnibarPlus.timerAid.init('init', OmnibarPlus.init, 500);
+		OmnibarPlus.listenerAid.remove(window, "load", OmnibarPlus.preinit, false);
 	},
 	
 	init: function() {
 		if(typeof(Omnibar) == 'undefined') { return; }
-		
-		Components.utils.import("chrome://omnibarplus/content/setWatchers.jsm", OmnibarPlus);
 		
 		OmnibarPlus.F6 = Application.prefs.get("extensions.omnibarplus.f6");
 		OmnibarPlus.middleClick = Application.prefs.get("extensions.omnibarplus.middleClick");
@@ -41,16 +38,16 @@ var OmnibarPlus = {
 		OmnibarPlus.richlistbox = OmnibarPlus.panel.richlistbox;
 		OmnibarPlus.richlist = OmnibarPlus.richlistbox.childNodes;
 		
-		OmnibarPlus.F6.events.addListener("change", OmnibarPlus.toggleF6);
-		OmnibarPlus.middleClick.events.addListener("change", OmnibarPlus.toggleMiddleClick);
-		OmnibarPlus.organizePopup.events.addListener("change", OmnibarPlus.toggleOrganize);
-		OmnibarPlus.animated.events.addListener("change", OmnibarPlus.toggleAnimated);
-		OmnibarPlus.engineFocus.events.addListener("change", OmnibarPlus.toggleEngineFocus);
-		OmnibarPlus.popupStyle.events.addListener("change", OmnibarPlus.toggleAnimated);
-		OmnibarPlus.organizeList.organize1.events.addListener("change", OmnibarPlus.getTypes);
-		OmnibarPlus.organizeList.organize2.events.addListener("change", OmnibarPlus.getTypes);
-		OmnibarPlus.organizeList.organize3.events.addListener("change", OmnibarPlus.getTypes);
-		OmnibarPlus.organizeList.organize4.events.addListener("change", OmnibarPlus.getTypes);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.F6, "change", OmnibarPlus.toggleF6);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.middleClick, "change", OmnibarPlus.toggleMiddleClick);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.organizePopup, "change", OmnibarPlus.toggleOrganize);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.animated, "change", OmnibarPlus.toggleAnimated);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.engineFocus, "change", OmnibarPlus.toggleEngineFocus);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.popupStyle, "change", OmnibarPlus.toggleAnimated);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.organizeList.organize1, "change", OmnibarPlus.getTypes);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.organizeList.organize2, "change", OmnibarPlus.getTypes);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.organizeList.organize3, "change", OmnibarPlus.getTypes);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.organizeList.organize4, "change", OmnibarPlus.getTypes);
 		
 		// Grab types of entries to populate the organize list
 		// Also sets whether Peers/FastestFox is enabled
@@ -62,32 +59,23 @@ var OmnibarPlus = {
 		OmnibarPlus.toggleAnimated();
 		OmnibarPlus.toggleEngineFocus();
 		
-		window.addEventListener("unload", OmnibarPlus.deinit, false);
+		OmnibarPlus.listenerAid.add(window, "unload", OmnibarPlus.deinit, false);
 	},
 	
 	deinit: function() {
-		OmnibarPlus.F6.events.removeListener("change", OmnibarPlus.toggleF6);
-		OmnibarPlus.middleClick.events.removeListener("change", OmnibarPlus.toggleMiddleClick);
-		OmnibarPlus.organizePopup.events.removeListener("change", OmnibarPlus.toggleOrganize);
-		OmnibarPlus.animated.events.removeListener("change", OmnibarPlus.toggleAnimated);
-		OmnibarPlus.engineFocus.events.removeListener("change", OmnibarPlus.toggleEngineFocus);
-		OmnibarPlus.popupStyle.events.removeListener("change", OmnibarPlus.toggleAnimated);
-		OmnibarPlus.organizeList.organize1.events.removeListener("change", OmnibarPlus.getTypes);
-		OmnibarPlus.organizeList.organize2.events.removeListener("change", OmnibarPlus.getTypes);
-		OmnibarPlus.organizeList.organize3.events.removeListener("change", OmnibarPlus.getTypes);
-		OmnibarPlus.organizeList.organize4.events.removeListener("change", OmnibarPlus.getTypes);
+		OmnibarPlus.listenerAid.clean();
 	},
 	
 	// Toggle middle click functionality
 	toggleMiddleClick: function() {
 		document.getElementById('omnibar-in-urlbar').removeAttribute('onclick'); // We need to remove this first
 		if(OmnibarPlus.middleClick.value) {
-			document.getElementById('omnibar-in-urlbar').removeEventListener('click', Omnibar.onButtonClick, false);
-			document.getElementById('omnibar-in-urlbar').addEventListener('click', OmnibarPlus.onEngineClick, false);
+			OmnibarPlus.listenerAid.remove(document.getElementById('omnibar-in-urlbar'), 'click', Omnibar.onButtonClick, false);
+			OmnibarPlus.listenerAid.add(document.getElementById('omnibar-in-urlbar'), 'click', OmnibarPlus.onEngineClick, false);
 		}
 		else {
-			document.getElementById('omnibar-in-urlbar').removeEventListener('click', OmnibarPlus.onEngineClick, false); 
-			document.getElementById('omnibar-in-urlbar').addEventListener('click', Omnibar.onButtonClick, false);
+			OmnibarPlus.listenerAid.remove(document.getElementById('omnibar-in-urlbar'), 'click', OmnibarPlus.onEngineClick, false); 
+			OmnibarPlus.listenerAid.add(document.getElementById('omnibar-in-urlbar'), 'click', Omnibar.onButtonClick, false);
 		}
 	},
 	
@@ -168,8 +156,7 @@ var OmnibarPlus = {
 	// Handler for when the autocomplete pops up
 	popupshowing: function() {
 		OmnibarPlus.willOrganize = true;
-		OmnibarPlus.popupshowingTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-		OmnibarPlus.popupshowingTimer.init(OmnibarPlus.organize, 100, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+		OmnibarPlus.timerAid.init('popupshowing', OmnibarPlus.organize, 100);
 		return true;
 	},
 	
@@ -343,8 +330,7 @@ var OmnibarPlus = {
 				var ret = gURLBar._onKeyPress(e);
 				// Needs to be on a timer to correctly handle Ctrl+V (paste)
 				// Otherwise the paste would occur after this
-				OmnibarPlus.keyTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-				OmnibarPlus.keyTimer.init(function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+				OmnibarPlus.timerAid.init('key', function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10);
 				return ret;
 		}
 	},
@@ -400,39 +386,38 @@ var OmnibarPlus = {
 		if(!contextMenu) { return; }
 		
 		var undoItem = contextMenu.getElementsByAttribute('cmd', 'cmd_undo')[0];
-		if(undoItem) {
-			if(organize) {
-				undoItem.addEventListener('command', OmnibarPlus.paste, false);
-			} else {
-				undoItem.removeEventListener('command', OmnibarPlus.paste, false);
-			}
-		}
-		
 		var cutItem = contextMenu.getElementsByAttribute('cmd', 'cmd_cut')[0];
-		if(cutItem) {
-			if(organize) {
-				cutItem.addEventListener('command', OmnibarPlus.paste, false);
-			} else {
-				cutItem.removeEventListener('command', OmnibarPlus.paste, false);
-			}
-		}
-		
 		var pasteItem = contextMenu.getElementsByAttribute('cmd', 'cmd_paste')[0];
-		if(pasteItem) {
-			if(organize) {
-				pasteItem.addEventListener('command', OmnibarPlus.paste, false);
-			} else {
-				pasteItem.removeEventListener('command', OmnibarPlus.paste, false);
-			}
-		}
-		
 		var pasteAndGoItem = contextMenu.getElementsByAttribute('anonid', 'paste-and-go')[0];
-		if(pasteAndGoItem) {
-			if(organize) {
-				pasteAndGoItem._oncommand = pasteAndGoItem.getAttribute('oncommand');
+		
+		if(organize) {
+			if(undoItem) {
+				OmnibarPlus.listenerAid.add(undoItem, 'command', OmnibarPlus.paste, false);
+			}
+			if(cutItem) {
+				OmnibarPlus.listenerAid.add(cutItem, 'command', OmnibarPlus.paste, false);
+			}
+			if(pasteItem) {
+				OmnibarPlus.listenerAid.add(pasteItem, 'command', OmnibarPlus.paste, false);
+			}
+			if(pasteAndGoItem) {
+				if(!pasteAndGoItem._oncommand) {
+					pasteAndGoItem._oncommand = pasteAndGoItem.getAttribute('oncommand');
+				}
 				pasteAndGoItem.setAttribute('oncommand', 'OmnibarPlus.pasteAndGo(event);');
 			}
-			else if(pasteAndGoItem._oncommand) {
+		}
+		else {
+			if(undoItem) {
+				OmnibarPlus.listenerAid.remove(undoItem, 'command', OmnibarPlus.paste, false);
+			}
+			if(cutItem) {
+				OmnibarPlus.listenerAid.remove(cutItem, 'command', OmnibarPlus.paste, false);
+			}
+			if(pasteItem) {
+				OmnibarPlus.listenerAid.remove(pasteItem, 'command', OmnibarPlus.paste, false);
+			}
+			if(pasteAndGoItem && pasteAndGoItem._oncommand) {
 				pasteAndGoItem.setAttribute('oncommand', pasteAndGoItem._oncommand);
 			}
 		}
@@ -448,8 +433,7 @@ var OmnibarPlus = {
 	paste: function() {
 		// Needs to be on a timer to correctly handle paste
 		// Otherwise the paste would occur after this
-		OmnibarPlus.pasteTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-		OmnibarPlus.pasteTimer.init(function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+		OmnibarPlus.timerAid.init('paste', function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10);
 	},	
 		
 	// Left click: default omnibar functionality; Middle Click: open the search engine homepage
@@ -475,4 +459,5 @@ var OmnibarPlus = {
 	}
 }
 
-window.addEventListener("load", OmnibarPlus.preinit, false);
+Components.utils.import("chrome://omnibarplus/content/utils.jsm", OmnibarPlus);
+OmnibarPlus.listenerAid.add(window, "load", OmnibarPlus.preinit, false);
