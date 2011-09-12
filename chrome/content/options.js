@@ -41,7 +41,19 @@ var OmnibarPlusOptions = {
 			OmnibarPlusOptions.textboxes[i].value = document.getElementById(OmnibarPlusOptions.textboxes[i].getAttribute('preference')).value;
 		}
 		
+		OmnibarPlusOptions.toggleAnimated();
+		OmnibarPlusOptions.toggleOrganize();
 		OmnibarPlusOptions.fillListRows();
+	},
+	
+	toggleAnimated: function() {
+		var o = document.getElementById('animatedCheckbox').checked;
+		var menu = document.getElementById('animatedMenulist');
+		if(o) {
+			menu.removeAttribute('disabled');
+		} else {
+			menu.setAttribute('disabled', 'true');
+		}
 	},
 	
 	toggleOrganize: function() {

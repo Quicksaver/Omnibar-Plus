@@ -1,6 +1,7 @@
 pref("extensions.omnibarplus.organizePopup", true);
 pref("extensions.omnibarplus.middleClick", true);
 pref("extensions.omnibarplus.animated", false);
+pref("extensions.omnibarplus.animatedScheme", 'sky');
 pref("extensions.omnibarplus.f6", true);
 pref("extensions.omnibarplus.engineFocus", true);
 pref("extensions.omnibarplus.organize.1", 'EE');

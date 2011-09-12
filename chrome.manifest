@@ -7,5 +7,13 @@ locale    omnibarplus-os  en-US         chrome/locale/en-US/mac/     os=Darwin
 
 overlay   chrome://browser/content/browser.xul   chrome://omnibarplus/content/overlay.xul
 overlay   chrome://omnibar/content/options.xul   chrome://omnibarplus/content/omnibarOptions.xul
-style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/autocompletepopup.css
 style     chrome://omnibar/content/options.xul   chrome://omnibarplus/skin/options.css
+
+style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/autocompletepopup.css
+style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/sky.css
+style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/ruby.css
+style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/taupe.css
+style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/grass.css
+style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/sea.css
+style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/lavender.css
+style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/bubblegum.css

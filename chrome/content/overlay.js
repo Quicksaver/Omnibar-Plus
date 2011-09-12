@@ -11,6 +11,7 @@ var OmnibarPlus = {
 		OmnibarPlus.middleClick = Application.prefs.get("extensions.omnibarplus.middleClick");
 		OmnibarPlus.organizePopup = Application.prefs.get("extensions.omnibarplus.organizePopup");
 		OmnibarPlus.animated = Application.prefs.get("extensions.omnibarplus.animated");
+		OmnibarPlus.animatedScheme = Application.prefs.get("extensions.omnibarplus.animatedScheme");
 		OmnibarPlus.engineFocus = Application.prefs.get("extensions.omnibarplus.engineFocus");
 		OmnibarPlus.popupStyle = Application.prefs.get("extensions.omnibar.popupstyle");
 		OmnibarPlus.organizeList = {
@@ -42,6 +43,7 @@ var OmnibarPlus = {
 		OmnibarPlus.listenerAid.add(OmnibarPlus.middleClick, "change", OmnibarPlus.toggleMiddleClick);
 		OmnibarPlus.listenerAid.add(OmnibarPlus.organizePopup, "change", OmnibarPlus.toggleOrganize);
 		OmnibarPlus.listenerAid.add(OmnibarPlus.animated, "change", OmnibarPlus.toggleAnimated);
+		OmnibarPlus.listenerAid.add(OmnibarPlus.animatedScheme, "change", OmnibarPlus.toggleAnimated);
 		OmnibarPlus.listenerAid.add(OmnibarPlus.engineFocus, "change", OmnibarPlus.toggleEngineFocus);
 		OmnibarPlus.listenerAid.add(OmnibarPlus.popupStyle, "change", OmnibarPlus.toggleAnimated);
 		OmnibarPlus.listenerAid.add(OmnibarPlus.organizeList.organize1, "change", OmnibarPlus.getTypes);
@@ -138,7 +140,7 @@ var OmnibarPlus = {
 	// Toggle animated effects for the suggestion list
 	toggleAnimated: function() {
 		if(OmnibarPlus.animated.value) {
-			OmnibarPlus.panel.setAttribute('animatedPopup', 'true');
+			OmnibarPlus.panel.setAttribute('animatedPopup', OmnibarPlus.animatedScheme.value);
 		} else {
 			OmnibarPlus.panel.removeAttribute('animatedPopup');
 		}

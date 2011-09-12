@@ -1,0 +1,23 @@
+#PopupAutoCompleteRichResult[animatedPopup="grass"] .ac-extra {
+	color: hsla(95,15%,44%,1) !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup="grass"] richlistitem.autocomplete-richlistitem[actiontype="switchtab"],
+#PopupAutoCompleteRichResult[animatedPopup="grass"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][actiontype="switchtab"],
+#PopupAutoCompleteRichResult[animatedPopup="grass"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][actiontype="switchtab"] {
+	background: -moz-linear-gradient(hsla(95,55%,94%,.2) 0px, hsla(95,25%,80%,.2) 100%) border-box !important;
+	box-shadow: inset hsla(95,50%,35%,.15) 0 0 0 1px, inset hsla(0,0%,100%,.2) 0 0 0 2px !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup="grass"] richlistitem.autocomplete-richlistitem[current],
+#PopupAutoCompleteRichResult[animatedPopup="grass"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][current],
+#PopupAutoCompleteRichResult[animatedPopup="grass"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][current] {
+	border: 1px solid hsla(95,57%,69%,1) !important;
+	background: border-box -moz-linear-gradient(left, hsla(95,100%,2%,.06) 25px, hsla(95,57%,69%,0) 25px, hsla(95,57%,69%,.75)) repeat-y, padding-box -moz-linear-gradient(hsla(95,100%,96%,1) 0%, hsla(95,100%,91%,1) 100%) repeat-x !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup="grass"] richlistitem.autocomplete-richlistitem[selected]:active:hover,
+#PopupAutoCompleteRichResult[animatedPopup="grass"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][selected]:active:hover,
+#PopupAutoCompleteRichResult[animatedPopup="grass"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][selected]:active:hover {
+	background-image: -moz-linear-gradient(left, hsla(95,100%,2%,.06) 25px, hsla(95,57%,69%,0) 25px, hsla(95,57%,69%,.75)), -moz-linear-gradient(hsla(95,89%,93%,1) 0, hsla(95,94%,88%,1) 100%) !important;
+}

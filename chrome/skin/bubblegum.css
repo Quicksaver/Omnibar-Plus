@@ -1,0 +1,23 @@
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] .ac-extra {
+	color: hsla(320,15%,44%,1) !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[actiontype="switchtab"],
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][actiontype="switchtab"],
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][actiontype="switchtab"] {
+	background: -moz-linear-gradient(hsla(320,55%,94%,.2) 0px, hsla(320,25%,80%,.2) 100%) border-box !important;
+	box-shadow: inset hsla(320,50%,35%,.15) 0 0 0 1px, inset hsla(0,0%,100%,.2) 0 0 0 2px !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[current],
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][current],
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][current] {
+	border: 1px solid hsla(320,57%,69%,1) !important;
+	background: border-box -moz-linear-gradient(left, hsla(320,100%,2%,.06) 25px, hsla(320,57%,69%,0) 25px, hsla(320,57%,69%,.75)) repeat-y, padding-box -moz-linear-gradient(hsla(320,100%,96%,1) 0%, hsla(320,100%,91%,1) 100%) repeat-x !important;
+}
+
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[selected]:active:hover,
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][selected]:active:hover,
+#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][selected]:active:hover {
+	background-image: -moz-linear-gradient(left, hsla(320,100%,2%,.06) 25px, hsla(320,57%,69%,0) 25px, hsla(320,57%,69%,.75)), -moz-linear-gradient(hsla(320,89%,93%,1) 0, hsla(320,94%,88%,1) 100%) !important;
+}

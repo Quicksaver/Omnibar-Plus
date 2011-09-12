@@ -14,6 +14,7 @@
 			<preference id="extensions.omnibarplus.organizePopup" name="extensions.omnibarplus.organizePopup" type="bool" />
 			<preference id="extensions.omnibarplus.middleClick" name="extensions.omnibarplus.middleClick" type="bool" />
 			<preference id="extensions.omnibarplus.animated" name="extensions.omnibarplus.animated" type="bool" />
+			<preference id="extensions.omnibarplus.animatedScheme" name="extensions.omnibarplus.animatedScheme" type="string" />
 			<preference id="extensions.omnibarplus.f6" name="extensions.omnibarplus.f6" type="bool" />
 			<preference id="extensions.omnibarplus.engineFocus" name="extensions.omnibarplus.engineFocus" type="bool" />
 			<preference id="extensions.omnibarplus.organize.1" name="extensions.omnibarplus.organize.1" type="string" />
@@ -35,7 +36,26 @@
 				<tabpanel id="plusTab" orient="vertical">
 					<groupbox align="start">
 						<caption label="&omnibarPlussuggestionList.label;"/>
-						<checkbox label="&omnibarPlusanimated.label;" preference="extensions.omnibarplus.animated"/>
+						<groupbox align="center">
+							<caption><checkbox id="animatedCheckbox" 
+								label="&omnibarPlusanimated.label;" 
+								preference="extensions.omnibarplus.animated"
+								oncommand="OmnibarPlusOptions.toggleAnimated();"/></caption>
+							<hbox style="vertical-align: middle;">
+								<label style="margin-top: 7px;" value="&omnibarPlusanimatedScheme.label;"/>
+								<menulist id="animatedMenulist" preference="extensions.omnibarplus.animatedScheme">
+									<menupopup>
+										<menuitem id="scheme1" value="sky" label="&omnibarPlusanimatedScheme.sky;"/>
+										<menuitem id="scheme2" value="ruby" label="&omnibarPlusanimatedScheme.ruby;"/>
+										<menuitem id="scheme3" value="taupe" label="&omnibarPlusanimatedScheme.taupe;"/>
+										<menuitem id="scheme4" value="grass" label="&omnibarPlusanimatedScheme.grass;"/>
+										<menuitem id="scheme5" value="sea" label="&omnibarPlusanimatedScheme.sea;"/>
+										<menuitem id="scheme6" value="lavender" label="&omnibarPlusanimatedScheme.lavender;"/>
+										<menuitem id="scheme7" value="bubblegum" label="&omnibarPlusanimatedScheme.bubblegum;"/>
+									</menupopup>
+								</menulist>
+							</hbox>
+						</groupbox>
 						<groupbox align="center">
 							<caption><checkbox id="organizeCheckbox" 
 								label="&omnibarPlusorganizePopup.label;" 
