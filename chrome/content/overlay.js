@@ -389,7 +389,13 @@ var OmnibarPlus = {
 	// Make sure all the paste commands trigger our .overrideURL
 	// Note that all the returns and checks are just prevention, I have no reason to put them here other than just making sure it works correctly
 	fixContextMenu: function(organize) {
-		var contextMenu = document.getAnonymousElementByAttribute(gURLBar.inputBox, 'anonid', 'input-box-contextmenu');
+		if(gURLBar.inputBox) {
+			var getFromHere = gURLBar.inputBox;
+		} else {
+			// Don't know exactly in which version of firefox .inputBox was removed, I just noticed it in 9.0a1
+			var getFromHere = document.getAnonymousElementByAttribute(gURLBar, 'anonid', 'textbox-container').childNodes[0];
+		}
+		var contextMenu = document.getAnonymousElementByAttribute(getFromHere, 'anonid', 'input-box-contextmenu');
 		if(!contextMenu) { return; }
 		
 		var undoItem = contextMenu.getElementsByAttribute('cmd', 'cmd_undo')[0];
