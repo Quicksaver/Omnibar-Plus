@@ -268,7 +268,7 @@ var OmnibarPlus = {
 		if (e.target.localName != "textbox") { return false; }
 		
 		var key = e.keyCode;
-		if(key == e.DOM_VK_TAB && this.tabScrolling && this.popup.mPopupOpen) {
+		if(key == e.DOM_VK_TAB && gURLBar.tabScrolling && gURLBar.popup.mPopupOpen) {
 			key = (e.shiftKey) ? e.DOM_VK_UP : e.DOM_VK_DOWN;
 		}
    		
@@ -282,7 +282,7 @@ var OmnibarPlus = {
 		
 				// Just discriminating using the same criteria the original onKeyPress does
 				if (e.defaultPrevented || e.getPreventDefault()) { return false; } // can't put this before switch or enter won't be triggered
-				if (this.disableKeyNavigation || e.ctrlKey || e.altKey) { return false; }
+				if (gURLBar.disableKeyNavigation || e.ctrlKey || e.altKey) { return false; }
 				
 				var currentIndex = OmnibarPlus.richlistbox.currentIndex;
 				switch(key) {
@@ -321,15 +321,13 @@ var OmnibarPlus = {
 			
 			case e.DOM_VK_RETURN:
 				OmnibarPlus.richlistbox.currentIndex = -1;
-				if(!OmnibarPlus.panel.popupOpen) {
-					OmnibarPlus.richlistbox.selectedIndex = -1;
-					OmnibarPlus.overrideURL = null;
-				}
+				OmnibarPlus.richlistbox.selectedIndex = -1;
 				
 				if(OmnibarPlus.overrideURL) {
 					gURLBar.value = OmnibarPlus.overrideURL;
 					OmnibarPlus.overrideURL = null;
 				}
+				
 				e.okToProceed = true;
 				return OmnibarPlus.fireOnSelect(e);
 			
@@ -440,6 +438,7 @@ var OmnibarPlus = {
 		gURLBar.select();
 		goDoCommand('cmd_paste');
 		OmnibarPlus.richlistbox.currentIndex = -1;
+		OmnibarPlus.richlistbox.selectedIndex = -1;
 		OmnibarPlus.fireOnSelect(event);
 	},
 	
