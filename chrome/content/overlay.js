@@ -84,6 +84,7 @@ var OmnibarPlus = {
 	// Toggle Organize Functionality, we'll use a delay to let the popup fill up before organizing it
 	toggleOrganize: function() {
 		if(OmnibarPlus.organizePopup.value && !OmnibarPlus.organizing) {
+			//OmnibarPlus.listenerAid.add(OmnibarPlus.panel, 'popuphiding', OmnibarPlus.popupHiding, true);
 			gURLBar._onKeyPress = gURLBar.onKeyPress;
 			gURLBar.onKeyPress = function(aEvent) {
 				return OmnibarPlus.urlBarKeyDown(aEvent);
@@ -95,6 +96,7 @@ var OmnibarPlus = {
 			LocationBarHelpers.__searchBegin = LocationBarHelpers._searchBegin;
 			LocationBarHelpers._searchBegin = function() {
 				OmnibarPlus.willOrganize = false;
+				OmnibarPlus.doIndexes();
 				LocationBarHelpers.__searchBegin();
 			};
 			
@@ -113,6 +115,7 @@ var OmnibarPlus = {
 			OmnibarPlus.organizing = true;
 		} 
 		else if(!OmnibarPlus.organizePopup.value && OmnibarPlus.organizing) {
+			// OmnibarPlus.listenerAid.remove(OmnibarPlus.panel, 'popuphiding', OmnibarPlus.popupHiding, true);
 			gURLBar.onKeyPress = gURLBar._onKeyPress;
 			
 			// Changed in checkOnHandlers()
@@ -162,6 +165,22 @@ var OmnibarPlus = {
 		return true;
 	},
 	
+	// Handler for when the autocomplete closes
+	// I'm not implementing this one yet, I want to see how it does without it for now
+	// leaving it here so I don't forget about it
+	/*popuphiding: function() {
+		OmnibarPlus.timerAid.init('popuphiding', function() { OmnibarPlus.overrideURL = gURLBar.value; }, 100);
+	},*/
+	
+	// This method simply cleans the selection in the autocomplete popup
+	doIndexes: function(selected, current) {
+		if(selected == undefined) { var selected = -1; }
+		if(current == undefined) { var current = -1; }
+		
+		OmnibarPlus.richlistbox.selectedIndex = selected;
+		OmnibarPlus.richlistbox.currentIndex = current;
+	},
+	
 	getTypes: function() {
 		// entries are sorted in the order they appear in this list
 		// 'agrenon' is for Peers extension entries
@@ -194,8 +213,9 @@ var OmnibarPlus = {
 	organize: function() {
 		if(!OmnibarPlus.panel.popupOpen) { return; }
 		
-		var originalSelectedIndex = OmnibarPlus.richlistbox.selectIndex;
+		var originalSelectedIndex = OmnibarPlus.richlistbox.selectedIndex;
 		var originalCurrentIndex = OmnibarPlus.richlistbox.currentIndex;
+		OmnibarPlus.doIndexes();
 		var nodes = [];
 		
 		// First we see what order the nodes should be in
@@ -225,16 +245,17 @@ var OmnibarPlus = {
 			}
 		}
 		
+		if(originalSelectedIndex >= 0 && (originalSelectedIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalSelectedIndex]) ) {
+			originalSelectedIndex = -1;
+		}
+		if(originalCurrentIndex >= 0 && (originalCurrentIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalCurrentIndex]) ) {
+			originalCurrentIndex = -1;
+		}
+		OmnibarPlus.doIndexes(originalSelectedIndex, originalCurrentIndex);
+		
 		// Speak words auto select first result compatibility
-		if(OmnibarPlus.panel._appendCurrentResult.toString().indexOf('orig.apply') > -1 && !gURLBar.willHandle) {
-			if(!OmnibarPlus.richlist[originalSelectedIndex]) {
-				originalSelectedIndex = 0;
-			}
-			if(!OmnibarPlus.richlist[originalCurrentIndex]) {
-				originalCurrentIndex = 0;
-			}
-			OmnibarPlus.richlistbox.selectedIndex = originalSelectedIndex;
-			OmnibarPlus.richlistbox.currentIndex = originalCurrentIndex;
+		if(originalSelectedIndex >= 0) {
+			OmnibarPlus.overrideURL = OmnibarPlus.richlist[originalSelectedIndex].getAttribute('url');
 		}
 	},
 	
@@ -278,7 +299,10 @@ var OmnibarPlus = {
    			case e.DOM_VK_UP:
    			case e.DOM_VK_DOWN:
 				// No point in doing anything if popup isn't open
-				if(!OmnibarPlus.panel.popupOpen) { return false; }
+				// Simply return default action
+				if(!OmnibarPlus.panel.popupOpen) {
+					return gURLBar._onKeyPress(e);
+				}
 		
 				// Just discriminating using the same criteria the original onKeyPress does
 				if (e.defaultPrevented || e.getPreventDefault()) { return false; } // can't put this before switch or enter won't be triggered
@@ -305,8 +329,7 @@ var OmnibarPlus = {
 					default: break;
 				}
 				
-				OmnibarPlus.richlistbox.currentIndex = currentIndex;
-				OmnibarPlus.richlistbox.selectedIndex = currentIndex;
+				OmnibarPlus.doIndexes(currentIndex, currentIndex);
 				
 				if(currentIndex > -1 && OmnibarPlus.richlist[currentIndex] && OmnibarPlus.richlist[currentIndex].getAttribute('url')) {
 					gURLBar.value = OmnibarPlus.richlist[currentIndex].getAttribute('url');
@@ -320,18 +343,17 @@ var OmnibarPlus = {
 				return true;
 			
 			case e.DOM_VK_RETURN:
-				OmnibarPlus.richlistbox.currentIndex = -1;
-				OmnibarPlus.richlistbox.selectedIndex = -1;
+				OmnibarPlus.doIndexes();
 				
 				if(OmnibarPlus.overrideURL) {
 					gURLBar.value = OmnibarPlus.overrideURL;
-					OmnibarPlus.overrideURL = null;
 				}
+				OmnibarPlus.overrideURL = null;
 				
 				e.okToProceed = true;
 				return OmnibarPlus.fireOnSelect(e);
 			
-			default: 
+			default:
 				var ret = gURLBar._onKeyPress(e);
 				// Needs to be on a timer to correctly handle Ctrl+V (paste)
 				// Otherwise the paste would occur after this
@@ -352,9 +374,9 @@ var OmnibarPlus = {
 		}	
 	},
 	
-	fireOnSelect: function(param) {
+	fireOnSelect: function(e) {
 		// We need the enter key to always call it from our handler or it won't work right sometimes
-		if(param && param.type == 'keydown' && param.keyCode == param.DOM_VK_RETURN && !param.okToProceed) { return; }
+		if(e && e.type == 'keydown' && e.keyCode == e.DOM_VK_RETURN && !e.okToProceed) { return; }
 		
 		// We need to make sure the correct value is passed along
 		if(OmnibarPlus.richlistbox.currentIndex != -1) {
@@ -364,7 +386,7 @@ var OmnibarPlus = {
 		gURLBar.blur();
 		var opener = gBrowser.mCurrentBrowser;
 		
-		Omnibar._handleURLBarCommand(param);
+		Omnibar._handleURLBarCommand(e);
 		
 		// Attempt to set the correct values in the urlbars of both the opened browser and the opening browser
 		gURLBar.reset();
@@ -437,8 +459,7 @@ var OmnibarPlus = {
 	pasteAndGo: function(event) {
 		gURLBar.select();
 		goDoCommand('cmd_paste');
-		OmnibarPlus.richlistbox.currentIndex = -1;
-		OmnibarPlus.richlistbox.selectedIndex = -1;
+		OmnibarPlus.doIndexes();
 		OmnibarPlus.fireOnSelect(event);
 	},
 	
