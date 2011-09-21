@@ -8,10 +8,10 @@ var OmnibarPlusOptions = {
 		OmnibarPlusOptions.tree = document.getElementById('orderList');
 		OmnibarPlusOptions.list = OmnibarPlusOptions.tree.view;
 		OmnibarPlusOptions.organize = {
-			1: document.getElementById('extensions.omnibarplus.organize.1'),
-			2: document.getElementById('extensions.omnibarplus.organize.2'),
-			3: document.getElementById('extensions.omnibarplus.organize.3'),
-			4: document.getElementById('extensions.omnibarplus.organize.4')
+			1: document.getElementById('extensions.omnibarplus.organize1'),
+			2: document.getElementById('extensions.omnibarplus.organize2'),
+			3: document.getElementById('extensions.omnibarplus.organize3'),
+			4: document.getElementById('extensions.omnibarplus.organize4')
 		};
 		OmnibarPlusOptions.labels = {
 			EE: document.getElementById('hiddenOrderListLabel_EE').value,

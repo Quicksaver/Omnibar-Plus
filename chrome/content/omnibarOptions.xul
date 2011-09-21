@@ -17,10 +17,10 @@
 			<preference id="extensions.omnibarplus.animatedScheme" name="extensions.omnibarplus.animatedScheme" type="string" />
 			<preference id="extensions.omnibarplus.f6" name="extensions.omnibarplus.f6" type="bool" />
 			<preference id="extensions.omnibarplus.engineFocus" name="extensions.omnibarplus.engineFocus" type="bool" />
-			<preference id="extensions.omnibarplus.organize.1" name="extensions.omnibarplus.organize.1" type="string" />
-			<preference id="extensions.omnibarplus.organize.2" name="extensions.omnibarplus.organize.2" type="string" />
-			<preference id="extensions.omnibarplus.organize.3" name="extensions.omnibarplus.organize.3" type="string" />
-			<preference id="extensions.omnibarplus.organize.4" name="extensions.omnibarplus.organize.4" type="string" />
+			<preference id="extensions.omnibarplus.organize1" name="extensions.omnibarplus.organize1" type="string" />
+			<preference id="extensions.omnibarplus.organize2" name="extensions.omnibarplus.organize2" type="string" />
+			<preference id="extensions.omnibarplus.organize3" name="extensions.omnibarplus.organize3" type="string" />
+			<preference id="extensions.omnibarplus.organize4" name="extensions.omnibarplus.organize4" type="string" />
 		</preferences>
 		
 		<tabbox id="omnibarTabBox" flex="1">

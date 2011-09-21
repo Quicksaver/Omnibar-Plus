@@ -7,22 +7,8 @@ var OmnibarPlus = {
 	init: function() {
 		if(typeof(Omnibar) == 'undefined') { return; }
 		
-		OmnibarPlus.F6 = Application.prefs.get("extensions.omnibarplus.f6");
-		OmnibarPlus.middleClick = Application.prefs.get("extensions.omnibarplus.middleClick");
-		OmnibarPlus.organizePopup = Application.prefs.get("extensions.omnibarplus.organizePopup");
-		OmnibarPlus.animated = Application.prefs.get("extensions.omnibarplus.animated");
-		OmnibarPlus.animatedScheme = Application.prefs.get("extensions.omnibarplus.animatedScheme");
-		OmnibarPlus.engineFocus = Application.prefs.get("extensions.omnibarplus.engineFocus");
-		OmnibarPlus.popupStyle = Application.prefs.get("extensions.omnibar.popupstyle");
-		OmnibarPlus.organizeList = {
-			organize1: Application.prefs.get("extensions.omnibarplus.organize.1"),
-			organize2: Application.prefs.get("extensions.omnibarplus.organize.2"),
-			organize3: Application.prefs.get("extensions.omnibarplus.organize.3"),
-			organize4: Application.prefs.get("extensions.omnibarplus.organize.4")
-		};
-		
-		OmnibarPlus.agrenon = Application.prefs.get("extensions.omnibarplus.agrenon");
-		OmnibarPlus.smarterwiki = Application.prefs.get("extensions.omnibarplus.smarterwiki");
+		OmnibarPlus.prefAid.init(OmnibarPlus, 'omnibarplus', ['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4']);
+		OmnibarPlus.prefAid.init(OmnibarPlus, 'omnibar', ['popupstyle']);
 		
 		OmnibarPlus.organizing = false;
 		OmnibarPlus.willOrganize = false;
@@ -39,17 +25,17 @@ var OmnibarPlus = {
 		OmnibarPlus.richlistbox = OmnibarPlus.panel.richlistbox;
 		OmnibarPlus.richlist = OmnibarPlus.richlistbox.childNodes;
 		
-		OmnibarPlus.listenerAid.add(OmnibarPlus.F6, "change", OmnibarPlus.toggleF6);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.middleClick, "change", OmnibarPlus.toggleMiddleClick);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.organizePopup, "change", OmnibarPlus.toggleOrganize);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.animated, "change", OmnibarPlus.toggleAnimated);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.animatedScheme, "change", OmnibarPlus.toggleAnimated);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.engineFocus, "change", OmnibarPlus.toggleEngineFocus);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.popupStyle, "change", OmnibarPlus.toggleAnimated);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.organizeList.organize1, "change", OmnibarPlus.getTypes);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.organizeList.organize2, "change", OmnibarPlus.getTypes);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.organizeList.organize3, "change", OmnibarPlus.getTypes);
-		OmnibarPlus.listenerAid.add(OmnibarPlus.organizeList.organize4, "change", OmnibarPlus.getTypes);
+		OmnibarPlus.prefAid.listen('f6', OmnibarPlus.toggleF6);
+		OmnibarPlus.prefAid.listen('middleClick', OmnibarPlus.toggleMiddleClick);
+		OmnibarPlus.prefAid.listen('organizePopup', OmnibarPlus.toggleOrganize);
+		OmnibarPlus.prefAid.listen('animated', OmnibarPlus.toggleAnimated);
+		OmnibarPlus.prefAid.listen('animatedScheme', OmnibarPlus.toggleAnimated);
+		OmnibarPlus.prefAid.listen('engineFocus', OmnibarPlus.toggleEngineFocus);
+		OmnibarPlus.prefAid.listen('popupstyle', OmnibarPlus.toggleAnimated);
+		OmnibarPlus.prefAid.listen('organize1', OmnibarPlus.getTypes);
+		OmnibarPlus.prefAid.listen('organize2', OmnibarPlus.getTypes);
+		OmnibarPlus.prefAid.listen('organize3', OmnibarPlus.getTypes);
+		OmnibarPlus.prefAid.listen('organize4', OmnibarPlus.getTypes);
 		
 		// Grab types of entries to populate the organize list
 		// Also sets whether Peers/FastestFox is enabled
@@ -71,7 +57,7 @@ var OmnibarPlus = {
 	// Toggle middle click functionality
 	toggleMiddleClick: function() {
 		document.getElementById('omnibar-in-urlbar').removeAttribute('onclick'); // We need to remove this first
-		if(OmnibarPlus.middleClick.value) {
+		if(OmnibarPlus.prefAid.middleClick) {
 			OmnibarPlus.listenerAid.remove(document.getElementById('omnibar-in-urlbar'), 'click', Omnibar.onButtonClick, false);
 			OmnibarPlus.listenerAid.add(document.getElementById('omnibar-in-urlbar'), 'click', OmnibarPlus.onEngineClick, false);
 		}
@@ -83,7 +69,7 @@ var OmnibarPlus = {
 	
 	// Toggle Organize Functionality, we'll use a delay to let the popup fill up before organizing it
 	toggleOrganize: function() {
-		if(OmnibarPlus.organizePopup.value && !OmnibarPlus.organizing) {
+		if(OmnibarPlus.prefAid.organizePopup && !OmnibarPlus.organizing) {
 			//OmnibarPlus.listenerAid.add(OmnibarPlus.panel, 'popuphiding', OmnibarPlus.popupHiding, true);
 			gURLBar._onKeyPress = gURLBar.onKeyPress;
 			gURLBar.onKeyPress = function(aEvent) {
@@ -114,7 +100,7 @@ var OmnibarPlus = {
 			
 			OmnibarPlus.organizing = true;
 		} 
-		else if(!OmnibarPlus.organizePopup.value && OmnibarPlus.organizing) {
+		else if(!OmnibarPlus.prefAid.organizePopup && OmnibarPlus.organizing) {
 			// OmnibarPlus.listenerAid.remove(OmnibarPlus.panel, 'popuphiding', OmnibarPlus.popupHiding, true);
 			gURLBar.onKeyPress = gURLBar._onKeyPress;
 			
@@ -133,7 +119,7 @@ var OmnibarPlus = {
 	
 	// Toggle F6 functionality
 	toggleF6: function() {
-		if(OmnibarPlus.F6.value) {
+		if(OmnibarPlus.prefAid.f6) {
 			document.getElementById('key_omnibarplus_f6').removeAttribute('disabled');
 		} else {
 			document.getElementById('key_omnibarplus_f6').setAttribute('disabled', 'true');
@@ -142,8 +128,8 @@ var OmnibarPlus = {
 	
 	// Toggle animated effects for the suggestion list
 	toggleAnimated: function() {
-		if(OmnibarPlus.animated.value) {
-			OmnibarPlus.panel.setAttribute('animatedPopup', OmnibarPlus.animatedScheme.value);
+		if(OmnibarPlus.prefAid.animated) {
+			OmnibarPlus.panel.setAttribute('animatedPopup', OmnibarPlus.prefAid.animatedScheme);
 		} else {
 			OmnibarPlus.panel.removeAttribute('animatedPopup');
 		}
@@ -151,7 +137,7 @@ var OmnibarPlus = {
 	
 	// Toggles wether to focus the location bar when changing the search engine
 	toggleEngineFocus: function() {
-		if(OmnibarPlus.engineFocus.value) {
+		if(OmnibarPlus.prefAid.engineFocus) {
 			OmnibarPlus.engineName.addPropertyWatcher('value', openLocation);
 		} else {
 			OmnibarPlus.engineName.removePropertyWatcher('value', openLocation);
@@ -188,24 +174,24 @@ var OmnibarPlus = {
 		// 'omnibar' is for omnibar added search suggestions
 		// 'EE' is for everything else; 
 		OmnibarPlus.types = [
-			OmnibarPlus.organizeList.organize1.value,
-			OmnibarPlus.organizeList.organize2.value,
-			OmnibarPlus.organizeList.organize3.value,
-			OmnibarPlus.organizeList.organize4.value
+			OmnibarPlus.prefAid.organize1,
+			OmnibarPlus.prefAid.organize2,
+			OmnibarPlus.prefAid.organize3,
+			OmnibarPlus.prefAid.organize4
 		];
 		
 		// Remove entries that aren't needed as to reduce the number of loops
 		if(typeof(agrenonLoader) == 'undefined') { 
 			OmnibarPlus.removeEntry('agrenon');
-			OmnibarPlus.agrenon.value = false;
+			OmnibarPlus.prefAid.agrenon = false;
 		} else {
-			OmnibarPlus.agrenon.value = true;
+			OmnibarPlus.prefAid.agrenon = true;
 		}
 		if(typeof(SmarterWiki) == 'undefined') { 
 			OmnibarPlus.removeEntry('smarterwiki'); 
-			OmnibarPlus.smarterwiki.value = false;
+			OmnibarPlus.prefAid.smarterwiki = false;
 		} else {
-			OmnibarPlus.smarterwiki.value = true;
+			OmnibarPlus.prefAid.smarterwiki = true;
 		}
 	},
 	
