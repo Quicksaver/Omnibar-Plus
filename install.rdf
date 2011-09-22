@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
-  <Description about="urn:mozilla:install-manifest">
-    <em:id>omnibarplus@quicksaver</em:id>
-    <em:type>2</em:type>
-    <em:name>Omnibar Plus</em:name>
-    <em:version>0.4.4</em:version>
-    <em:creator>Quicksaver</em:creator>
-    <em:description>Extra functionality for your Omnibar.</em:description>
-    <em:iconURL>chrome://omnibarplus/skin/icon.png</em:iconURL>
-	<em:homepageURL>https://addons.mozilla.org/en-US/firefox/addon/omnibar-plus/</em:homepageURL>
-	<em:targetApplication>
-      <Description>
-        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>4.0</em:minVersion>
-        <em:maxVersion>9.0a1</em:maxVersion>
-      </Description>
-    </em:targetApplication>
-  </Description>
+	<Description about="urn:mozilla:install-manifest">
+		<em:id>omnibarplus@quicksaver</em:id>
+		<em:type>2</em:type>
+		<em:version>0.4.4</em:version>
+		<em:creator>Quicksaver</em:creator>
+		<em:iconURL>chrome://omnibarplus/skin/icon.png</em:iconURL>
+		<em:homepageURL>https://addons.mozilla.org/en-US/firefox/addon/omnibar-plus/</em:homepageURL>
+		
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>4.0</em:minVersion>
+				<em:maxVersion>9.0a1</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
+		<em:localized>
+			<Description>
+				<em:locale>en-US</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>Extra functionality for your Omnibar.</em:description>
+			</Description>
+		</em:localized>
+		<em:localized>
+			<Description>
+				<em:locale>pt-PT</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>Mais funcionalidade na sua Omnibar.</em:description>
+			</Description>
+		</em:localized>
+	</Description>
 </RDF>

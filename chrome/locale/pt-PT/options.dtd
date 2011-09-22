@@ -1,0 +1,27 @@
+<!ENTITY omnibarPlusorganizePopup.label "Organizar a lista de sugestões">
+<!ENTITY omnibarPlusF6.label "F6 foca a barra de endereço">
+<!ENTITY omnibarPlusengineFocus.label "Focar a barra de endereço ao alterar o motor de busca">
+
+<!ENTITY omnibarPlusanimated.label "Estilo compacto e animado, feito por frog">
+<!ENTITY omnibarPlusanimatedScheme.label "Esquema de cores: ">
+<!ENTITY omnibarPlusanimatedScheme.sky "Céu">
+<!ENTITY omnibarPlusanimatedScheme.ruby "Rubi">
+<!ENTITY omnibarPlusanimatedScheme.taupe "Cinza-acastanhado">
+<!ENTITY omnibarPlusanimatedScheme.grass "Relva">
+<!ENTITY omnibarPlusanimatedScheme.sea "Mar">
+<!ENTITY omnibarPlusanimatedScheme.lavender "Alfazema">
+<!ENTITY omnibarPlusanimatedScheme.bubblegum "Pastilha elástica">
+
+<!ENTITY omnibarPlusmain.label "Omnibar">
+<!ENTITY omnibarPlusplus.label "Plus">
+
+<!ENTITY omnibarPlussuggestionList.label "Painel de sugestões">
+<!ENTITY omnibarPlusfunctionality.label "Atalhos">
+
+<!ENTITY omnibarPlusorganizeList.EE "Restantes (favoritos, histórico, etc...)">
+<!ENTITY omnibarPlusorganizeList.agrenon "Sugestões Peers">
+<!ENTITY omnibarPlusorganizeList.smarterwiki "Sugestões FastestFox">
+<!ENTITY omnibarPlusorganizeList.omnibar "Sugestões de procura Omnibar">
+
+<!ENTITY omnibarPlusmiddleClick.mac "Clique com o botão do meio ou Comando/Opção + Clique esquerdo no motor de procura abre a sua página principal">
+<!ENTITY omnibarPlusmiddleClick.win "Clique com o botão do meio ou Ctrl/Alt + Clique esquerdo no motor de procura abre a sua página principal">
