@@ -2,8 +2,6 @@
 <!DOCTYPE window [
   <!ENTITY % optionsDTD SYSTEM "chrome://omnibarplus/locale/options.dtd">
   %optionsDTD;
-  <!ENTITY % platformDTD SYSTEM "chrome://omnibarplus-os/locale/options.dtd">
-  %platformDTD;
 ]>
 
 <overlay id="OmnibarPlus-options-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -100,7 +98,7 @@
 					<groupbox align="start">
 						<caption label="&omnibarPlusfunctionality.label;"/>
 						<checkbox label="&omnibarPlusF6.label;" preference="extensions.omnibarplus.f6"/>
-						<checkbox label="&omnibarPlusmiddleClick.label;" preference="extensions.omnibarplus.middleClick"/>
+						<checkbox id="middleClickCheckbox" label="&omnibarPlusmiddleClick.win;" preference="extensions.omnibarplus.middleClick"/>
 						<checkbox label="&omnibarPlusengineFocus.label;" preference="extensions.omnibarplus.engineFocus"/>
 					</groupbox>
 				</tabpanel>

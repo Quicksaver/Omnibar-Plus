@@ -1,13 +1,13 @@
 content   omnibarplus                   chrome/content/
 skin      omnibarplus     classic/1.0   chrome/skin/
 
-locale    omnibarplus     en-US         chrome/locale/en-US/common/
-locale    omnibarplus-os  en-US         chrome/locale/en-US/win/
-locale    omnibarplus-os  en-US         chrome/locale/en-US/mac/     os=Darwin
+locale    omnibarplus     en-US         chrome/locale/en-US/
 
 overlay   chrome://browser/content/browser.xul   chrome://omnibarplus/content/overlay.xul
 overlay   chrome://omnibar/content/options.xul   chrome://omnibarplus/content/omnibarOptions.xul
 style     chrome://omnibar/content/options.xul   chrome://omnibarplus/skin/options.css
+
+overlay   chrome://omnibarplus/content/omnibarOptions.xul   chrome://omnibarplus/content/omnibarOptionsMac.xul   os=Darwin
 
 style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/autocompletepopup.css
 style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/sky.css

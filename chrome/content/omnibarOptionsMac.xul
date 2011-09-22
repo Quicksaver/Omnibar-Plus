@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE window [
+  <!ENTITY % optionsDTD SYSTEM "chrome://omnibarplus/locale/options.dtd">
+  %optionsDTD;
+]>
+
+<overlay id="OmnibarPlus-options-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<checkbox id="middleClickCheckbox" label="&omnibarPlusmiddleClick.mac;"/>
+</overlay>
