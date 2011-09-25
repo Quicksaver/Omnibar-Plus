@@ -12,6 +12,7 @@ var OmnibarPlus = {
 		
 		OmnibarPlus.organizing = false;
 		OmnibarPlus.willOrganize = false;
+		OmnibarPlus.organized = false;
 		
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
@@ -82,6 +83,7 @@ var OmnibarPlus = {
 			LocationBarHelpers.__searchBegin = LocationBarHelpers._searchBegin;
 			LocationBarHelpers._searchBegin = function() {
 				OmnibarPlus.willOrganize = false;
+				OmnibarPlus.organized = false;
 				OmnibarPlus.doIndexes();
 				LocationBarHelpers.__searchBegin();
 			};
@@ -240,9 +242,8 @@ var OmnibarPlus = {
 		OmnibarPlus.doIndexes(originalSelectedIndex, originalCurrentIndex);
 		
 		// Speak words auto select first result compatibility
-		if(originalSelectedIndex >= 0) {
-			OmnibarPlus.overrideURL = OmnibarPlus.richlist[originalSelectedIndex].getAttribute('url');
-		}
+		OmnibarPlus.overrideURL = (originalSelectedIndex >= 0) ? OmnibarPlus.richlist[originalSelectedIndex].getAttribute('url') : gURLBar.value;
+		OmnibarPlus.organized = true;
 	},
 	
 	getEntryType: function(aType) {
@@ -275,8 +276,10 @@ var OmnibarPlus = {
 		if (e.target.localName != "textbox") { return false; }
 		
 		var key = e.keyCode;
+		var tab = false;
 		if(key == e.DOM_VK_TAB && gURLBar.tabScrolling && gURLBar.popup.mPopupOpen) {
 			key = (e.shiftKey) ? e.DOM_VK_UP : e.DOM_VK_DOWN;
+			tab = true;
 		}
    		
    		switch(key) {
@@ -323,15 +326,22 @@ var OmnibarPlus = {
 				else if(OmnibarPlus.richlist[0]) {
 					gURLBar.value = OmnibarPlus.richlist[0].getAttribute('text');
 				}
+				
+				// just in case the user is a really really fast typer
+				OmnibarPlus.timerAid.cancel('key');
+				OmnibarPlus.timerAid.cancel('paste');
+				
 				OmnibarPlus.overrideURL = gURLBar.value;
 				gURLBar.focus();
 				
 				return true;
 			
 			case e.DOM_VK_RETURN:
-				OmnibarPlus.doIndexes();
+				if(OmnibarPlus.organized) {
+					OmnibarPlus.doIndexes();
+				}
 				
-				if(OmnibarPlus.overrideURL) {
+				if(!OmnibarPlus.timerAid.cancel('key') && !OmnibarPlus.timerAid.cancel('paste') && OmnibarPlus.overrideURL) {
 					gURLBar.value = OmnibarPlus.overrideURL;
 				}
 				OmnibarPlus.overrideURL = null;
@@ -340,7 +350,9 @@ var OmnibarPlus = {
 				return OmnibarPlus.fireOnSelect(e);
 			
 			default:
+				OmnibarPlus.doIndexes();
 				var ret = gURLBar._onKeyPress(e);
+				
 				// Needs to be on a timer to correctly handle Ctrl+V (paste)
 				// Otherwise the paste would occur after this
 				OmnibarPlus.timerAid.init('key', function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10);
@@ -364,9 +376,13 @@ var OmnibarPlus = {
 		// We need the enter key to always call it from our handler or it won't work right sometimes
 		if(e && e.type == 'keydown' && e.keyCode == e.DOM_VK_RETURN && !e.okToProceed) { return; }
 		
-		// We need to make sure the correct value is passed along
+		// We need to make sure the correct value is passed along when clicking with the mouse
 		if(OmnibarPlus.richlistbox.currentIndex != -1) {
 			gURLBar.value = OmnibarPlus.richlist[OmnibarPlus.richlistbox.currentIndex].getAttribute('url');
+		}
+		// in case it hasn't organized yet and speak words is on or the user has selected something
+		else if(OmnibarPlus.richlistbox.selectedIndex != -1) {
+			gURLBar.value = OmnibarPlus.richlist[OmnibarPlus.richlistbox.selectedIndex].getAttribute('url');
 		}
 		
 		gURLBar.blur();
@@ -388,6 +404,7 @@ var OmnibarPlus = {
 			gBrowser.duplicateTab(gBrowser.mCurrentTab);
 		}
 		else if(aEvent.button != 2) {
+			OmnibarPlus.doIndexes();
 			OmnibarPlus.fireOnSelect(aEvent);
 		}
 	},
@@ -452,6 +469,7 @@ var OmnibarPlus = {
 	paste: function() {
 		// Needs to be on a timer to correctly handle paste
 		// Otherwise the paste would occur after this
+		OmnibarPlus.doIndexes();
 		OmnibarPlus.timerAid.init('paste', function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10);
 	},	
 		
