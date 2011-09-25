@@ -297,6 +297,13 @@ var OmnibarPlus = {
 				if (e.defaultPrevented || e.getPreventDefault()) { return false; } // can't put this before switch or enter won't be triggered
 				if (gURLBar.disableKeyNavigation || e.ctrlKey || e.altKey) { return false; }
 				
+				// There's something wrong with using tab, it focuses other elements
+				// this cancels that action allowing to surf through the popup
+				if(tab) {
+					e.preventDefault();
+					e.stopPropagation();
+				}
+				
 				var currentIndex = OmnibarPlus.richlistbox.currentIndex;
 				switch(key) {
 					case e.DOM_VK_PAGE_UP:
