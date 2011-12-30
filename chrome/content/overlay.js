@@ -13,6 +13,7 @@ var OmnibarPlus = {
 		OmnibarPlus.organizing = false;
 		OmnibarPlus.willOrganize = false;
 		OmnibarPlus.organized = false;
+		OmnibarPlus.escaped = false;
 		OmnibarPlus.selectedSuggestion = false;
 		OmnibarPlus.LocationBarHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
 		
@@ -168,6 +169,7 @@ var OmnibarPlus = {
 			OmnibarPlus.willOrganize = false;
 			OmnibarPlus.organized = false;
 			OmnibarPlus.selectedSuggestion = false;
+			OmnibarPlus.escaped = false;
 			OmnibarPlus.doIndexes();
 		}
 		if(OmnibarPlus.LocationBarHelpers) {
@@ -185,17 +187,11 @@ var OmnibarPlus = {
 	
 	// Handler for when the autocomplete pops up
 	popupshowing: function() {
+		if(OmnibarPlus.escaped) { return false; }
 		OmnibarPlus.willOrganize = true;
 		OmnibarPlus.timerAid.init('popupshowing', OmnibarPlus.organize, 100);
 		return true;
 	},
-	
-	// Handler for when the autocomplete closes
-	// I'm not implementing this one yet, I want to see how it does without it for now
-	// leaving it here so I don't forget about it
-	/*popuphiding: function() {
-		OmnibarPlus.timerAid.init('popuphiding', function() { OmnibarPlus.overrideURL = gURLBar.value; }, 100);
-	},*/
 	
 	// This method simply cleans the selection in the autocomplete popup
 	doIndexes: function(selected, current) {
@@ -409,6 +405,11 @@ var OmnibarPlus = {
 				
 				e.okToProceed = true;
 				return OmnibarPlus.fireOnSelect(e);
+			
+			case e.DOM_VK_ESCAPE:
+				OmnibarPlus.escaped = true;
+				OmnibarPlus.overrideURL = gURLBar.value;
+				return gURLBar._onKeyPress(e);
 			
 			default:
 				OmnibarPlus.doIndexes();
