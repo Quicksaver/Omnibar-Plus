@@ -80,18 +80,30 @@ var OmnibarPlus = {
 			OmnibarPlus.checkOnHandlers();
 			OmnibarPlus.fixContextMenu(true);
 			
-			LocationBarHelpers.__searchBegin = LocationBarHelpers._searchBegin;
+			if(typeof(LocationBarHelpers) == 'undefined') {
+				LocationBarHelpers = {};
+				gURLBar.setAttribute('onsearchbegin', 'LocationBarHelpers._searchBegin();');
+				gURLBar.setAttribute('onsearchcomplete', 'LocationBarHelpers._searchComplete();');
+			}
+			else {
+				LocationBarHelpers.__searchBegin = LocationBarHelpers._searchBegin;
+				LocationBarHelpers.__searchComplete = LocationBarHelpers._searchComplete;
+			}
+			
 			LocationBarHelpers._searchBegin = function() {
 				OmnibarPlus.willOrganize = false;
 				OmnibarPlus.organized = false;
 				OmnibarPlus.doIndexes();
-				LocationBarHelpers.__searchBegin();
+				if(LocationBarHelpers.__searchBegin) {
+					LocationBarHelpers.__searchBegin();
+				}
 			};
-			
-			LocationBarHelpers.__searchComplete = LocationBarHelpers._searchComplete;	
+				
 			LocationBarHelpers._searchComplete = function() {
 				OmnibarPlus.popupshowing();
-				LocationBarHelpers.__searchComplete();
+				if(LocationBarHelpers.__searchComplete) {
+					LocationBarHelpers.__searchComplete();
+				}
 			};
 			
 			gURLBar._appendChild = gURLBar.appendChild;
@@ -112,7 +124,14 @@ var OmnibarPlus = {
 			
 			OmnibarPlus.fixContextMenu(false);
 			
-			LocationBarHelpers._searchComplete = LocationBarHelpers.__searchComplete;
+			if(LocationBarHelpers) {
+				if(LocationBarHelpers.__searchBegin) {
+					LocationBarHelpers._searchBegin = LocationBarHelpers.__searchBegin;
+				}
+				if(LocationBarHelpers.__searchComplete) {
+					LocationBarHelpers._searchComplete = LocationBarHelpers.__searchComplete;
+				}
+			}
 			gURLBar.appendChild = gURLBar._appendChild;
 			
 			OmnibarPlus.organizing = false;
