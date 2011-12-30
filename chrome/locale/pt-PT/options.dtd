@@ -1,4 +1,5 @@
 <!ENTITY omnibarPlusorganizePopup.label "Organizar a lista de sugestões">
+<!ENTITY omnibarPlusautoSelect.label "Seleccionar a primeira sugestão automaticamente">
 <!ENTITY omnibarPlusF6.label "F6 foca a barra de endereço">
 <!ENTITY omnibarPlusengineFocus.label "Focar a barra de endereço ao alterar o motor de busca">
 
