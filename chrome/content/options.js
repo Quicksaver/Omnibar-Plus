@@ -69,6 +69,10 @@ var OmnibarPlusOptions = {
 		
 		if(!o) {
 			document.getElementById('orderList').view.selection.clearSelection();
+			document.getElementById('autoSelectCheckbox').setAttribute('disabled', 'true');
+		}
+		else {
+			document.getElementById('autoSelectCheckbox').removeAttribute('disabled');
 		}
 	},
 	

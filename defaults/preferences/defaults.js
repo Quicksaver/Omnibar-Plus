@@ -10,3 +10,4 @@ pref("extensions.omnibarplus.organize3", 'smarterwiki');
 pref("extensions.omnibarplus.organize4", 'omnibar');
 pref("extensions.omnibarplus.agrenon", false);
 pref("extensions.omnibarplus.smarterwiki", false);
+pref("extensions.omnibarplus.autoSelect", true);

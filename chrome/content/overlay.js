@@ -7,12 +7,13 @@ var OmnibarPlus = {
 	init: function() {
 		if(typeof(Omnibar) == 'undefined') { return; }
 		
-		OmnibarPlus.prefAid.init(OmnibarPlus, 'omnibarplus', ['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4']);
+		OmnibarPlus.prefAid.init(OmnibarPlus, 'omnibarplus', ['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
 		OmnibarPlus.prefAid.init(OmnibarPlus, 'omnibar', ['popupstyle']);
 		
 		OmnibarPlus.organizing = false;
 		OmnibarPlus.willOrganize = false;
 		OmnibarPlus.organized = false;
+		OmnibarPlus.selectedSuggestion = false;
 		
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
@@ -93,12 +94,13 @@ var OmnibarPlus = {
 			LocationBarHelpers._searchBegin = function() {
 				OmnibarPlus.willOrganize = false;
 				OmnibarPlus.organized = false;
+				OmnibarPlus.selectedSuggestion = false;
 				OmnibarPlus.doIndexes();
 				if(LocationBarHelpers.__searchBegin) {
 					LocationBarHelpers.__searchBegin();
 				}
 			};
-				
+			
 			LocationBarHelpers._searchComplete = function() {
 				OmnibarPlus.popupshowing();
 				if(LocationBarHelpers.__searchComplete) {
@@ -111,6 +113,30 @@ var OmnibarPlus = {
 				if(OmnibarPlus.willOrganize) { OmnibarPlus.popupshowing(); }
 				return gURLBar._appendChild(aNode);
 			}
+			
+			// For the auto-select the first result feature
+			// Basically a copy/paste from Speak Words equivalent functionality
+			gURLBar.__defineGetter__("willHandle", function() {
+				// Potentially it's a url if there's no spaces
+				var search = this.controller.searchString.trim();
+				if (search.match(/ /) == null) {
+					try {
+						// Quit early if the input is already a URI
+						return Services.io.newURI(gURLBar.value, null, null);
+					}
+					catch(ex) {}
+					
+					try {
+						// Quit early if the input is domain-like (e.g., site.com/page)
+						return Cc["@mozilla.org/network/effective-tld-service;1"].getService(Ci.nsIEffectiveTLDService).getBaseDomainFromHost(gURLBar.value);
+					}
+					catch(ex) {}
+				}
+				
+				// Check if there's an search engine registered for the first keyword
+				var keyword = search.split(/\s+/)[0];
+				return Services.search.getEngineByAlias(keyword);
+			});
 			
 			OmnibarPlus.organizing = true;
 		} 
@@ -252,15 +278,31 @@ var OmnibarPlus = {
 			}
 		}
 		
-		if(originalSelectedIndex >= 0 && (originalSelectedIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalSelectedIndex]) ) {
-			originalSelectedIndex = -1;
+		// Speak words auto select first result feature is overriden by ours
+		if(originalSelectedIndex >= 0) {
+			if(originalSelectedIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalSelectedIndex]) {
+				originalSelectedIndex = -1;
+			}
+			else if(!OmnibarPlus.prefAid.autoSelect && !OmnibarPlus.selectedSuggestion) {
+				originalSelectedIndex = -1;
+			}
 		}
-		if(originalCurrentIndex >= 0 && (originalCurrentIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalCurrentIndex]) ) {
-			originalCurrentIndex = -1;
+		if(originalSelectedIndex == -1 && OmnibarPlus.prefAid.autoSelect && OmnibarPlus.richlist.length > 0) {
+			originalSelectedIndex = 0;
+		}
+		if(originalCurrentIndex >= 0) {
+			if(originalCurrentIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalCurrentIndex]) {
+				originalCurrentIndex = -1;
+			}
+			else if(!OmnibarPlus.prefAid.autoSelect && !OmnibarPlus.selectedSuggestion) {
+				originalCurrentIndex = -1;
+			}
+		}
+		if(originalCurrentIndex == -1 && OmnibarPlus.prefAid.autoSelect && OmnibarPlus.richlist.length > 0) {
+			originalCurrentIndex = 0;
 		}
 		OmnibarPlus.doIndexes(originalSelectedIndex, originalCurrentIndex);
 		
-		// Speak words auto select first result compatibility
 		OmnibarPlus.overrideURL = (originalSelectedIndex >= 0) ? OmnibarPlus.richlist[originalSelectedIndex].getAttribute('url') : gURLBar.value;
 		OmnibarPlus.organized = true;
 	},
@@ -345,6 +387,7 @@ var OmnibarPlus = {
 				}
 				
 				OmnibarPlus.doIndexes(currentIndex, currentIndex);
+				OmnibarPlus.selectedSuggestion = true;
 				
 				if(currentIndex > -1 && OmnibarPlus.richlist[currentIndex] && OmnibarPlus.richlist[currentIndex].getAttribute('url')) {
 					gURLBar.value = OmnibarPlus.richlist[currentIndex].getAttribute('url');

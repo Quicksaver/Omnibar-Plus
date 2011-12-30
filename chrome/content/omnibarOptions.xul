@@ -19,6 +19,7 @@
 			<preference id="extensions.omnibarplus.organize2" name="extensions.omnibarplus.organize2" type="string" />
 			<preference id="extensions.omnibarplus.organize3" name="extensions.omnibarplus.organize3" type="string" />
 			<preference id="extensions.omnibarplus.organize4" name="extensions.omnibarplus.organize4" type="string" />
+			<preference id="extensions.omnibarplus.autoSelect" name="extensions.omnibarplus.autoSelect" type="bool" />
 		</preferences>
 		
 		<tabbox id="omnibarTabBox" flex="1">
@@ -54,7 +55,7 @@
 								</menulist>
 							</hbox>
 						</groupbox>
-						<groupbox align="center">
+						<groupbox align="start">
 							<caption><checkbox id="organizeCheckbox" 
 								label="&omnibarPlusorganizePopup.label;" 
 								preference="extensions.omnibarplus.organizePopup"
@@ -93,6 +94,7 @@
 									<button id="ListDownButton" class="organize" oncommand="OmnibarPlusOptions.moveListRow(true);"/>
 								</vbox>
 							</hbox>
+							<checkbox id="autoSelectCheckbox" label="&omnibarPlusautoSelect.label;" preference="extensions.omnibarplus.autoSelect"/>
 						</groupbox>
 					</groupbox>
 					<groupbox align="start">
