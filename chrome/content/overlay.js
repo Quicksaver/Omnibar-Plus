@@ -14,6 +14,7 @@ var OmnibarPlus = {
 		OmnibarPlus.willOrganize = false;
 		OmnibarPlus.organized = false;
 		OmnibarPlus.selectedSuggestion = false;
+		OmnibarPlus.LocationBarHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
 		
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
@@ -71,6 +72,11 @@ var OmnibarPlus = {
 	
 	// Toggle Organize Functionality, we'll use a delay to let the popup fill up before organizing it
 	toggleOrganize: function() {
+		// Compatibility with latest versions of firefox (aurora FF11 as far as I can tell doesn't have LocationBarHelpers anymore)
+		// Setting these always, the switch On/Off are inside the functions themselves
+		gURLBar.setAttribute('onsearchbegin', 'OmnibarPlus.searchBegin();');
+		gURLBar.setAttribute('onsearchcomplete', 'OmnibarPlus.searchComplete();');
+		
 		if(OmnibarPlus.prefAid.organizePopup && !OmnibarPlus.organizing) {
 			//OmnibarPlus.listenerAid.add(OmnibarPlus.panel, 'popuphiding', OmnibarPlus.popupHiding, true);
 			gURLBar._onKeyPress = gURLBar.onKeyPress;
@@ -80,33 +86,6 @@ var OmnibarPlus = {
 			
 			OmnibarPlus.checkOnHandlers();
 			OmnibarPlus.fixContextMenu(true);
-			
-			if(typeof(LocationBarHelpers) == 'undefined') {
-				LocationBarHelpers = {};
-				gURLBar.setAttribute('onsearchbegin', 'LocationBarHelpers._searchBegin();');
-				gURLBar.setAttribute('onsearchcomplete', 'LocationBarHelpers._searchComplete();');
-			}
-			else {
-				LocationBarHelpers.__searchBegin = LocationBarHelpers._searchBegin;
-				LocationBarHelpers.__searchComplete = LocationBarHelpers._searchComplete;
-			}
-			
-			LocationBarHelpers._searchBegin = function() {
-				OmnibarPlus.willOrganize = false;
-				OmnibarPlus.organized = false;
-				OmnibarPlus.selectedSuggestion = false;
-				OmnibarPlus.doIndexes();
-				if(LocationBarHelpers.__searchBegin) {
-					LocationBarHelpers.__searchBegin();
-				}
-			};
-			
-			LocationBarHelpers._searchComplete = function() {
-				OmnibarPlus.popupshowing();
-				if(LocationBarHelpers.__searchComplete) {
-					LocationBarHelpers.__searchComplete();
-				}
-			};
 			
 			gURLBar._appendChild = gURLBar.appendChild;
 			gURLBar.appendChild = function(aNode) {
@@ -150,14 +129,6 @@ var OmnibarPlus = {
 			
 			OmnibarPlus.fixContextMenu(false);
 			
-			if(LocationBarHelpers) {
-				if(LocationBarHelpers.__searchBegin) {
-					LocationBarHelpers._searchBegin = LocationBarHelpers.__searchBegin;
-				}
-				if(LocationBarHelpers.__searchComplete) {
-					LocationBarHelpers._searchComplete = LocationBarHelpers.__searchComplete;
-				}
-			}
 			gURLBar.appendChild = gURLBar._appendChild;
 			
 			OmnibarPlus.organizing = false;
@@ -188,6 +159,27 @@ var OmnibarPlus = {
 			OmnibarPlus.engineName.addPropertyWatcher('value', openLocation);
 		} else {
 			OmnibarPlus.engineName.removePropertyWatcher('value', openLocation);
+		}
+	},
+	
+	// Called when a search begins and ends in the location bar
+	searchBegin: function() {
+		if(OmnibarPlus.prefAid.organizePopup) {
+			OmnibarPlus.willOrganize = false;
+			OmnibarPlus.organized = false;
+			OmnibarPlus.selectedSuggestion = false;
+			OmnibarPlus.doIndexes();
+		}
+		if(OmnibarPlus.LocationBarHelpers) {
+			LocationBarHelpers._searchBegin();
+		}
+	},
+	searchComplete: function() {
+		if(OmnibarPlus.prefAid.organizePopup) {
+			OmnibarPlus.popupshowing();
+		}
+		if(OmnibarPlus.LocationBarHelpers) {
+			LocationBarHelpers._searchComplete();
 		}
 	},
 	
