@@ -4,6 +4,7 @@ skin      omnibarplus     classic/1.0   chrome/skin/
 locale    omnibarplus     en-US         chrome/locale/en-US/
 locale    omnibarplus     pt-PT         chrome/locale/pt-PT/
 locale    omnibarplus     sv-SE         chrome/locale/sv-SE/
+locale    omnibarplus     zh-CN         chrome/locale/zh-CN/
 
 overlay   chrome://browser/content/browser.xul   chrome://omnibarplus/content/overlay.xul
 overlay   chrome://omnibar/content/options.xul   chrome://omnibarplus/content/omnibarOptions.xul

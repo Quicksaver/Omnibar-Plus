@@ -39,5 +39,13 @@
 				<em:translator>Mikael Hiort af Ornäs</em:translator>
 			</Description>
 		</em:localized>
+		<em:localized>
+			<Description>
+				<em:locale>zh-CN</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>为Omnibar添加额外的功能</em:description>
+				<em:translator>http://t.qq.com/HeartBlade</em:translator>
+			</Description>
+		</em:localized>
 	</Description>
 </RDF>

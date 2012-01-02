@@ -1,0 +1,23 @@
+<!ENTITY omnibarPlusorganizePopup.label "组织建议列表">
+<!ENTITY omnibarPlusautoSelect.label "- 自动选中列表中的首个建议">
+<!ENTITY omnibarPlusF6.label "按F6聚焦到地址栏">
+<!ENTITY omnibarPlusengineFocus.label "更改搜索引擎后聚焦到地址栏">
+<!ENTITY omnibarPlusanimated.label "合并/动态样式（由frog提供）">
+<!ENTITY omnibarPlusanimatedScheme.label "配色方案：">
+<!ENTITY omnibarPlusanimatedScheme.sky "天空">
+<!ENTITY omnibarPlusanimatedScheme.ruby "红宝石">
+<!ENTITY omnibarPlusanimatedScheme.taupe "灰褐色">
+<!ENTITY omnibarPlusanimatedScheme.grass "草地">
+<!ENTITY omnibarPlusanimatedScheme.sea "海洋">
+<!ENTITY omnibarPlusanimatedScheme.lavender "薰衣草">
+<!ENTITY omnibarPlusanimatedScheme.bubblegum "泡泡糖">
+<!ENTITY omnibarPlusmain.label "Omnibar">
+<!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY omnibarPlussuggestionList.label "弹出建议表单">
+<!ENTITY omnibarPlusfunctionality.label "捷径">
+<!ENTITY omnibarPlusorganizeList.EE "其它（书签，历史，等等）">
+<!ENTITY omnibarPlusorganizeList.agrenon "Peers建议">
+<!ENTITY omnibarPlusorganizeList.smarterwiki "FastestFox建议">
+<!ENTITY omnibarPlusorganizeList.omnibar "Omnibar搜索建议">
+<!ENTITY omnibarPlusmiddleClick.mac "中键点击或Command/Option + 左键点击搜索引擎打开其主页">
+<!ENTITY omnibarPlusmiddleClick.win "中键点击或CTRL/ALT + 左键点击搜索引擎打开其主页">
