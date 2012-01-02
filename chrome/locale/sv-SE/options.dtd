@@ -1,0 +1,23 @@
+<!ENTITY omnibarPlusorganizePopup.label "Organisera förslagslistan">
+<!ENTITY omnibarPlusautoSelect.label "Markera det första förslaget i listan automatiskt">
+<!ENTITY omnibarPlusF6.label "Fokusera adressfältet genom att trycka på F6">
+<!ENTITY omnibarPlusengineFocus.label "Fokusera adressfältet efter byte av sökmotor">
+<!ENTITY omnibarPlusanimated.label "Kompakt, animerat format skapat av frog">
+<!ENTITY omnibarPlusanimatedScheme.label "Färgschema: ">
+<!ENTITY omnibarPlusanimatedScheme.sky "Himmel">
+<!ENTITY omnibarPlusanimatedScheme.ruby "Rubin">
+<!ENTITY omnibarPlusanimatedScheme.taupe "Mullvad">
+<!ENTITY omnibarPlusanimatedScheme.grass "Gräs">
+<!ENTITY omnibarPlusanimatedScheme.sea "Hav">
+<!ENTITY omnibarPlusanimatedScheme.lavender "Lavendel">
+<!ENTITY omnibarPlusanimatedScheme.bubblegum "Tuggummi">
+<!ENTITY omnibarPlusmain.label "Omnibar">
+<!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY omnibarPlussuggestionList.label "Förslagsruta">
+<!ENTITY omnibarPlusfunctionality.label "Kortkommandon">
+<!ENTITY omnibarPlusorganizeList.EE "Allting annat (bokmärken, historik, o.s.v.)">
+<!ENTITY omnibarPlusorganizeList.agrenon "Förslag från Peers">
+<!ENTITY omnibarPlusorganizeList.smarterwiki "Förslag från FastestFox">
+<!ENTITY omnibarPlusorganizeList.omnibar "Sökförslag från Omnibar">
+<!ENTITY omnibarPlusmiddleClick.mac "Mittenklick eller Cmd/Option+Vänsterklick på sökmotor öppnar dess webbplats">
+<!ENTITY omnibarPlusmiddleClick.win "Mittenklick eller Ctrl/Alt+Vänsterklick på sökmotor öppnar dess webbplats">

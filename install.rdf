@@ -31,5 +31,13 @@
 				<em:translator>Quicksaver</em:translator>
 			</Description>
 		</em:localized>
+		<em:localized>
+			<Description>
+				<em:locale>sv-SE</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>Extrafunktioner för tillägget Omnibar.</em:description>
+				<em:translator>Mikael Hiort af Ornäs</em:translator>
+			</Description>
+		</em:localized>
 	</Description>
 </RDF>
