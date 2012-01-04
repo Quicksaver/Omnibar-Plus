@@ -1,0 +1,23 @@
+<!ENTITY omnibarPlusorganizePopup.label "סדר רשימה הצעה">
+<!ENTITY omnibarPlusautoSelect.label "בחירה אוטומטית בהצעה הראשונה ברשימה">
+<!ENTITY omnibarPlusF6.label "התמקד בשורת המיקום של כתובת האינטרנט על ידי לחיצה על F6">
+<!ENTITY omnibarPlusengineFocus.label "התמקד בשורת המיקום של כתובת האינטרנט לאחר שינוי מנוע החיפוש">
+<!ENTITY omnibarPlusanimated.label "סגנון קומפקטי, אנימציה על ידי פרוג">
+<!ENTITY omnibarPlusanimatedScheme.label "תרשים צבע:">
+<!ENTITY omnibarPlusanimatedScheme.sky "שמים">
+<!ENTITY omnibarPlusanimatedScheme.ruby "אודם">
+<!ENTITY omnibarPlusanimatedScheme.taupe "אפור חום">
+<!ENTITY omnibarPlusanimatedScheme.grass "ירוק דשא">
+<!ENTITY omnibarPlusanimatedScheme.sea "ים">
+<!ENTITY omnibarPlusanimatedScheme.lavender "אזוביון">
+<!ENTITY omnibarPlusanimatedScheme.bubblegum "באבל">
+<!ENTITY omnibarPlusmain.label "Omnibar">
+<!ENTITY omnibarPlusplus.label "פלוס">
+<!ENTITY omnibarPlussuggestionList.label "הצעות מוקפצות">
+<!ENTITY omnibarPlusfunctionality.label "קיצורי דרך">
+<!ENTITY omnibarPlusorganizeList.EE "כל השאר (סימניות, היסטוריה, וכו \'..)">
+<!ENTITY omnibarPlusorganizeList.agrenon "Peers שילוב הצעות חיפוש של ההרחבה">
+<!ENTITY omnibarPlusorganizeList.smarterwiki "FastestFox שילוב הצעות חיפוש של ההרחבה">
+<!ENTITY omnibarPlusorganizeList.omnibar "Omnibar הצעות חיפוש">
+<!ENTITY omnibarPlusmiddleClick.mac "לחיצה אמצעית או Command / Option + לחיצה שמאלית על סמל מנוע החיפוש פותחת את דף הבית שלו">
+<!ENTITY omnibarPlusmiddleClick.win "ליחצנ אמצעית או Ctrl / Alt + לחיצה שמאלית על סמל מנוע החיפוש פותחת דף הבית שלו">

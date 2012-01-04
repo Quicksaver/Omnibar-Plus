@@ -25,6 +25,14 @@
 		</em:localized>
 		<em:localized>
 			<Description>
+				<em:locale>he-IL</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>אפשרויות נוספות עבור תוסף ה - Omnibar שלך.</em:description>
+				<em:translator>barryoni</em:translator>
+			</Description>
+		</em:localized>
+		<em:localized>
+			<Description>
 				<em:locale>pt-PT</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Mais funcionalidade na sua Omnibar.</em:description>
