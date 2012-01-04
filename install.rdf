@@ -3,7 +3,7 @@
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>omnibarplus@quicksaver</em:id>
 		<em:type>2</em:type>
-		<em:version>0.4.4</em:version>
+		<em:version>0.5</em:version>
 		<em:creator>Quicksaver</em:creator>
 		<em:iconURL>chrome://omnibarplus/skin/icon.png</em:iconURL>
 		<em:homepageURL>https://addons.mozilla.org/en-US/firefox/addon/omnibar-plus/</em:homepageURL>
