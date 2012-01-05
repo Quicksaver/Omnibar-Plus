@@ -56,5 +56,13 @@
 				<em:translator>http://t.qq.com/HeartBlade</em:translator>
 			</Description>
 		</em:localized>
+		<em:localized>
+			<Description>
+				<em:locale>zh-TW</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>為Omnibar添加額外的功能</em:description>
+				<em:translator>Tony</em:translator>
+			</Description>
+		</em:localized>
 	</Description>
 </RDF>

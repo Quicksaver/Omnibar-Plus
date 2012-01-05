@@ -6,6 +6,7 @@ locale    omnibarplus     he-IL         chrome/locale/he-IL/
 locale    omnibarplus     pt-PT         chrome/locale/pt-PT/
 locale    omnibarplus     sv-SE         chrome/locale/sv-SE/
 locale    omnibarplus     zh-CN         chrome/locale/zh-CN/
+locale    omnibarplus     zh-TW         chrome/locale/zh-TW/
 
 overlay   chrome://browser/content/browser.xul   chrome://omnibarplus/content/overlay.xul
 overlay   chrome://omnibar/content/options.xul   chrome://omnibarplus/content/omnibarOptions.xul
