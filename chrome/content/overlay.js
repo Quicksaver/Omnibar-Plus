@@ -88,10 +88,10 @@ var OmnibarPlus = {
 			OmnibarPlus.checkOnHandlers();
 			OmnibarPlus.fixContextMenu(true);
 			
-			gURLBar._appendChild = gURLBar.appendChild;
-			gURLBar.appendChild = function(aNode) {
+			OmnibarPlus.richlistbox._appendChild = OmnibarPlus.richlistbox.appendChild;
+			OmnibarPlus.richlistbox.appendChild = function(aNode) {
 				if(OmnibarPlus.willOrganize) { OmnibarPlus.popupshowing(); }
-				return gURLBar._appendChild(aNode);
+				return OmnibarPlus.richlistbox._appendChild(aNode);
 			}
 			
 			// For the auto-select the first result feature
@@ -157,7 +157,7 @@ var OmnibarPlus = {
 			
 			OmnibarPlus.fixContextMenu(false);
 			
-			gURLBar.appendChild = gURLBar._appendChild;
+			OmnibarPlus.richlistbox.appendChild = OmnibarPlus.richlistbox._appendChild;
 			
 			OmnibarPlus.panel.onPopupClick = OmnibarPlus.panel._onPopupClick;
 			
