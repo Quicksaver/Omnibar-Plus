@@ -16,9 +16,6 @@ var OmnibarPlus = {
 		OmnibarPlus.escaped = false;
 		OmnibarPlus.selectedSuggestion = false;
 		OmnibarPlus.LocationBarHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
- 		
--		// I cannot get rid of this 'indirect' override method because there's still something changing the location bar's content before onKeyPress is called on it
--		OmnibarPlus.overrideURL = null;
 		
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
@@ -140,6 +137,14 @@ var OmnibarPlus = {
 				]
 			]);
 			
+			OmnibarPlus.richlistbox._actualIndex = -1;
+			OmnibarPlus.richlistbox.__defineGetter__("_actualItem", function() {
+				if(this._actualIndex > -1 && this._actualIndex < this.childNodes.length) {
+					return this.childNodes[this._actualIndex];
+				}
+				return null;
+			});
+			
 			OmnibarPlus.organizing = true;
 		} 
 		else if(!OmnibarPlus.prefAid.organizePopup && OmnibarPlus.organizing) {
@@ -224,6 +229,7 @@ var OmnibarPlus = {
 		
 		OmnibarPlus.richlistbox.selectedIndex = selected;
 		OmnibarPlus.richlistbox.currentIndex = current;
+		OmnibarPlus.richlistbox._actualIndex = (current > -1) ? current : selected;
 	},
 	
 	getTypes: function() {
@@ -270,7 +276,7 @@ var OmnibarPlus = {
 		
 		for(var i=0; i<OmnibarPlus.richlist.length; i++) {
 			OmnibarPlus.richlist[i].onmouseover = function() {
-				OmnibarPlus.overrideURL = this.getAttribute('url');
+				OmnibarPlus.doIndexes(OmnibarPlus.richlistbox.selectedIndex, OmnibarPlus.richlistbox.currentIndex);
 			}
 			var type = OmnibarPlus.getEntryType(OmnibarPlus.richlist[i].getAttribute('type'));
 			nodes[OmnibarPlus.types[type]].push(OmnibarPlus.richlist[i]);
@@ -318,7 +324,6 @@ var OmnibarPlus = {
 		}
 		OmnibarPlus.doIndexes(originalSelectedIndex, originalCurrentIndex);
 		
-		OmnibarPlus.overrideURL = (originalSelectedIndex >= 0) ? OmnibarPlus.richlist[originalSelectedIndex].getAttribute('url') : gURLBar.value;
 		OmnibarPlus.organized = true;
 		OmnibarPlus.panel.adjustHeight();
 	},
@@ -412,11 +417,6 @@ var OmnibarPlus = {
 					gURLBar.value = OmnibarPlus.richlist[0].getAttribute('text');
 				}
 				
-				// just in case the user is a really really fast typer
-				OmnibarPlus.timerAid.cancel('key');
-				OmnibarPlus.timerAid.cancel('paste');
-				
-				OmnibarPlus.overrideURL = gURLBar.value;
 				gURLBar.focus();
 				
 				// false makes sure it always places the cursor in the end
@@ -428,7 +428,7 @@ var OmnibarPlus = {
 			
 			case e.DOM_VK_ESCAPE:
 				OmnibarPlus.escaped = true;
-				OmnibarPlus.overrideURL = gURLBar.value;
+				OmnibarPlus.doIndexes();
 				return gURLBar._onKeyPress(e);
 			
 			case e.DOM_VK_DELETE:
@@ -436,9 +436,7 @@ var OmnibarPlus = {
 				// If it's able to delete text from the url bar then do it
 				if(e.ctrlKey || gURLBar.selectionStart != gURLBar.selectionEnd || gURLBar.selectionStart != gURLBar.textLength) {
 					OmnibarPlus.doIndexes();
-					var ret = gURLBar._onKeyPress(e);
-					OmnibarPlus.overrideURL = gURLBar.value;
-					return ret;
+					return gURLBar._onKeyPress(e);
 				}
 				
 				// For some reason, mPopupOpen and popupOpen aren't reliable in this case
@@ -449,19 +447,19 @@ var OmnibarPlus = {
 				// Delete entries from the popup list if applicable
 				if(OmnibarPlus.richlistbox.currentItem) {
 					var currentIndex = OmnibarPlus.richlistbox.currentIndex;
-					OmnibarPlus.overrideURL = OmnibarPlus.richlist[0].getAttribute('text') || OmnibarPlus.richlist[0].getAttribute('url');
+					var tempValue = OmnibarPlus.richlist[currentIndex].getAttribute('text');
 					OmnibarPlus.richlistbox.removeChild(OmnibarPlus.richlistbox.currentItem);
 					if(currentIndex == OmnibarPlus.richlist.length) {
 						currentIndex--;
 					}
 					OmnibarPlus.doIndexes(currentIndex, currentIndex);
+					OmnibarPlus.panel.adjustHeight();
 					
 					if(currentIndex > -1) {
-						OmnibarPlus.overrideURL = OmnibarPlus.richlist[currentIndex].getAttribute('url') || OmnibarPlus.richlist[currentIndex].getAttribute('text');
+						gURLBar.value = OmnibarPlus.richlist[currentIndex].getAttribute('url') || OmnibarPlus.richlist[currentIndex].getAttribute('text');
+					} else {
+						gURLBar.value = tempValue;
 					}
-					
-					gURLBar.value = OmnibarPlus.overrideURL;
-					OmnibarPlus.panel.adjustHeight();
 					return true;
 				}
 				
@@ -469,12 +467,7 @@ var OmnibarPlus = {
 							
 			default:
 				OmnibarPlus.doIndexes();
-				var ret = gURLBar._onKeyPress(e);
-				
-				// Needs to be on a timer to correctly handle Ctrl+V (paste)
-				// Otherwise the paste would occur after this
-				OmnibarPlus.timerAid.init('key', function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10);
-				return ret;
+				return gURLBar._onKeyPress(e);
 		}
 	},
 	
@@ -494,16 +487,15 @@ var OmnibarPlus = {
 		// We need the enter key to always call it from our handler or it won't work right sometimes
 		if(e && e.type == 'keydown' && e.keyCode == e.DOM_VK_RETURN && !e.okToProceed) { return; }
 		
-		if(OmnibarPlus.richlistbox.currentIndex != -1) {
-			gURLBar.value = OmnibarPlus.richlist[OmnibarPlus.richlistbox.currentIndex].getAttribute('url');
+		if(OmnibarPlus.richlistbox.currentItem) {
+			gURLBar.value = OmnibarPlus.richlistbox.currentItem.getAttribute('url');
 		}
-		else if(OmnibarPlus.richlistbox.selectedIndex != -1) {
-			gURLBar.value = OmnibarPlus.richlist[OmnibarPlus.richlistbox.selectedIndex].getAttribute('url');
+		else if(OmnibarPlus.richlistbox.selectedItem) {
+			gURLBar.value = OmnibarPlus.richlistbox.selectedItem.getAttribute('url');
 		}
-		else if(!OmnibarPlus.timerAid.cancel('key') && !OmnibarPlus.timerAid.cancel('paste') && OmnibarPlus.overrideURL) {
-			gURLBar.value = OmnibarPlus.overrideURL;
+		else if(OmnibarPlus.richlistbox._actualItem) {
+			gURLBar.value = OmnibarPlus.richlistbox._actualItem.getAttribute('url');
 		}
-		OmnibarPlus.overrideURL = null;
 		OmnibarPlus.doIndexes();
 				
 		gURLBar.blur();
@@ -588,10 +580,7 @@ var OmnibarPlus = {
 	},
 	
 	paste: function() {
-		// Needs to be on a timer to correctly handle paste
-		// Otherwise the paste would occur after this
 		OmnibarPlus.doIndexes();
-		OmnibarPlus.timerAid.init('paste', function() { OmnibarPlus.overrideURL = gURLBar.value; }, 10);
 	},	
 		
 	// Left click: default omnibar functionality; Middle Click: open the search engine homepage
