@@ -16,6 +16,9 @@ var OmnibarPlus = {
 		OmnibarPlus.escaped = false;
 		OmnibarPlus.selectedSuggestion = false;
 		OmnibarPlus.LocationBarHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
+ 		
+-		// I cannot get rid of this 'indirect' override method because there's still something changing the location bar's content before onKeyPress is called on it
+-		OmnibarPlus.overrideURL = null;
 		
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
@@ -25,9 +28,9 @@ var OmnibarPlus = {
 		OmnibarPlus.panel = document.getElementById('PopupAutoCompleteRichResult');
 		OmnibarPlus.setWatchers(OmnibarPlus.engineName);
 		
-		OmnibarPlus.urlbar = document.getElementById('urlbar');
 		OmnibarPlus.richlistbox = OmnibarPlus.panel.richlistbox;
 		OmnibarPlus.richlist = OmnibarPlus.richlistbox.childNodes;
+		gURLBar.OmnibarPlus = OmnibarPlus; // this actually helps
 		
 		OmnibarPlus.prefAid.listen('f6', OmnibarPlus.toggleF6);
 		OmnibarPlus.prefAid.listen('middleClick', OmnibarPlus.toggleMiddleClick);
@@ -118,6 +121,25 @@ var OmnibarPlus = {
 				return Services.search.getEngineByAlias(keyword);
 			});
 			
+			// At first I was going to simply replace this with a pre-written function, but TabMixPlus also changes this function and there's no way to
+			// discriminate without saving at least two pre-written functions, this method seems much more direct
+			OmnibarPlus.panel._onPopupClick = OmnibarPlus.panel.onPopupClick;
+			OmnibarPlus.panel.onPopupClick = OmnibarPlus.modifyFunction(OmnibarPlus.panel.onPopupClick, [
+				['if (aEvent.button == 2) {',
+				<![CDATA[
+				if (aEvent.button == 2) {
+					if(this.richlistbox.currentItem) {
+						this.input.value = this.richlistbox.currentItem.getAttribute('url') || this.richlistbox.currentItem.getAttribute('text');
+					}
+				]]>
+				],
+				['controller.handleEnter(true);',
+				<![CDATA[
+				this.input.OmnibarPlus.fireOnSelect(aEvent);
+				]]>
+				]
+			]);
+			
 			OmnibarPlus.organizing = true;
 		} 
 		else if(!OmnibarPlus.prefAid.organizePopup && OmnibarPlus.organizing) {
@@ -131,6 +153,8 @@ var OmnibarPlus = {
 			OmnibarPlus.fixContextMenu(false);
 			
 			gURLBar.appendChild = gURLBar._appendChild;
+			
+			OmnibarPlus.panel.onPopupClick = OmnibarPlus.panel._onPopupClick;
 			
 			OmnibarPlus.organizing = false;
 		}
@@ -232,7 +256,7 @@ var OmnibarPlus = {
 	
 	// Goes by each 'type' to be organized and organizes each entry of type 'type'
 	organize: function() {
-		if(!OmnibarPlus.panel.popupOpen) { return; }
+		if(!OmnibarPlus.panel.mPopupOpen) { return; }
 		
 		var originalSelectedIndex = OmnibarPlus.richlistbox.selectedIndex;
 		var originalCurrentIndex = OmnibarPlus.richlistbox.currentIndex;
@@ -245,6 +269,9 @@ var OmnibarPlus = {
 		}
 		
 		for(var i=0; i<OmnibarPlus.richlist.length; i++) {
+			OmnibarPlus.richlist[i].onmouseover = function() {
+				OmnibarPlus.overrideURL = this.getAttribute('url');
+			}
 			var type = OmnibarPlus.getEntryType(OmnibarPlus.richlist[i].getAttribute('type'));
 			nodes[OmnibarPlus.types[type]].push(OmnibarPlus.richlist[i]);
 		}
@@ -293,6 +320,7 @@ var OmnibarPlus = {
 		
 		OmnibarPlus.overrideURL = (originalSelectedIndex >= 0) ? OmnibarPlus.richlist[originalSelectedIndex].getAttribute('url') : gURLBar.value;
 		OmnibarPlus.organized = true;
+		OmnibarPlus.panel.adjustHeight();
 	},
 	
 	getEntryType: function(aType) {
@@ -326,7 +354,7 @@ var OmnibarPlus = {
 		
 		var key = e.keyCode;
 		var tab = false;
-		if(key == e.DOM_VK_TAB && gURLBar.tabScrolling && gURLBar.popup.mPopupOpen) {
+		if(key == e.DOM_VK_TAB && gURLBar.tabScrolling && OmnibarPlus.panel.mPopupOpen) {
 			key = (e.shiftKey) ? e.DOM_VK_UP : e.DOM_VK_DOWN;
 			tab = true;
 		}
@@ -338,7 +366,7 @@ var OmnibarPlus = {
    			case e.DOM_VK_DOWN:
 				// No point in doing anything if popup isn't open
 				// Simply return default action
-				if(!OmnibarPlus.panel.popupOpen) {
+				if(!OmnibarPlus.panel.mPopupOpen) {
 					return gURLBar._onKeyPress(e);
 				}
 		
@@ -391,18 +419,10 @@ var OmnibarPlus = {
 				OmnibarPlus.overrideURL = gURLBar.value;
 				gURLBar.focus();
 				
-				return true;
+				// false makes sure it always places the cursor in the end
+				return false;
 			
 			case e.DOM_VK_RETURN:
-				if(OmnibarPlus.organized) {
-					OmnibarPlus.doIndexes();
-				}
-				
-				if(!OmnibarPlus.timerAid.cancel('key') && !OmnibarPlus.timerAid.cancel('paste') && OmnibarPlus.overrideURL) {
-					gURLBar.value = OmnibarPlus.overrideURL;
-				}
-				OmnibarPlus.overrideURL = null;
-				
 				e.okToProceed = true;
 				return OmnibarPlus.fireOnSelect(e);
 			
@@ -411,6 +431,42 @@ var OmnibarPlus = {
 				OmnibarPlus.overrideURL = gURLBar.value;
 				return gURLBar._onKeyPress(e);
 			
+			case e.DOM_VK_DELETE:
+				// Special actions for the del key (such as opening the clear history dialog) should still happen
+				// If it's able to delete text from the url bar then do it
+				if(e.ctrlKey || gURLBar.selectionStart != gURLBar.selectionEnd || gURLBar.selectionStart != gURLBar.textLength) {
+					OmnibarPlus.doIndexes();
+					var ret = gURLBar._onKeyPress(e);
+					OmnibarPlus.overrideURL = gURLBar.value;
+					return ret;
+				}
+				
+				// For some reason, mPopupOpen and popupOpen aren't reliable in this case
+				if(!OmnibarPlus.panel.mPopupOpen && OmnibarPlus.panel.state != 'open') {
+					return gURLBar._onKeyPress(e);
+				}
+				
+				// Delete entries from the popup list if applicable
+				if(OmnibarPlus.richlistbox.currentItem) {
+					var currentIndex = OmnibarPlus.richlistbox.currentIndex;
+					OmnibarPlus.overrideURL = OmnibarPlus.richlist[0].getAttribute('text') || OmnibarPlus.richlist[0].getAttribute('url');
+					OmnibarPlus.richlistbox.removeChild(OmnibarPlus.richlistbox.currentItem);
+					if(currentIndex == OmnibarPlus.richlist.length) {
+						currentIndex--;
+					}
+					OmnibarPlus.doIndexes(currentIndex, currentIndex);
+					
+					if(currentIndex > -1) {
+						OmnibarPlus.overrideURL = OmnibarPlus.richlist[currentIndex].getAttribute('url') || OmnibarPlus.richlist[currentIndex].getAttribute('text');
+					}
+					
+					gURLBar.value = OmnibarPlus.overrideURL;
+					OmnibarPlus.panel.adjustHeight();
+					return true;
+				}
+				
+				return gURLBar._onKeyPress(e);
+							
 			default:
 				OmnibarPlus.doIndexes();
 				var ret = gURLBar._onKeyPress(e);
@@ -438,15 +494,18 @@ var OmnibarPlus = {
 		// We need the enter key to always call it from our handler or it won't work right sometimes
 		if(e && e.type == 'keydown' && e.keyCode == e.DOM_VK_RETURN && !e.okToProceed) { return; }
 		
-		// We need to make sure the correct value is passed along when clicking with the mouse
 		if(OmnibarPlus.richlistbox.currentIndex != -1) {
 			gURLBar.value = OmnibarPlus.richlist[OmnibarPlus.richlistbox.currentIndex].getAttribute('url');
 		}
-		// in case it hasn't organized yet and speak words is on or the user has selected something
 		else if(OmnibarPlus.richlistbox.selectedIndex != -1) {
 			gURLBar.value = OmnibarPlus.richlist[OmnibarPlus.richlistbox.selectedIndex].getAttribute('url');
 		}
-		
+		else if(!OmnibarPlus.timerAid.cancel('key') && !OmnibarPlus.timerAid.cancel('paste') && OmnibarPlus.overrideURL) {
+			gURLBar.value = OmnibarPlus.overrideURL;
+		}
+		OmnibarPlus.overrideURL = null;
+		OmnibarPlus.doIndexes();
+				
 		gURLBar.blur();
 		var opener = gBrowser.mCurrentBrowser;
 		
