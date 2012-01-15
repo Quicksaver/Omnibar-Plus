@@ -79,7 +79,6 @@ var OmnibarPlus = {
 		gURLBar.setAttribute('onsearchcomplete', 'OmnibarPlus.searchComplete();');
 		
 		if(OmnibarPlus.prefAid.organizePopup && !OmnibarPlus.organizing) {
-			//OmnibarPlus.listenerAid.add(OmnibarPlus.panel, 'popuphiding', OmnibarPlus.popupHiding, true);
 			gURLBar._onKeyPress = gURLBar.onKeyPress;
 			gURLBar.onKeyPress = function(aEvent) {
 				return OmnibarPlus.urlBarKeyDown(aEvent);
@@ -148,7 +147,6 @@ var OmnibarPlus = {
 			OmnibarPlus.organizing = true;
 		} 
 		else if(!OmnibarPlus.prefAid.organizePopup && OmnibarPlus.organizing) {
-			// OmnibarPlus.listenerAid.remove(OmnibarPlus.panel, 'popuphiding', OmnibarPlus.popupHiding, true);
 			gURLBar.onKeyPress = gURLBar._onKeyPress;
 			
 			// Changed in checkOnHandlers()
