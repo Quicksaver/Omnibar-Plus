@@ -421,6 +421,7 @@ var OmnibarPlus = {
 				return false;
 			
 			case e.DOM_VK_RETURN:
+			case e.DOM_VK_ENTER:
 				e.okToProceed = true;
 				return OmnibarPlus.fireOnSelect(e);
 			
