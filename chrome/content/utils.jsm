@@ -32,13 +32,23 @@ hideIt = function(aNode, show) {
 };
 
 // allows me to modify a function quickly from within my scripts
+// Note to self, this returns anonymous functions, make sure this doesn't become an issue when modifying certain functions
 modifyFunction = function(aOriginal, aArray) {
-	var newString = aOriginal.toString();
+	var newCode = aOriginal.toString();
 	for(var i=0; i < aArray.length; i++) {
-		newString = newString.replace(aArray[i][0], aArray[i][1]);
+		newCode = newCode.replace(aArray[i][0], aArray[i][1]);
 	}
 	
-	eval('var ret = ' + newString + ';');
+	var listArguments = newCode.substring(newCode.indexOf('(')+1, newCode.indexOf(')'));
+	var arrayArguments = (listArguments == '') ? [] : listArguments.split(', ');
+	// trim whitespaces from arguments if for some reason they exist
+	for(var e=0; e < arrayArguments.length; e++) {
+		arrayArguments[e] = arrayArguments[e].replace(/^\s*([\S\s]*?)\s*$/, '$1');
+	}
+	
+	newCode = newCode.substring(newCode.indexOf('{')+1, newCode.lastIndexOf('}'));
+	
+	var ret = new Function(arrayArguments, newCode);
 	return ret;
 };
 
