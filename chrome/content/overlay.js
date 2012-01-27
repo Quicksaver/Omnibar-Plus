@@ -605,5 +605,6 @@ var OmnibarPlus = {
 	}
 }
 
-Components.utils.import("chrome://omnibarplus/content/utils.jsm", OmnibarPlus);
+OmnibarPlus.mozIJSSubScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+OmnibarPlus.mozIJSSubScriptLoader.loadSubScript("chrome://omnibarplus/content/utils.jsm", OmnibarPlus);
 OmnibarPlus.listenerAid.add(window, "load", OmnibarPlus.preinit, false);
