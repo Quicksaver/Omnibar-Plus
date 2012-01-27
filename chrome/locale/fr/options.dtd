@@ -1,0 +1,23 @@
+<!ENTITY omnibarPlusorganizePopup.label "Organiser la liste de suggestions">
+<!ENTITY omnibarPlusautoSelect.label "Sélectionner automatiquement la première suggestion dans la liste">
+<!ENTITY omnibarPlusF6.label "Positionner le curseur dans la barre de navigation en cliquant sur F6">
+<!ENTITY omnibarPlusengineFocus.label "Positionner le curseur dans la barre de navigation après changement du moteur de recherche">
+<!ENTITY omnibarPlusanimated.label "Style compact et animé de frog">
+<!ENTITY omnibarPlusanimatedScheme.label "Couleur: ">
+<!ENTITY omnibarPlusanimatedScheme.sky "Ciel">
+<!ENTITY omnibarPlusanimatedScheme.ruby "Ruby">
+<!ENTITY omnibarPlusanimatedScheme.taupe "Taupe">
+<!ENTITY omnibarPlusanimatedScheme.grass "Herbe">
+<!ENTITY omnibarPlusanimatedScheme.sea "Mer">
+<!ENTITY omnibarPlusanimatedScheme.lavender "Lavande">
+<!ENTITY omnibarPlusanimatedScheme.bubblegum "Chewing-gum">
+<!ENTITY omnibarPlusmain.label "Omnibar">
+<!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY omnibarPlussuggestionList.label "Popup de suggestions">
+<!ENTITY omnibarPlusfunctionality.label "Raccourcis clavier">
+<!ENTITY omnibarPlusorganizeList.EE "Tout le reste (marque-pages, historique, etc…)">
+<!ENTITY omnibarPlusorganizeList.agrenon "Suggestions de Peers">
+<!ENTITY omnibarPlusorganizeList.smarterwiki "Suggestions de FastestFox">
+<!ENTITY omnibarPlusorganizeList.omnibar "Suggestions de recherche Omnibar">
+<!ENTITY omnibarPlusmiddleClick.mac "Clic du milieu ou Command/Option + clic gauche sur un moteur de recherche ouvre sa page Web">
+<!ENTITY omnibarPlusmiddleClick.win "Clic du milieu ou Ctrl/Alt + clic gauche sur un moteur de recherche ouvre sa page Web">

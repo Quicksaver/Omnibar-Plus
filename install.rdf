@@ -26,6 +26,14 @@
 		</em:localized>
 		<em:localized>
 			<Description>
+				<em:locale>fr</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>Fonctionnalités supplémentaires pour votre Omnibar.</em:description>
+				<em:translator>Jojaba - BabelZilla</em:translator>
+			</Description>
+		</em:localized>
+		<em:localized>
+			<Description>
 				<em:locale>he-IL</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>אפשרויות נוספות עבור תוסף ה - Omnibar שלך.</em:description>
