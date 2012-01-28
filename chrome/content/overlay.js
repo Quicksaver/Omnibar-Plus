@@ -370,7 +370,8 @@ var OmnibarPlus = {
 				// No point in doing anything if popup isn't open
 				// Simply return default action
 				if(!OmnibarPlus.panel.mPopupOpen) {
-					return gURLBar._onKeyPress(e);
+					gURLBar.controller.startSearch(gURLBar.value);
+					return false;
 				}
 		
 				// Just discriminating using the same criteria the original onKeyPress does
