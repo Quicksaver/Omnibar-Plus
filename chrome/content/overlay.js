@@ -349,6 +349,10 @@ var OmnibarPlus = {
 	
 	// Our takes on key navigation from gURLBar.onkeypress(event), if returns false, original onkeypress is called
 	urlBarKeyDown: function(e) {
+		// Compatibility with the UI Enhancer add-on
+		// don't handle keystrokes on it's editing box
+		if(OmnibarPlus.hasAncestor(document.commandDispatcher.focusedElement, document.getElementById('UIEnhancer_URLBar_Editing_Stack_Text'))) { return true; }
+		
 		// Sometimes the ontextentered attribute is reset (for some reason), this leads to double tabs being opened
 		OmnibarPlus.checkOnHandlers();
 		
