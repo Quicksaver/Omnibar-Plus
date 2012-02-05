@@ -449,21 +449,23 @@ var OmnibarPlus = {
 				}
 				
 				// Delete entries from the popup list if applicable
+				// Most of this is done in a timer, otherwise for some reason the popup will not close if it's empty
 				if(OmnibarPlus.richlistbox.currentItem) {
-					var currentIndex = OmnibarPlus.richlistbox.currentIndex;
-					var tempValue = OmnibarPlus.richlist[currentIndex].getAttribute('text');
+					OmnibarPlus.deletedIndex = OmnibarPlus.richlistbox.currentIndex;
+					OmnibarPlus.deletedText = OmnibarPlus.richlistbox.currentItem.getAttribute('text');
 					OmnibarPlus.richlistbox.removeChild(OmnibarPlus.richlistbox.currentItem);
-					if(currentIndex == OmnibarPlus.richlist.length) {
-						currentIndex--;
-					}
-					OmnibarPlus.doIndexes(currentIndex, currentIndex);
-					OmnibarPlus.panel.adjustHeight();
-					
-					if(currentIndex > -1) {
-						gURLBar.value = OmnibarPlus.richlist[currentIndex].getAttribute('url') || OmnibarPlus.richlist[currentIndex].getAttribute('text');
-					} else {
-						gURLBar.value = tempValue;
-					}
+					OmnibarPlus.timerAid.init("deleteEntry", function() {
+						if(OmnibarPlus.richlist.length == 0) {
+							OmnibarPlus.panel.closePopup();
+							gURLBar.value = OmnibarPlus.deletedText;
+						} else {
+							if(OmnibarPlus.deletedIndex == OmnibarPlus.richlist.length) {
+								OmnibarPlus.deletedIndex--;
+							}
+							OmnibarPlus.doIndexes(OmnibarPlus.deletedIndex, OmnibarPlus.deletedIndex);
+							OmnibarPlus.panel.adjustHeight();
+						}
+					}, 0);
 					return true;
 				}
 				
