@@ -489,7 +489,7 @@ var OmnibarPlus = {
 	
 	fireOnSelect: function(e) {
 		// We need the enter key to always call it from our handler or it won't work right sometimes
-		if(e && e.type == 'keydown' && e.keyCode == e.DOM_VK_RETURN && !e.okToProceed) { return; }
+		if(e && e.type == 'keydown' && (e.keyCode == e.DOM_VK_RETURN || e.keyCode == e.DOM_VK_ENTER) && !e.okToProceed) { return; }
 		
 		if(OmnibarPlus.richlistbox.currentItem) {
 			gURLBar.value = OmnibarPlus.richlistbox.currentItem.getAttribute('url');
@@ -501,8 +501,11 @@ var OmnibarPlus = {
 			gURLBar.value = OmnibarPlus.richlistbox._actualItem.getAttribute('url');
 		}
 		OmnibarPlus.doIndexes();
-				
-		gURLBar.blur();
+		
+		// Compatibility fix for Auto-Complete add-on
+		// It resets the bar value when bluring, thus completely screwing up here, by putting on a timer we get the same effect after the value is executed		
+		OmnibarPlus.timerAid.init("blurURLBar", function() { gURLBar.blur(); }, 0);
+		
 		var opener = gBrowser.mCurrentBrowser;
 		
 		Omnibar._handleURLBarCommand(e);
