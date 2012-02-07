@@ -448,6 +448,11 @@ var OmnibarPlus = {
 					return gURLBar._onKeyPress(e);
 				}
 				
+				// Don't delete if it's still deleting an entry (could happen if you press the key really fast)
+				if(OmnibarPlus.timerAid.getTimer("deleteEntry")) {
+					return false;
+				}
+				
 				// Delete entries from the popup list if applicable
 				// Most of this is done in a timer, otherwise for some reason the popup will not close if it's empty
 				if(OmnibarPlus.richlistbox.currentItem) {
