@@ -365,6 +365,17 @@ var listenerAid = {
 	}
 };
 
+// this lets me run functions asyncronously, basically it's a one shot timer with a delay of 0msec
+var aSync = function(aFunc, aName) {
+	if(!aName) {
+		var timerObj = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+		timerObj.init(aFunc, 0, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+	} else {
+		this.timerAid.init(aName, aFunc, 0);
+	}
+	return true;
+}
+
 // Object to aid in setting, initializing and cancelling timers
 var timerAid = {
 	timers: {},
@@ -398,14 +409,14 @@ var timerAid = {
 		return false;
 	},
 	
-	getTimer: function(name) {
+	get: function(name) {
 		if(this.timers[name]) {
 			return this.timers[name].object;
 		}
 		return null;
 	},
 	
-	newTimer: function() {
+	create: function() {
 		var newTimer = {};
 		newTimer.timer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
 		newTimer.switchType = this.switchType;

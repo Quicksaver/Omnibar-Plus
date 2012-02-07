@@ -12,7 +12,6 @@ var OmnibarPlus = {
 		
 		OmnibarPlus.organizing = false;
 		OmnibarPlus.willOrganize = false;
-		OmnibarPlus.organized = false;
 		OmnibarPlus.escaped = false;
 		OmnibarPlus.selectedSuggestion = false;
 		OmnibarPlus.LocationBarHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
@@ -194,7 +193,6 @@ var OmnibarPlus = {
 	searchBegin: function() {
 		if(OmnibarPlus.prefAid.organizePopup) {
 			OmnibarPlus.willOrganize = false;
-			OmnibarPlus.organized = false;
 			OmnibarPlus.selectedSuggestion = false;
 			OmnibarPlus.escaped = false;
 			OmnibarPlus.doIndexes();
@@ -322,7 +320,7 @@ var OmnibarPlus = {
 		}
 		OmnibarPlus.doIndexes(originalSelectedIndex, originalCurrentIndex);
 		
-		OmnibarPlus.organized = true;
+		OmnibarPlus.willOrganize = false;
 		OmnibarPlus.panel.adjustHeight();
 	},
 	
@@ -449,17 +447,18 @@ var OmnibarPlus = {
 				}
 				
 				// Don't delete if it's still deleting an entry (could happen if you press the key really fast)
-				if(OmnibarPlus.timerAid.getTimer("deleteEntry")) {
+				// Also don't delete before organizing as it can screw up the handler
+				if(OmnibarPlus.timerAid.get("deleteEntry") || OmnibarPlus.willOrganize) {
 					return false;
 				}
 				
 				// Delete entries from the popup list if applicable
 				// Most of this is done in a timer, otherwise for some reason the popup will not close if it's empty
-				if(OmnibarPlus.richlistbox.currentItem) {
+				if(OmnibarPlus.richlistbox.currentIndex > -1) {
 					OmnibarPlus.deletedIndex = OmnibarPlus.richlistbox.currentIndex;
 					OmnibarPlus.deletedText = OmnibarPlus.richlistbox.currentItem.getAttribute('text');
 					OmnibarPlus.richlistbox.removeChild(OmnibarPlus.richlistbox.currentItem);
-					OmnibarPlus.timerAid.init("deleteEntry", function() {
+					OmnibarPlus.aSync(function() {
 						if(OmnibarPlus.richlist.length == 0) {
 							OmnibarPlus.panel.closePopup();
 							gURLBar.value = OmnibarPlus.deletedText;
@@ -470,7 +469,7 @@ var OmnibarPlus = {
 							OmnibarPlus.doIndexes(OmnibarPlus.deletedIndex, OmnibarPlus.deletedIndex);
 							OmnibarPlus.panel.adjustHeight();
 						}
-					}, 0);
+					}, "deleteEntry");
 					return true;
 				}
 				
@@ -517,7 +516,7 @@ var OmnibarPlus = {
 		var opener = gBrowser.mCurrentBrowser;
 		gURLBar.blur();
 		
-		OmnibarPlus.timerAid.init("goTo", function() {
+		OmnibarPlus.aSync(function() {
 			gURLBar.value = tempLocation;
 			Omnibar._handleURLBarCommand(e);
 			
@@ -527,7 +526,7 @@ var OmnibarPlus = {
 			if(gBrowser.mCurrentBrowser != opener) {
 				opener._userTypedValue = null;
 			}
-		}, 0);
+		});
 	},
 	
 	onGoClick: function(aEvent) {
