@@ -505,19 +505,24 @@ var OmnibarPlus = {
 		OmnibarPlus.doIndexes();
 		
 		// Compatibility fix for Auto-Complete add-on
-		// It resets the bar value when bluring, thus completely screwing up here, by putting on a timer we get the same effect after the value is executed		
-		OmnibarPlus.timerAid.init("blurURLBar", function() { gURLBar.blur(); }, 0);
-		
+		// It resets the bar value when bluring, thus completely screwing up here, by putting on a timer we get the same effect after the value is executed.
+		// However the blur on a timer can sometimes come make it so it blurs the address bar after a new tab is opened, bluring the new tab address bar and keeping the
+		// last opened tab address bar focused, this is a bit of a dirty hack but necessary
+		var tempLocation = gURLBar.value;
 		var opener = gBrowser.mCurrentBrowser;
+		gURLBar.blur();
 		
-		Omnibar._handleURLBarCommand(e);
-		
-		// Attempt to set the correct values in the urlbars of both the opened browser and the opening browser
-		gURLBar.reset();
-		gBrowser.mCurrentBrowser._userTypedValue = null;
-		if(gBrowser.mCurrentBrowser != opener) {
-			opener._userTypedValue = null;
-		}
+		OmnibarPlus.timerAid.init("goTo", function() {
+			gURLBar.value = tempLocation;
+			Omnibar._handleURLBarCommand(e);
+			
+			// Attempt to set the correct values in the urlbars of both the opened browser and the opening browser
+			gURLBar.reset();
+			gBrowser.mCurrentBrowser._userTypedValue = null;
+			if(gBrowser.mCurrentBrowser != opener) {
+				opener._userTypedValue = null;
+			}
+		}, 0);
 	},
 	
 	onGoClick: function(aEvent) {
