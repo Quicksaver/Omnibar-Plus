@@ -1,7 +1,6 @@
 var OmnibarPlus = {
 	preinit: function() {
 		OmnibarPlus.timerAid.init('init', OmnibarPlus.init, 500);
-		OmnibarPlus.listenerAid.remove(window, "load", OmnibarPlus.preinit, false);
 	},
 	
 	init: function() {
@@ -14,6 +13,7 @@ var OmnibarPlus = {
 		OmnibarPlus.willOrganize = false;
 		OmnibarPlus.escaped = false;
 		OmnibarPlus.selectedSuggestion = false;
+		OmnibarPlus.delReleased = true;
 		OmnibarPlus.LocationBarHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
 		
 		// OS string
@@ -448,16 +448,21 @@ var OmnibarPlus = {
 				
 				// Don't delete if it's still deleting an entry (could happen if you press the key really fast)
 				// Also don't delete before organizing as it can screw up the handler
-				if(OmnibarPlus.timerAid.get("deleteEntry") || OmnibarPlus.willOrganize) {
+				if(OmnibarPlus.timerAid.get("deleteEntry") || OmnibarPlus.willOrganize || !OmnibarPlus.delReleased) {
 					return false;
 				}
 				
 				// Delete entries from the popup list if applicable
-				// Most of this is done in a timer, otherwise for some reason the popup will not close if it's empty
+				// Can't delete many by pressing down the del key, only one at a time
 				if(OmnibarPlus.richlistbox.currentIndex > -1) {
+					OmnibarPlus.delReleased = false;
+					OmnibarPlus.listenerAid.add(window, "keyup", OmnibarPlus.delKeyReleased, true, true);
+					
 					OmnibarPlus.deletedIndex = OmnibarPlus.richlistbox.currentIndex;
 					OmnibarPlus.deletedText = OmnibarPlus.richlistbox.currentItem.getAttribute('text');
 					OmnibarPlus.richlistbox.removeChild(OmnibarPlus.richlistbox.currentItem);
+					
+					// Most of this is done aSync, otherwise for some reason the popup will not close if it's empty
 					OmnibarPlus.aSync(function() {
 						if(OmnibarPlus.richlist.length == 0) {
 							OmnibarPlus.panel.closePopup();
@@ -478,6 +483,15 @@ var OmnibarPlus = {
 			default:
 				OmnibarPlus.doIndexes();
 				return gURLBar._onKeyPress(e);
+		}
+	},
+	
+	// to be fired when the del key is released after deleting an entry
+	delKeyReleased: function(e) {
+		if(e.keyCode == e.DOM_VK_DELETE) {
+			OmnibarPlus.delReleased = true;
+		} else {
+			OmnibarPlus.listenerAid.add(window, "keyup", OmnibarPlus.delKeyReleased, true, true);
 		}
 	},
 	
@@ -626,4 +640,4 @@ var OmnibarPlus = {
 
 OmnibarPlus.mozIJSSubScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
 OmnibarPlus.mozIJSSubScriptLoader.loadSubScript("chrome://omnibarplus/content/utils.jsm", OmnibarPlus);
-OmnibarPlus.listenerAid.add(window, "load", OmnibarPlus.preinit, false);
+OmnibarPlus.listenerAid.add(window, "load", OmnibarPlus.preinit, false, true);

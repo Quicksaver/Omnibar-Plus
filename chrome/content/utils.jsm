@@ -271,7 +271,7 @@ var setWatchers = function(obj) {
 var listenerAid = {
 	handlers: new Array(),
 	
-	add: function(obj, type, listener, capture) {
+	add: function(obj, type, listener, capture, oneTime) {
 		if(obj.addEventListener) {
 			for(var i=0; i<this.handlers.length; i++) {
 				if(this.handlers[i].obj == obj && this.handlers[i].type == type && this.handlers[i].capture == capture && this.compareListener(this.handlers[i].listener, listener)) {
@@ -283,11 +283,43 @@ var listenerAid = {
 				obj: obj,
 				type: type,
 				listener: listener,
-				capture: capture
+				capture: capture,
+				removeSelf: null,
+				aid: null
 			};
 			this.handlers.push(newHandler);
 			var i = this.handlers.length -1;
 			this.handlers[i].obj.addEventListener(this.handlers[i].type, this.handlers[i].listener, this.handlers[i].capture);
+			
+			if(oneTime) {
+				if(!this.handlers[i].obj._listenerAidHandlers) {
+					this.handlers[i].obj._listenerAidHandlers = [];
+				}
+				this.handlers[i].obj._listenerAidHandlers.push(this.handlers[i]);
+				this.handlers[i].aid = this;
+				this.handlers[i].removeSelf = function(e) {
+					var targets = ['target', 'originalTarget', 'currentTarget'];
+					for(var a = 0; a < targets.length; a++) {
+						if(!e[targets[a]] || !e[targets[a]]._listenerAidHandlers) {
+							continue;
+						}
+						
+						for(var i = 0; i < e[targets[a]]._listenerAidHandlers.length; i++) {
+							if(e[targets[a]]._listenerAidHandlers[i].obj == e[targets[a]] // supposedly this would always return true?
+							&& e[targets[a]]._listenerAidHandlers[i].type == e.type
+								&& ((e[targets[a]]._listenerAidHandlers[i].capture && e.eventPhase == e.CAPTURING_PHASE)
+								|| (!e[targets[a]]._listenerAidHandlers[i].capture && e.eventPhase != e.CAPTURING_PHASE))
+							) {
+								e[targets[a]]._listenerAidHandlers[i].aid.remove(e[targets[a]], e[targets[a]]._listenerAidHandlers[i].type, e[targets[a]]._listenerAidHandlers[i].listener, e[targets[a]]._listenerAidHandlers[i].capture);
+								e[targets[a]]._listenerAidHandlers[i].aid.remove(e[targets[a]], e[targets[a]]._listenerAidHandlers[i].type, e[targets[a]]._listenerAidHandlers[i].removeSelf, e[targets[a]]._listenerAidHandlers[i].capture);
+								e[targets[a]]._listenerAidHandlers.splice(i, 1);
+								return;
+							}
+						}
+					}
+				};
+				this.add(this.handlers[i].obj, this.handlers[i].type, this.handlers[i].removeSelf, this.handlers[i].capture);
+			}
 		}
 		else if(obj.events && obj.events.addListener) {
 			for(var i=0; i<this.handlers.length; i++) {
