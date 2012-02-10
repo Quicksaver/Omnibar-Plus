@@ -22,6 +22,9 @@ var OmnibarPlus = {
 		OmnibarPlus.goButton = document.getElementById('go-button');
 		OmnibarPlus.engineName = document.getElementById('omnibar-defaultEngineName');
 		OmnibarPlus.panel = document.getElementById('PopupAutoCompleteRichResult');
+		OmnibarPlus.mainKeyset = document.getElementById('mainKeyset');
+		OmnibarPlus.defaultF6key = document.getElementById('xxx_key33_Browser:FocusNextFrame');
+		OmnibarPlus.keyset = document.getElementById('key_omnibarplus_f6');
 		OmnibarPlus.setWatchers(OmnibarPlus.engineName);
 		
 		OmnibarPlus.richlistbox = OmnibarPlus.panel.richlistbox;
@@ -163,11 +166,25 @@ var OmnibarPlus = {
 	},
 	
 	// Toggle F6 functionality
+	// An F6 functionality was added in the latest Nightly versions, somehow my own function won't work if I just disable that default one
 	toggleF6: function() {
-		if(OmnibarPlus.prefAid.f6) {
-			document.getElementById('key_omnibarplus_f6').removeAttribute('disabled');
-		} else {
-			document.getElementById('key_omnibarplus_f6').setAttribute('disabled', 'true');
+		if(OmnibarPlus.defaultF6key) {
+			if(OmnibarPlus.prefAid.f6) {
+				if(!OmnibarPlus.defaultF6key.getAttribute('defaultCommand')) {
+					OmnibarPlus.defaultF6key.setAttribute('defaultCommand', OmnibarPlus.defaultF6key.getAttribute('command'));
+				}
+				OmnibarPlus.defaultF6key.setAttribute('command', 'command_omnibarplus_f6');
+			}
+			else if(OmnibarPlus.defaultF6key.getAttribute('defaultCommand')) {
+				OmnibarPlus.defaultF6key.setAttribute('command', OmnibarPlus.defaultF6key.getAttribute('defaultCommand'));
+			}
+		}
+		else {
+			if(OmnibarPlus.prefAid.f6) {
+				OmnibarPlus.keyset.removeAttribute('disabled');
+			} else {
+				OmnibarPlus.keyset.setAttribute('disabled', 'true');
+			}
 		}
 	},
 	
@@ -187,6 +204,12 @@ var OmnibarPlus = {
 		} else {
 			OmnibarPlus.engineName.removePropertyWatcher('value', openLocation);
 		}
+	},
+	
+	// function to use for our F6 keyset
+	focusBar: function() {
+		if(!gURLBar.focused) { openLocation(); } 
+		else { gBrowser.mCurrentBrowser.focus(); }
 	},
 	
 	// Called when a search begins and ends in the location bar

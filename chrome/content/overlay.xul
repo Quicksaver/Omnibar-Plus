@@ -5,8 +5,14 @@
 	<keyset id="mainKeyset">
 		<key 	id="key_omnibarplus_f6"
 				label="Focus Awesomebar"
-				oncommand="if(!gURLBar.focused) { openLocation(); } else { gBrowser.mCurrentBrowser.focus(); }"
+				command="command_omnibarplus_f6"
 				keycode="VK_F6"
 				disabled="true"/>
 	</keyset>
+	
+	<commandset id="mainCommandSet">
+		<command 	id="command_omnibarplus_f6"
+					label="Focus Awesomebar"
+					oncommand="OmnibarPlus.focusBar();"/>
+	</commandset>
 </overlay>
