@@ -60,6 +60,19 @@ var OmnibarPlus = {
 		OmnibarPlus.listenerAid.clean();
 	},
 	
+	// helper objects to get current popup status and set it
+	get panelState () {
+		// For some reason, just mPopupOpen and popupOpen aren't reliable in every case
+		return (!OmnibarPlus.panel.mPopupOpen && OmnibarPlus.panel.state != "open") ? false : true;
+	},
+	set panelState(val) {
+		if(val) {
+			OmnibarPlus.panel._openAutocompletePopup(gURLBar, gURLBar);
+		} else {
+			OmnibarPlus.panel.closePopup();
+		}
+	},
+	
 	// Toggle middle click functionality
 	toggleMiddleClick: function() {
 		document.getElementById('omnibar-in-urlbar').removeAttribute('onclick'); // We need to remove this first
@@ -281,7 +294,7 @@ var OmnibarPlus = {
 	
 	// Goes by each 'type' to be organized and organizes each entry of type 'type'
 	organize: function() {
-		if(!OmnibarPlus.panel.mPopupOpen) { return; }
+		if(!OmnibarPlus.panelState) { return; }
 		
 		var originalSelectedIndex = OmnibarPlus.richlistbox.selectedIndex;
 		var originalCurrentIndex = OmnibarPlus.richlistbox.currentIndex;
@@ -382,7 +395,7 @@ var OmnibarPlus = {
 		
 		var key = e.keyCode;
 		var tab = false;
-		if(key == e.DOM_VK_TAB && gURLBar.tabScrolling && OmnibarPlus.panel.mPopupOpen) {
+		if(key == e.DOM_VK_TAB && gURLBar.tabScrolling && OmnibarPlus.panelState) {
 			key = (e.shiftKey) ? e.DOM_VK_UP : e.DOM_VK_DOWN;
 			tab = true;
 		}
@@ -394,7 +407,7 @@ var OmnibarPlus = {
    			case e.DOM_VK_DOWN:
 				// No point in doing anything if popup isn't open
 				// Simply return default action
-				if(!OmnibarPlus.panel.mPopupOpen) {
+				if(!OmnibarPlus.panelState) {
 					gURLBar.controller.startSearch(gURLBar.value);
 					return false;
 				}
@@ -464,8 +477,7 @@ var OmnibarPlus = {
 					return gURLBar._onKeyPress(e);
 				}
 				
-				// For some reason, mPopupOpen and popupOpen aren't reliable in this case
-				if(!OmnibarPlus.panel.mPopupOpen && OmnibarPlus.panel.state != 'open') {
+				if(!OmnibarPlus.panelState) {
 					return gURLBar._onKeyPress(e);
 				}
 				
@@ -488,7 +500,7 @@ var OmnibarPlus = {
 					// Most of this is done aSync, otherwise for some reason the popup will not close if it's empty
 					OmnibarPlus.aSync(function() {
 						if(OmnibarPlus.richlist.length == 0) {
-							OmnibarPlus.panel.closePopup();
+							OmnibarPlus.panelState = false;
 							gURLBar.value = OmnibarPlus.deletedText;
 						} else {
 							if(OmnibarPlus.deletedIndex == OmnibarPlus.richlist.length) {
@@ -511,7 +523,11 @@ var OmnibarPlus = {
 	
 	// to be fired when the del key is released after deleting an entry
 	delKeyReleased: function(e) {
-		if(e.keyCode == e.DOM_VK_DELETE) {
+		if(OmnibarPlus.richlist.length == 0) {
+			OmnibarPlus.panelState = false;
+		}
+		
+		if(e.keyCode == e.DOM_VK_DELETE || !OmnibarPlus.panelState) {
 			OmnibarPlus.delReleased = true;
 		} else {
 			OmnibarPlus.listenerAid.add(window, "keyup", OmnibarPlus.delKeyReleased, true, true);
