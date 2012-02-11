@@ -410,50 +410,44 @@ var aSync = function(aFunc, aName) {
 
 // Object to aid in setting, initializing and cancelling timers
 var timerAid = {
-	timers: {},
+	_timers: {},
 	
 	init: function(aName, aFunc, aDelay, aType) {
 		this.cancel(aName);
 		
-		var type = this.switchType(aType);
+		var type = this._switchType(aType);
 		var self = this;
-		this.timers[aName] = {
+		this._timers[aName] = {
 			object: Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer),
 			handler: aFunc
 		};
 		if(type == Components.interfaces.nsITimer.TYPE_ONE_SHOT) {
-			this.timers[aName].object.init(function(aSubject, aTopic, aData) {
-				self.timers[aName].handler(aSubject, aTopic, aData);
+			this._timers[aName].object.init(function(aSubject, aTopic, aData) {
+				self._timers[aName].handler(aSubject, aTopic, aData);
 				self.cancel(aName);
 			}, aDelay, type);
 		}
 		else {
-			this.timers[aName].object.init(this.timers[aName].handler, delay, type);
+			this._timers[aName].object.init(this._timers[aName].handler, aDelay, type);
 		}
+		this.__defineGetter__(aName, function() { return this._timers[aName]; });
 	},
 	
 	cancel: function(name) {
-		if(this.timers[name]) {
-			this.timers[name].object.cancel();
-			this.timers[name] = null;
+		if(this._timers[name]) {
+			this._timers[name].object.cancel();
+			this._timers[name] = null;
 			return true;
 		}
 		return false;
 	},
 	
-	get: function(name) {
-		if(this.timers[name]) {
-			return this.timers[name].object;
-		}
-		return null;
-	},
-	
 	create: function() {
 		var newTimer = {};
 		newTimer.timer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-		newTimer.switchType = this.switchType;
+		newTimer._switchType = this._switchType;
 		newTimer.init = function(aFunc, aDelay, aType) {
-			var type = this.switchType(aType);
+			var type = this._switchType(aType);
 			this.timer.init(aFunc, aDelay, type);
 		}
 		newTimer.cancel = function() {
@@ -462,7 +456,7 @@ var timerAid = {
 		return newTimer;
 	},
 			
-	switchType: function(type) {
+	_switchType: function(type) {
 		switch(type) {
 			case 'slack':
 				return Components.interfaces.nsITimer.TYPE_REPEATING_SLACK;
@@ -485,9 +479,10 @@ var timerAid = {
 
 var prefAid = {
 	_prefObjects: {},
-	init: function(obj, branch, prefList) {
+	_listenerAid: this.listenerAid,
+	
+	init: function(branch, prefList) {
 		var Application = Components.classes["@mozilla.org/fuel/application;1"].getService(Components.interfaces.fuelIApplication);
-		this._listenerAid = obj.listenerAid;
 		
 		for(var i=0; i<prefList.length; i++) {
 			this._prefObjects[prefList[i]] = Application.prefs.get('extensions.'+branch+'.' + prefList[i]);

@@ -1,13 +1,13 @@
 var OmnibarPlus = {
 	preinit: function() {
-		OmnibarPlus.timerAid.init('init', OmnibarPlus.init, 500);
+		OmnibarPlus.timerAid.init('startup', OmnibarPlus.init, 500);
 	},
 	
 	init: function() {
 		if(typeof(Omnibar) == 'undefined') { return; }
 		
-		OmnibarPlus.prefAid.init(OmnibarPlus, 'omnibarplus', ['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
-		OmnibarPlus.prefAid.init(OmnibarPlus, 'omnibar', ['popupstyle']);
+		OmnibarPlus.prefAid.init('omnibarplus', ['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
+		OmnibarPlus.prefAid.init('omnibar', ['popupstyle']);
 		
 		OmnibarPlus.organizing = false;
 		OmnibarPlus.willOrganize = false;
@@ -19,12 +19,7 @@ var OmnibarPlus = {
 		// OS string
 		OmnibarPlus.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
 		
-		OmnibarPlus.goButton = document.getElementById('go-button');
-		OmnibarPlus.engineName = document.getElementById('omnibar-defaultEngineName');
-		OmnibarPlus.panel = document.getElementById('PopupAutoCompleteRichResult');
-		OmnibarPlus.mainKeyset = document.getElementById('mainKeyset');
-		OmnibarPlus.defaultF6key = document.getElementById('xxx_key33_Browser:FocusNextFrame');
-		OmnibarPlus.keyset = document.getElementById('key_omnibarplus_f6');
+		OmnibarPlus.setElems();
 		OmnibarPlus.setWatchers(OmnibarPlus.engineName);
 		
 		OmnibarPlus.richlistbox = OmnibarPlus.panel.richlistbox;
@@ -53,11 +48,21 @@ var OmnibarPlus = {
 		OmnibarPlus.toggleAnimated();
 		OmnibarPlus.toggleEngineFocus();
 		
-		OmnibarPlus.listenerAid.add(window, "unload", OmnibarPlus.deinit, false);
+		OmnibarPlus.listenerAid.add(window, "unload", OmnibarPlus.deinit, false, true);
 	},
 	
 	deinit: function() {
 		OmnibarPlus.listenerAid.clean();
+	},
+	
+	setElems: function() {
+		OmnibarPlus.goButton = document.getElementById('go-button');
+		OmnibarPlus.engineName = document.getElementById('omnibar-defaultEngineName');
+		OmnibarPlus.panel = document.getElementById('PopupAutoCompleteRichResult');
+		OmnibarPlus.mainKeyset = document.getElementById('mainKeyset');
+		OmnibarPlus.defaultF6key = document.getElementById('xxx_key33_Browser:FocusNextFrame');
+		OmnibarPlus.keyset = document.getElementById('key_omnibarplus_f6');
+		OmnibarPlus.omnibarClicker = document.getElementById('omnibar-in-urlbar');
 	},
 	
 	// helper objects to get current popup status and set it
@@ -75,14 +80,14 @@ var OmnibarPlus = {
 	
 	// Toggle middle click functionality
 	toggleMiddleClick: function() {
-		document.getElementById('omnibar-in-urlbar').removeAttribute('onclick'); // We need to remove this first
+		OmnibarPlus.omnibarClicker.removeAttribute('onclick'); // We need to remove this first
 		if(OmnibarPlus.prefAid.middleClick) {
-			OmnibarPlus.listenerAid.remove(document.getElementById('omnibar-in-urlbar'), 'click', Omnibar.onButtonClick, false);
-			OmnibarPlus.listenerAid.add(document.getElementById('omnibar-in-urlbar'), 'click', OmnibarPlus.onEngineClick, false);
+			OmnibarPlus.listenerAid.remove(OmnibarPlus.omnibarClicker, 'click', Omnibar.onButtonClick, false);
+			OmnibarPlus.listenerAid.add(OmnibarPlus.omnibarClicker, 'click', OmnibarPlus.onEngineClick, false);
 		}
 		else {
-			OmnibarPlus.listenerAid.remove(document.getElementById('omnibar-in-urlbar'), 'click', OmnibarPlus.onEngineClick, false); 
-			OmnibarPlus.listenerAid.add(document.getElementById('omnibar-in-urlbar'), 'click', Omnibar.onButtonClick, false);
+			OmnibarPlus.listenerAid.remove(OmnibarPlus.omnibarClicker, 'click', OmnibarPlus.onEngineClick, false); 
+			OmnibarPlus.listenerAid.add(OmnibarPlus.omnibarClicker, 'click', Omnibar.onButtonClick, false);
 		}
 	},
 	
@@ -156,6 +161,7 @@ var OmnibarPlus = {
 				if(this._actualIndex > -1 && this._actualIndex < this.childNodes.length) {
 					return this.childNodes[this._actualIndex];
 				}
+				this._actualIndex = -1;
 				return null;
 			});
 			
@@ -294,7 +300,7 @@ var OmnibarPlus = {
 	
 	// Goes by each 'type' to be organized and organizes each entry of type 'type'
 	organize: function() {
-		if(!OmnibarPlus.panelState) { return; }
+		if(!OmnibarPlus.panelState || OmnibarPlus.escaped) { return; }
 		
 		var originalSelectedIndex = OmnibarPlus.richlistbox.selectedIndex;
 		var originalCurrentIndex = OmnibarPlus.richlistbox.currentIndex;
@@ -332,24 +338,16 @@ var OmnibarPlus = {
 		}
 		
 		// Speak words auto select first result feature is overriden by ours
-		if(originalSelectedIndex >= 0) {
-			if(originalSelectedIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalSelectedIndex]) {
-				originalSelectedIndex = -1;
-			}
-			else if(!OmnibarPlus.prefAid.autoSelect && !OmnibarPlus.selectedSuggestion) {
-				originalSelectedIndex = -1;
-			}
+		if(originalSelectedIndex >= 0
+		&& (originalSelectedIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalSelectedIndex] || !OmnibarPlus.selectedSuggestion)) {
+			originalSelectedIndex = -1;
 		}
 		if(originalSelectedIndex == -1 && OmnibarPlus.prefAid.autoSelect && OmnibarPlus.richlist.length > 0) {
 			originalSelectedIndex = 0;
 		}
-		if(originalCurrentIndex >= 0) {
-			if(originalCurrentIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalCurrentIndex]) {
-				originalCurrentIndex = -1;
-			}
-			else if(!OmnibarPlus.prefAid.autoSelect && !OmnibarPlus.selectedSuggestion) {
-				originalCurrentIndex = -1;
-			}
+		if(originalCurrentIndex >= 0
+		&& (originalCurrentIndex >= OmnibarPlus.richlist.length || !OmnibarPlus.richlist[originalCurrentIndex] || !OmnibarPlus.selectedSuggestion)) {
+			originalCurrentIndex = -1;
 		}
 		if(originalCurrentIndex == -1 && OmnibarPlus.prefAid.autoSelect && OmnibarPlus.richlist.length > 0) {
 			originalCurrentIndex = 0;
@@ -483,7 +481,7 @@ var OmnibarPlus = {
 				
 				// Don't delete if it's still deleting an entry (could happen if you press the key really fast)
 				// Also don't delete before organizing as it can screw up the handler
-				if(OmnibarPlus.timerAid.get("deleteEntry") || OmnibarPlus.willOrganize || !OmnibarPlus.delReleased) {
+				if(OmnibarPlus.timerAid.deleteEntry || OmnibarPlus.willOrganize || !OmnibarPlus.delReleased) {
 					return false;
 				}
 				
@@ -596,12 +594,8 @@ var OmnibarPlus = {
 	// Make sure all the paste commands trigger our .overrideURL
 	// Note that all the returns and checks are just prevention, I have no reason to put them here other than just making sure it works correctly
 	fixContextMenu: function(organize) {
-		if(gURLBar.inputBox) {
-			var getFromHere = gURLBar.inputBox;
-		} else {
-			// Don't know exactly in which version of firefox .inputBox was removed, I just noticed it in 9.0a1
-			var getFromHere = document.getAnonymousElementByAttribute(gURLBar, 'anonid', 'textbox-container').childNodes[0];
-		}
+		// Don't know exactly in which version of firefox .inputBox was removed, I just noticed it in 9.0a1
+		var getFromHere = gURLBar.inputBox || document.getAnonymousElementByAttribute(gURLBar, 'anonid', 'textbox-container').childNodes[0];
 		var contextMenu = document.getAnonymousElementByAttribute(getFromHere, 'anonid', 'input-box-contextmenu');
 		if(!contextMenu) { return; }
 		
@@ -655,24 +649,24 @@ var OmnibarPlus = {
 	},	
 		
 	// Left click: default omnibar functionality; Middle Click: open the search engine homepage
-	onEngineClick: function(event) {
-		var modKey = (OmnibarPlus.OS == 'Darwin') ? event.metaKey : event.ctrlKey;
+	onEngineClick: function(e) {
+		var modKey = (OmnibarPlus.OS == 'Darwin') ? e.metaKey : e.ctrlKey;
 		
-		if(event.button == 0 && !event.altKey && !modKey) {
+		if(e.button == 0 && !e.altKey && !modKey) {
 			document.getElementById('omnibar-engine-menu').openPopup(Omnibar._imageElBox, "after_end", -1, -1);
-			event.preventDefault();
-			event.stopPropagation();
+			e.preventDefault();
+			e.stopPropagation();
 		}
-		else if(event.button == 1
-		|| (event.button == 0 && (event.altKey || modKey)) ) {
-			OmnibarPlus.where = 'current';
-			if(event.button == 1 || event.altKey || (Omnibar._prefSvc.getBoolPref("browser.search.openintab") && gBrowser.getBrowserForTab(gBrowser.selectedTab).currentURI.spec != "about:blank")) {
-				OmnibarPlus.where = 'tab';
+		else if(e.button == 1
+		|| (e.button == 0 && (e.altKey || modKey)) ) {
+			var openHere = 'current';
+			if(e.button == 1 || e.altKey || (Omnibar._prefSvc.getBoolPref("browser.search.openintab") && gBrowser.getBrowserForTab(gBrowser.selectedTab).currentURI.spec != "about:blank")) {
+				openHere = 'tab';
 			}
-			openUILinkIn(Omnibar._ss.currentEngine.searchForm, OmnibarPlus.where);
+			openUILinkIn(Omnibar._ss.currentEngine.searchForm, openHere);
 			
-			event.preventDefault();
-			event.stopPropagation();
+			e.preventDefault();
+			e.stopPropagation();
 		}
 	}
 }
