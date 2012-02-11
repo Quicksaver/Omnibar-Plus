@@ -13,7 +13,6 @@ var OmnibarPlus = {
 		OmnibarPlus.willOrganize = false;
 		OmnibarPlus.escaped = false;
 		OmnibarPlus.selectedSuggestion = false;
-		OmnibarPlus.delReleased = true;
 		OmnibarPlus.LocationBarHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
 		
 		// OS string
@@ -73,8 +72,18 @@ var OmnibarPlus = {
 	set panelState(val) {
 		if(val) {
 			OmnibarPlus.panel._openAutocompletePopup(gURLBar, gURLBar);
+			OmnibarPlus.aSync(function() {
+				if(!OmnibarPlus.panel.mPopupOpen) { OmnibarPlus.panel.mPopupOpen = true; }
+				if(!OmnibarPlus.panel.popupOpen) { OmnibarPlus.panel.popupOpen = true; }
+				if(OmnibarPlus.panel.state != 'open') { OmnibarPlus.panel.state = 'open'; }
+			});
 		} else {
 			OmnibarPlus.panel.closePopup();
+			OmnibarPlus.aSync(function() {
+				if(OmnibarPlus.panel.mPopupOpen) { OmnibarPlus.panel.mPopupOpen = false; }
+				if(OmnibarPlus.panel.popupOpen) { OmnibarPlus.panel.popupOpen = false; }
+				if(OmnibarPlus.panel.state != 'closed') { OmnibarPlus.panel.state = 'closed'; }
+			});
 		}
 	},
 	
@@ -156,6 +165,17 @@ var OmnibarPlus = {
 				]
 			]);
 			
+			// mPopupOpen simply is not reliable in some cases, f.i. for a split second after deleting all entries it thinks the popup is closed when it is not,
+			// so it doesn't actually close when I want it to
+			OmnibarPlus.panel._closePopup = OmnibarPlus.panel.closePopup;
+			OmnibarPlus.panel.closePopup = OmnibarPlus.modifyFunction(OmnibarPlus.panel.closePopup, [
+				['this.mPopupOpen',
+				<![CDATA[
+				OmnibarPlus.panelState
+				]]>
+				]
+			]);
+			
 			OmnibarPlus.richlistbox._actualIndex = -1;
 			OmnibarPlus.richlistbox.__defineGetter__("_actualItem", function() {
 				if(this._actualIndex > -1 && this._actualIndex < this.childNodes.length) {
@@ -179,6 +199,7 @@ var OmnibarPlus = {
 			OmnibarPlus.richlistbox.appendChild = OmnibarPlus.richlistbox._appendChild;
 			
 			OmnibarPlus.panel.onPopupClick = OmnibarPlus.panel._onPopupClick;
+			OmnibarPlus.panel.closePopup = OmnibarPlus.panel._closePopup;
 			
 			OmnibarPlus.organizing = false;
 		}
@@ -479,35 +500,29 @@ var OmnibarPlus = {
 					return gURLBar._onKeyPress(e);
 				}
 				
-				// Don't delete if it's still deleting an entry (could happen if you press the key really fast)
-				// Also don't delete before organizing as it can screw up the handler
-				if(OmnibarPlus.timerAid.deleteEntry || OmnibarPlus.willOrganize || !OmnibarPlus.delReleased) {
+				// Don't delete before organizing as it can screw up the handler
+				if(OmnibarPlus.willOrganize) {
 					return false;
 				}
 				
 				// Delete entries from the popup list if applicable
-				// Can't delete many by pressing down the del key, only one at a time
 				if(OmnibarPlus.richlistbox.currentIndex > -1) {
-					OmnibarPlus.delReleased = false;
-					OmnibarPlus.listenerAid.add(window, "keyup", OmnibarPlus.delKeyReleased, true, true);
-					
 					OmnibarPlus.deletedIndex = OmnibarPlus.richlistbox.currentIndex;
 					OmnibarPlus.deletedText = OmnibarPlus.richlistbox.currentItem.getAttribute('text');
 					OmnibarPlus.richlistbox.removeChild(OmnibarPlus.richlistbox.currentItem);
 					
-					// Most of this is done aSync, otherwise for some reason the popup will not close if it's empty
-					OmnibarPlus.aSync(function() {
-						if(OmnibarPlus.richlist.length == 0) {
-							OmnibarPlus.panelState = false;
-							gURLBar.value = OmnibarPlus.deletedText;
-						} else {
-							if(OmnibarPlus.deletedIndex == OmnibarPlus.richlist.length) {
-								OmnibarPlus.deletedIndex--;
-							}
-							OmnibarPlus.doIndexes(OmnibarPlus.deletedIndex, OmnibarPlus.deletedIndex);
-							OmnibarPlus.panel.adjustHeight();
+					if(OmnibarPlus.richlist.length == 0) {
+						gURLBar.value = OmnibarPlus.deletedText;
+						OmnibarPlus.panelState = false;
+						OmnibarPlus.doIndexes();
+					}
+					else {
+						if(OmnibarPlus.deletedIndex == OmnibarPlus.richlist.length) {
+							OmnibarPlus.deletedIndex--;
 						}
-					}, "deleteEntry");
+						OmnibarPlus.doIndexes(OmnibarPlus.deletedIndex, OmnibarPlus.deletedIndex);
+						OmnibarPlus.panel.adjustHeight();
+					}
 					return true;
 				}
 				
@@ -516,19 +531,6 @@ var OmnibarPlus = {
 			default:
 				OmnibarPlus.doIndexes();
 				return gURLBar._onKeyPress(e);
-		}
-	},
-	
-	// to be fired when the del key is released after deleting an entry
-	delKeyReleased: function(e) {
-		if(OmnibarPlus.richlist.length == 0) {
-			OmnibarPlus.panelState = false;
-		}
-		
-		if(e.keyCode == e.DOM_VK_DELETE || !OmnibarPlus.panelState) {
-			OmnibarPlus.delReleased = true;
-		} else {
-			OmnibarPlus.listenerAid.add(window, "keyup", OmnibarPlus.delKeyReleased, true, true);
 		}
 	},
 	
