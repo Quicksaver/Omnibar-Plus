@@ -270,8 +270,9 @@ var setWatchers = function(obj) {
 // Object to aid in setting and removing all kind of listeners
 var listenerAid = {
 	handlers: new Array(),
+	modifyFunction: this.modifyFunction,
 	
-	add: function(obj, type, listener, capture, oneTime) {
+	add: function(obj, type, listener, capture, maxTriggers) {
 		if(obj.addEventListener) {
 			for(var i=0; i<this.handlers.length; i++) {
 				if(this.handlers[i].obj == obj && this.handlers[i].type == type && this.handlers[i].capture == capture && this.compareListener(this.handlers[i].listener, listener)) {
@@ -279,47 +280,36 @@ var listenerAid = {
 				}
 			}
 			
+			if(maxTriggers === true) {
+				maxTriggers = 1;
+			}
+			
+			if(maxTriggers) {
+				listener = this.modifyListener(listener);
+			}
+			
 			var newHandler = {
 				obj: obj,
 				type: type,
 				listener: listener,
 				capture: capture,
-				removeSelf: null,
+				maxTriggers: null,
+				triggerCount: null,
 				aid: null
 			};
 			this.handlers.push(newHandler);
 			var i = this.handlers.length -1;
-			this.handlers[i].obj.addEventListener(this.handlers[i].type, this.handlers[i].listener, this.handlers[i].capture);
-			
-			if(oneTime) {
-				if(!this.handlers[i].obj._listenerAidHandlers) {
-					this.handlers[i].obj._listenerAidHandlers = [];
-				}
-				this.handlers[i].obj._listenerAidHandlers.push(this.handlers[i]);
+			if(maxTriggers) {
+				this.handlers[i].triggerCount = 0;
+				this.handlers[i].maxTriggers = maxTriggers;
 				this.handlers[i].aid = this;
-				this.handlers[i].removeSelf = function(e) {
-					var targets = ['target', 'originalTarget', 'currentTarget'];
-					for(var a = 0; a < targets.length; a++) {
-						if(!e[targets[a]] || !e[targets[a]]._listenerAidHandlers) {
-							continue;
-						}
-						
-						for(var i = 0; i < e[targets[a]]._listenerAidHandlers.length; i++) {
-							if(e[targets[a]]._listenerAidHandlers[i].obj == e[targets[a]] // supposedly this would always return true?
-							&& e[targets[a]]._listenerAidHandlers[i].type == e.type
-								&& ((e[targets[a]]._listenerAidHandlers[i].capture && e.eventPhase == e.CAPTURING_PHASE)
-								|| (!e[targets[a]]._listenerAidHandlers[i].capture && e.eventPhase != e.CAPTURING_PHASE))
-							) {
-								e[targets[a]]._listenerAidHandlers[i].aid.remove(e[targets[a]], e[targets[a]]._listenerAidHandlers[i].type, e[targets[a]]._listenerAidHandlers[i].listener, e[targets[a]]._listenerAidHandlers[i].capture);
-								e[targets[a]]._listenerAidHandlers[i].aid.remove(e[targets[a]], e[targets[a]]._listenerAidHandlers[i].type, e[targets[a]]._listenerAidHandlers[i].removeSelf, e[targets[a]]._listenerAidHandlers[i].capture);
-								e[targets[a]]._listenerAidHandlers.splice(i, 1);
-								return;
-							}
-						}
-					}
-				};
-				this.add(this.handlers[i].obj, this.handlers[i].type, this.handlers[i].removeSelf, this.handlers[i].capture);
+				if(!obj._listenerAidHandlers) {
+					obj._listenerAidHandlers = [];
+				}
+				obj._listenerAidHandlers.push(this.handlers[i]);
 			}
+			
+			this.handlers[i].obj.addEventListener(this.handlers[i].type, this.handlers[i].listener, this.handlers[i].capture);
 		}
 		else if(obj.events && obj.events.addListener) {
 			for(var i=0; i<this.handlers.length; i++) {
@@ -341,14 +331,12 @@ var listenerAid = {
 		return true;
 	},
 	
-	remove: function(obj, type, listener, capture) {
+	remove: function(obj, type, listener, capture, maxTriggers) {
 		if(obj.removeEventListener) {
-			var newHandler = {
-				obj: obj,
-				type: type,
-				listener: listener,
-				capture: capture
-			};
+			if(maxTriggers) {
+				listener = this.modifyListener(listener);
+			}
+			
 			for(var i=0; i<this.handlers.length; i++) {
 				if(this.handlers[i].obj == obj && this.handlers[i].type == type && this.handlers[i].capture == capture && this.compareListener(this.handlers[i].listener, listener)) {
 					this.handlers[i].obj.removeEventListener(this.handlers[i].type, this.handlers[i].listener, this.handlers[i].capture);
@@ -358,11 +346,6 @@ var listenerAid = {
 			}
 		}
 		else if(obj.events && obj.events.removeListener) {
-			var newHandler = {
-				obj: obj,
-				type: type,
-				listener: listener
-			};
 			for(var i=0; i<this.handlers.length; i++) {
 				if(this.handlers[i].obj == obj && this.handlers[i].type == type && this.compareListener(this.handlers[i].listener, listener)) {
 					this.handlers[i].obj.events.removeListener(this.handlers[i].type, this.handlers[i].listener);
@@ -394,6 +377,52 @@ var listenerAid = {
 			return true;
 		}
 		return false;
+	},
+	
+	modifyListener: function(listener) {
+		var newListener = this.modifyFunction(listener, [
+			['{',
+			<![CDATA[
+			{
+				var targets = ['target', 'originalTarget', 'currentTarget'];
+				if(typeof(event) != 'undefined') {
+					var e = event;
+				} else if(typeof(e) == 'undefined') {
+					var e = arguments[0];
+				}
+				
+				mainRemoveListenerLoop:
+				for(var a = 0; a < targets.length; a++) {
+					if(!e[targets[a]] || !e[targets[a]]._listenerAidHandlers) {
+						continue;
+					}
+					
+					for(var i = 0; i < e[targets[a]]._listenerAidHandlers.length; i++) {
+						if(e[targets[a]]._listenerAidHandlers[i].obj == e[targets[a]] // supposedly this would always return true?
+						&& e[targets[a]]._listenerAidHandlers[i].type == e.type
+							&& ((e[targets[a]]._listenerAidHandlers[i].capture && e.eventPhase == e.CAPTURING_PHASE)
+							|| (!e[targets[a]]._listenerAidHandlers[i].capture && e.eventPhase != e.CAPTURING_PHASE))
+						&& e[targets[a]]._listenerAidHandlers[i].aid.compareListener(e[targets[a]]._listenerAidHandlers[i].listener, arguments.callee)) {
+							e[targets[a]]._listenerAidHandlers[i].triggerCount++;
+							if(e[targets[a]]._listenerAidHandlers[i].triggerCount == e[targets[a]]._listenerAidHandlers[i].maxTriggers) {
+								e[targets[a]]._listenerAidHandlers[i].aid.remove(e[targets[a]], e[targets[a]]._listenerAidHandlers[i].type, e[targets[a]]._listenerAidHandlers[i].listener, e[targets[a]]._listenerAidHandlers[i].capture);
+								e[targets[a]]._listenerAidHandlers.splice(i, 1);
+								break mainRemoveListenerLoop;
+							}
+						}
+					}
+				}
+			]]>
+			],
+			
+			// This is just so my editor correctly assumes the pairs of {}, it has nothing to do with the add-on itself
+			['}',
+			<![CDATA[
+			}
+			]]>
+			]
+		]);
+		return newListener;
 	}
 };
 
