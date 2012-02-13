@@ -8,7 +8,7 @@ var deletedIndex = null;
 var deletedText = null;
 
 var goButton = document.getElementById('go-button');
-if(!panel) { var panel = document.getElementById('PopupAutoCompleteRichResult'); }
+var panel = document.getElementById('PopupAutoCompleteRichResult');
 var richlistbox = panel.richlistbox;
 var richlist = richlistbox.childNodes;
 
@@ -269,6 +269,7 @@ var urlBarKeyDown = function(e) {
 		case e.DOM_VK_ESCAPE:
 			escaped = true;
 			doIndexes();
+			panelState = false;
 			return gURLBar._onKeyPress(e);
 		
 		case e.DOM_VK_DELETE:
@@ -411,6 +412,7 @@ var fireOnSelect = function(e) {
 		gURLBar.value = richlistbox._actualItem.getAttribute('url');
 	}
 	doIndexes();
+	panelState = false;
 	
 	// Compatibility fix for Auto-Complete add-on
 	// It resets the bar value when bluring, thus completely screwing up here, by putting on a timer we get the same effect after the value is executed.
