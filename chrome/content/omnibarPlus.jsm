@@ -44,7 +44,7 @@ var toggleMiddleClick = function() {
 
 // Toggle organize functionality
 var toggleOrganize = function() {
-	if(prefAid.organize) {
+	if(prefAid.organizePopup) {
 		moduleAid.load("chrome://"+objPathString+"/content/organize.jsm");
 	}
 };
