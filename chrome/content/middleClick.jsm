@@ -32,12 +32,12 @@ var onEngineClick = function(e) {
 var toggleMiddleClick = function() {
 	omnibarClicker.removeAttribute('onclick'); // We need to remove this first
 	if(prefAid.middleClick) {
-		listenerAid.remove(omnibarClicker, 'click', Omnibar.onButtonClick, false, false, true);
+		listenerAid.remove(omnibarClicker, 'click', Omnibar.onButtonClick, false, false);
 		listenerAid.add(omnibarClicker, 'click', onEngineClick, false);
 	}
 	else {
 		listenerAid.remove(omnibarClicker, 'click', onEngineClick, false); 
-		listenerAid.add(omnibarClicker, 'click', Omnibar.onButtonClick, false, false, true);
+		listenerAid.add(omnibarClicker, 'click', Omnibar.onButtonClick, false, false);
 	}
 };
 

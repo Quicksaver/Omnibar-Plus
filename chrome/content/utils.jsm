@@ -272,9 +272,12 @@ var listenerAid = {
 	handlers: [],
 	owner: this,
 	
-	add: function(obj, type, aListener, capture, maxTriggers, dontBindOwner) {
+	// if maxTriggers is set to the boolean false, it acts as a switch to not bind the function to our object
+	// but if it's set to anything else it will bind the function,
+	// thus I can't have an unbound function with maxTriggers
+	add: function(obj, type, aListener, capture, maxTriggers) {
 		var unboundListener = this.modifyListener(aListener, maxTriggers, true);
-		var listener = this.modifyListener(aListener, maxTriggers, dontBindOwner);
+		var listener = this.modifyListener(aListener, maxTriggers);
 		
 		if(obj.addEventListener) {
 			if(maxTriggers === true) {
@@ -293,21 +296,11 @@ var listenerAid = {
 				unboundListener: unboundListener,
 				listener: listener,
 				capture: capture,
-				maxTriggers: null,
-				triggerCount: null,
-				aid: null
+				maxTriggers: (maxTriggers) ? maxTriggers : null,
+				triggerCount: (maxTriggers) ? 0 : null
 			};
 			this.handlers.push(newHandler);
 			var i = this.handlers.length -1;
-			if(maxTriggers) {
-				this.handlers[i].triggerCount = 0;
-				this.handlers[i].maxTriggers = maxTriggers;
-				this.handlers[i].aid = this;
-				if(!obj._listenerAidHandlers) {
-					obj._listenerAidHandlers = [];
-				}
-				obj._listenerAidHandlers.push(this.handlers[i]);
-			}
 			
 			this.handlers[i].obj.addEventListener(this.handlers[i].type, this.handlers[i].listener, this.handlers[i].capture);
 		}
@@ -332,7 +325,7 @@ var listenerAid = {
 		return true;
 	},
 	
-	remove: function(obj, type, aListener, capture, maxTriggers, dontBindOwner) {
+	remove: function(obj, type, aListener, capture, maxTriggers) {
 		var unboundListener = this.modifyListener(aListener, maxTriggers, true);
 			
 		if(obj.removeEventListener) {
@@ -378,7 +371,7 @@ var listenerAid = {
 		return false;
 	},
 	
-	modifyListener: function(listener, maxTriggers, dontBindOwner) {
+	modifyListener: function(listener, maxTriggers, forceUnbound) {
 		var newListener = listener;
 		
 		if(maxTriggers) {
@@ -395,20 +388,15 @@ var listenerAid = {
 					
 					mainRemoveListenerLoop:
 					for(var a = 0; a < targets.length; a++) {
-						if(!e[targets[a]] || !e[targets[a]]._listenerAidHandlers) {
-							continue;
-						}
-						
-						for(var i = 0; i < e[targets[a]]._listenerAidHandlers.length; i++) {
-							if(e[targets[a]]._listenerAidHandlers[i].obj == e[targets[a]] // supposedly this would always return true?
-							&& e[targets[a]]._listenerAidHandlers[i].type == e.type
-								&& ((e[targets[a]]._listenerAidHandlers[i].capture && e.eventPhase == e.CAPTURING_PHASE)
-								|| (!e[targets[a]]._listenerAidHandlers[i].capture && e.eventPhase != e.CAPTURING_PHASE))
-							&& e[targets[a]]._listenerAidHandlers[i].aid.compareListener(e[targets[a]]._listenerAidHandlers[i].unboundListener, arguments.callee)) {
-								e[targets[a]]._listenerAidHandlers[i].triggerCount++;
-								if(e[targets[a]]._listenerAidHandlers[i].triggerCount == e[targets[a]]._listenerAidHandlers[i].maxTriggers) {
-									e[targets[a]]._listenerAidHandlers[i].aid.remove(e[targets[a]], e[targets[a]]._listenerAidHandlers[i].type, e[targets[a]]._listenerAidHandlers[i].unboundListener, e[targets[a]]._listenerAidHandlers[i].capture);
-									e[targets[a]]._listenerAidHandlers.splice(i, 1);
+						for(var i = 0; i < this.listenerAid.handlers.length; i++) {
+							if(this.listenerAid.handlers[i].obj == e[targets[a]]
+							&& this.listenerAid.handlers[i].type == e.type
+								&& ((this.listenerAid.handlers[i].capture && e.eventPhase == e.CAPTURING_PHASE)
+								|| (!this.listenerAid.handlers[i].capture && e.eventPhase != e.CAPTURING_PHASE))
+							&& this.listenerAid.compareListener(this.listenerAid.handlers[i].unboundListener, arguments.callee)) {
+								this.listenerAid.handlers[i].triggerCount++;
+								if(this.listenerAid.handlers[i].triggerCount == this.listenerAid.handlers[i].maxTriggers) {
+									this.listenerAid.remove(e[targets[a]], this.listenerAid.handlers[i].type, this.listenerAid.handlers[i].unboundListener, this.listenerAid.handlers[i].capture);
 									break mainRemoveListenerLoop;
 								}
 							}
@@ -426,7 +414,7 @@ var listenerAid = {
 			]);
 		}
 		
-		if(!dontBindOwner) {
+		if(maxTriggers !== false && !forceUnbound) {
 			newListener = newListener.bind(this.owner);
 		}
 		return newListener;
