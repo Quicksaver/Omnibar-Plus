@@ -9,6 +9,10 @@
 	box-shadow: inset hsla(190,50%,35%,.15) 0 0 0 1px, inset hsla(0,0%,100%,.2) 0 0 0 2px !important;
 }
 
+#PopupAutoComplete[animatedPopup="sea"] .autocomplete-treebody::-moz-tree-row(selected) {
+	border: 1px solid hsla(190,57%,69%,1) !important;
+	background: padding-box -moz-linear-gradient(hsla(190,100%,96%,1) 0%, hsla(190,100%,91%,1) 100%) repeat-x !important;
+}
 #PopupAutoCompleteRichResult[animatedPopup="sea"] richlistitem.autocomplete-richlistitem[current],
 #PopupAutoCompleteRichResult[animatedPopup="sea"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][current],
 #PopupAutoCompleteRichResult[animatedPopup="sea"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][current] {
@@ -16,6 +20,9 @@
 	background: border-box -moz-linear-gradient(left, hsla(190,100%,2%,.06) 25px, hsla(190,57%,69%,0) 25px, hsla(190,57%,69%,.75)) repeat-y, padding-box -moz-linear-gradient(hsla(190,100%,96%,1) 0%, hsla(190,100%,91%,1) 100%) repeat-x !important;
 }
 
+#PopupAutoComplete[animatedPopup="sea"] .autocomplete-treebody::-moz-tree-row(hover) {
+	background-image: -moz-linear-gradient(hsla(190,89%,93%,1) 0, hsla(190,94%,88%,1) 100%) !important;
+}
 #PopupAutoCompleteRichResult[animatedPopup="sea"] richlistitem.autocomplete-richlistitem[selected]:active:hover,
 #PopupAutoCompleteRichResult[animatedPopup="sea"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][selected]:active:hover,
 #PopupAutoCompleteRichResult[animatedPopup="sea"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][selected]:active:hover {

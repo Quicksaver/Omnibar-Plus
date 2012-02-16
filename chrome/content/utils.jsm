@@ -500,6 +500,7 @@ var prefAid = {
 	length: 0,
 	
 	init: function(branch, prefList) {
+		// Don't do Application as some kind of this.fuel, as it keeps an array of all current prefs and it's unnecessary to keep all that in the code
 		var Application = Components.classes["@mozilla.org/fuel/application;1"].getService(Components.interfaces.fuelIApplication);
 		
 		for(var i=0; i<prefList.length; i++) {
@@ -604,5 +605,65 @@ var moduleAid = {
 		this._loadedModules.push(aPath);
 	}
 };
-
 var mozIJSSubScriptLoader = null;
+
+// This allows me to handle loading and unloading of stylesheets in a quick and easy way
+var styleAid = {
+	sss: null,
+	ios: null,
+	_loadedSheets: [],
+	
+	init: function() {
+		this.sss = Components.classes["@mozilla.org/content/style-sheet-service;1"].getService(Components.interfaces.nsIStyleSheetService);
+		this.ios = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
+		this.init = function() { return false; };
+		return true;
+	},
+	
+	load: function(aName, aPath) {
+		this.init();
+		var path = this.convert(aPath);
+		
+		this.unload(aName, path);
+		this._loadedSheets.push({
+			name: aName,
+			path: path,
+			uri: this.ios.newURI(path, null, null)
+		});
+		var i = this._loadedSheets.length -1;
+		if(!this.sss.sheetRegistered(this._loadedSheets[i].uri, this.sss.AGENT_SHEET)) {
+			this.sss.loadAndRegisterSheet(this._loadedSheets[i].uri, this.sss.AGENT_SHEET);
+		}
+		return true;
+	},
+	
+	unload: function(aName, aPath) {
+		this.init();
+		
+		if(typeof(aName) == 'array') {
+			for(var a = 0; a < aName.length; a++) {
+				this.unload(aName[a]);
+			}
+			return true;
+		};
+		
+		var path = this.convert(aPath);
+		for(var i = 0; i < this._loadedSheets.length; i++) {
+			if(this._loadedSheets[i].name == aName || (path && path == this._loadedSheets[i].path)) {
+				if(this.sss.sheetRegistered(this._loadedSheets[i].uri, this.sss.AGENT_SHEET)) {
+					this.sss.unregisterSheet(this._loadedSheets[i].uri, this.sss.AGENT_SHEET);
+				}
+				this._loadedSheets.splice(i, 1);
+				return true;
+			}
+		}
+		return false;
+	},
+	
+	convert: function(aPath) {
+		if(aPath && aPath.indexOf("chrome://") != 0 && aPath.indexOf("data:text/css") != 0) {
+			return 'data:text/css,' + encodeURIComponent(aPath);
+		}
+		return aPath;
+	}
+};

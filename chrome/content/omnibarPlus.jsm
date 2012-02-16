@@ -15,10 +15,8 @@ var init = function() {
 	prefAid.listen('f6', function() { toggleF6(); });
 	prefAid.listen('middleClick', function() { toggleMiddleClick(); });
 	prefAid.listen('organizePopup', function() { toggleOrganize(); });
-	prefAid.listen('animated', toggleAnimated);
-	prefAid.listen('animatedScheme', toggleAnimated);
+	prefAid.listen('animated', function() { toggleAnimated(); });
 	prefAid.listen('engineFocus', function() { toggleEngineFocus(); });
-	prefAid.listen('popupstyle', toggleAnimated);
 	
 	toggleF6();
 	toggleMiddleClick();		
@@ -59,9 +57,7 @@ var toggleF6 = function() {
 // Toggle animated effects for the suggestion list
 var toggleAnimated = function() {
 	if(prefAid.animated) {
-		panel.setAttribute('animatedPopup', prefAid.animatedScheme);
-	} else {
-		panel.removeAttribute('animatedPopup');
+		moduleAid.load("chrome://"+objPathString+"/content/animated.jsm");
 	}
 };
 

@@ -14,12 +14,3 @@ overlay   chrome://omnibar/content/options.xul   chrome://omnibarplus/content/om
 style     chrome://omnibar/content/options.xul   chrome://omnibarplus/skin/options.css
 
 overlay   chrome://omnibarplus/content/omnibarOptions.xul   chrome://omnibarplus/content/omnibarOptionsMac.xul   os=Darwin
-
-style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/autocompletepopup.css
-style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/sky.css
-style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/ruby.css
-style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/taupe.css
-style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/grass.css
-style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/sea.css
-style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/lavender.css
-style     chrome://browser/content/browser.xul   chrome://omnibarplus/skin/bubblegum.css
