@@ -41,8 +41,10 @@ var OmnibarPlusOptions = {
 			OmnibarPlusOptions.textboxes[i].value = document.getElementById(OmnibarPlusOptions.textboxes[i].getAttribute('preference')).value;
 		}
 		
+		document.getElementsByTagName('radiogroup')[0].setAttribute('oncommand', 'OmnibarPlusOptions.toggleCanOrganize();');
+		
 		OmnibarPlusOptions.toggleAnimated();
-		OmnibarPlusOptions.toggleOrganize();
+		OmnibarPlusOptions.toggleCanOrganize();
 		OmnibarPlusOptions.fillListRows();
 	},
 	
@@ -56,8 +58,18 @@ var OmnibarPlusOptions = {
 		}
 	},
 	
+	toggleCanOrganize: function() {
+		var c = document.getElementsByTagName('radiogroup')[0];
+		if(c.value == 'SIMPLE') {
+			document.getElementById('organizeCheckbox').setAttribute('disabled', 'true');
+		} else {
+			document.getElementById('organizeCheckbox').removeAttribute('disabled');
+		}
+		OmnibarPlusOptions.toggleOrganize();
+	},
+	
 	toggleOrganize: function() {
-		var o = document.getElementById('organizeCheckbox').checked;
+		var o = document.getElementById('organizeCheckbox').checked && !document.getElementById('organizeCheckbox').getAttribute('disabled');
 		var nodes = document.getElementsByClassName('organize');
 		for(var i=0; i<nodes.length; i++) {
 			if(o) {

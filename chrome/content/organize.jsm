@@ -1,3 +1,8 @@
+// This requires the utils module
+moduleAid.load("chrome://"+objPathString+"/content/utils.jsm");
+
+var usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
+
 var organizing = false;
 var willOrganize = false;
 var escaped = false;
@@ -436,6 +441,9 @@ var fireOnSelect = function(e) {
 
 // Toggle Organize Functionality, we'll use a delay to let the popup fill up before organizing it
 var toggleOrganize = function() {
+	// We don't organize the simple autocomplete
+	if(!usingRichlist) { return; }
+	
 	// Compatibility with latest versions of firefox (aurora FF11 as far as I can tell doesn't have LocationBarHelpers anymore)
 	// Setting these always, the switch On/Off are inside the functions themselves
 	gURLBar.setAttribute('onsearchbegin', objName+'.searchBegin();');
