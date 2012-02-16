@@ -269,7 +269,6 @@ var urlBarKeyDown = function(e) {
 		case e.DOM_VK_ESCAPE:
 			escaped = true;
 			doIndexes();
-			panelState = false;
 			return gURLBar._onKeyPress(e);
 		
 		case e.DOM_VK_DELETE:
