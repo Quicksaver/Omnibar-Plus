@@ -504,8 +504,10 @@ var prefAid = {
 		var Application = Components.classes["@mozilla.org/fuel/application;1"].getService(Components.interfaces.fuelIApplication);
 		
 		for(var i=0; i<prefList.length; i++) {
-			this._prefObjects[prefList[i]] = Application.prefs.get('extensions.'+branch+'.' + prefList[i]);
-			this._setPref(prefList[i]);
+			if(!this._prefObjects[prefList[i]]) {
+				this._prefObjects[prefList[i]] = Application.prefs.get('extensions.'+branch+'.' + prefList[i]);
+				this._setPref(prefList[i]);
+			}
 		}
 	},
 	

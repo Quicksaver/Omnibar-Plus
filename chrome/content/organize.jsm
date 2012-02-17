@@ -1,6 +1,3 @@
-// This requires the utils module
-moduleAid.load("chrome://"+objPathString+"/content/utils.jsm");
-
 var usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
 
 var organizing = false;
@@ -542,6 +539,9 @@ var toggleOrganize = function() {
 		organizing = false;
 	}
 };
+
+prefAid.init(objPathString, ['organizePopup', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
+prefAid.listen('organizePopup', function() { toggleOrganize(); });
 
 // Grab types of entries to populate the organize list
 // Also sets whether Peers/FastestFox is enabled

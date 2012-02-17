@@ -1,16 +1,3 @@
-// This requires the utils module
-moduleAid.load("chrome://"+objPathString+"/content/utils.jsm");
-
-// There's a weird bug where the scheme will not be changed on the first change for some reason, so this prevents it
-var schemeListener = function() {
-	toggleAnimated(); 
-	toggleAnimated();
-	schemeListener = function() {
-		toggleAnimated();
-	};
-};
-prefAid.listen('animatedScheme', function() { schemeListener(); });
-
 var usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
 
 var toggleAnimated = function() {
@@ -44,5 +31,18 @@ var toggleAnimated = function() {
 		}
 	}
 };
+
+prefAid.init(objPathString, ['animated', 'animatedScheme']);
+prefAid.listen('animated', function() { toggleAnimated(); });
+
+// There's a weird bug where the scheme will not be changed on the first change for some reason, so this prevents it
+var schemeListener = function() {
+	toggleAnimated();
+	toggleAnimated();
+	schemeListener = function() {
+		toggleAnimated();
+	};
+};
+prefAid.listen('animatedScheme', function() { schemeListener(); });
 
 toggleAnimated();

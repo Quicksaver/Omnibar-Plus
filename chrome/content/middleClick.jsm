@@ -1,6 +1,3 @@
-// This requires the utils module
-moduleAid.load("chrome://"+objPathString+"/content/utils.jsm");
-
 // OS string
 var OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
 
@@ -40,5 +37,8 @@ var toggleMiddleClick = function() {
 		listenerAid.add(omnibarClicker, 'click', Omnibar.onButtonClick, false, false);
 	}
 };
+
+prefAid.init(objPathString, ['middleClick']);
+prefAid.listen('middleClick', function() { toggleMiddleClick(); });
 
 toggleMiddleClick();

@@ -1,6 +1,3 @@
-// This requires the utils module
-moduleAid.load("chrome://"+objPathString+"/content/utils.jsm");
-
 var engineName = document.getElementById('omnibar-defaultEngineName');
 setWatchers(engineName);
 
@@ -11,5 +8,8 @@ var toggleEngineFocus = function() {
 		engineName.removePropertyWatcher('value', openLocation);
 	}
 };
+
+prefAid.init(objPathString, ['engineFocus']);
+prefAid.listen('engineFocus', function() { toggleEngineFocus(); });
 
 toggleEngineFocus();
