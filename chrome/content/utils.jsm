@@ -30,23 +30,17 @@ var hideIt = function(aNode, show) {
 };
 
 // allows me to modify a function quickly from within my scripts
-// Note to self, this returns anonymous functions, make sure this doesn't become an issue when modifying certain functions
+// Note to self, by using the Function() method to create functions I'm priving them from their original context,
+// that is, while inside a function created by that method in a module loaded by moduleAid I can't call 'subObj' (as in 'mainObj.subObj') by itself as I normally do,
+// I have to either use 'mainObj.subObj' or 'this.subObj'; I try to avoid this as that is how I'm building my modularized add-ons, 
+// so I'm using eval, at least for now until I find a better way to implement this functionality.
 var modifyFunction = function(aOriginal, aArray) {
 	var newCode = aOriginal.toString();
 	for(var i=0; i < aArray.length; i++) {
 		newCode = newCode.replace(aArray[i][0], aArray[i][1].replace("{([objName])}", objName));
 	}
 	
-	var listArguments = newCode.substring(newCode.indexOf('(')+1, newCode.indexOf(')'));
-	var arrayArguments = (listArguments == '') ? [] : listArguments.split(', ');
-	// trim whitespaces from arguments if for some reason they exist
-	for(var e=0; e < arrayArguments.length; e++) {
-		arrayArguments[e] = arrayArguments[e].replace(/^\s*([\S\s]*?)\s*$/, '$1');
-	}
-	
-	newCode = newCode.substring(newCode.indexOf('{')+1, newCode.lastIndexOf('}'));
-	
-	var ret = new Function(arrayArguments, newCode);
+	eval('var ret = ' + newCode + ';');
 	return ret;
 };
 
@@ -380,23 +374,18 @@ var listenerAid = {
 				<![CDATA[
 				{
 					var targets = ['target', 'originalTarget', 'currentTarget'];
-					if(typeof(event) != 'undefined') {
-						var e = event;
-					} else if(typeof(e) == 'undefined') {
-						var e = arguments[0];
-					}
 					
 					mainRemoveListenerLoop:
 					for(var a = 0; a < targets.length; a++) {
 						for(var i = 0; i < this.listenerAid.handlers.length; i++) {
-							if(this.listenerAid.handlers[i].obj == e[targets[a]]
-							&& this.listenerAid.handlers[i].type == e.type
-								&& ((this.listenerAid.handlers[i].capture && e.eventPhase == e.CAPTURING_PHASE)
-								|| (!this.listenerAid.handlers[i].capture && e.eventPhase != e.CAPTURING_PHASE))
+							if(this.listenerAid.handlers[i].obj == arguments[0][targets[a]]
+							&& this.listenerAid.handlers[i].type == arguments[0].type
+								&& ((this.listenerAid.handlers[i].capture && arguments[0].eventPhase == arguments[0].CAPTURING_PHASE)
+								|| (!this.listenerAid.handlers[i].capture && arguments[0].eventPhase != arguments[0].CAPTURING_PHASE))
 							&& this.listenerAid.compareListener(this.listenerAid.handlers[i].unboundListener, arguments.callee)) {
 								this.listenerAid.handlers[i].triggerCount++;
 								if(this.listenerAid.handlers[i].triggerCount == this.listenerAid.handlers[i].maxTriggers) {
-									this.listenerAid.remove(e[targets[a]], this.listenerAid.handlers[i].type, this.listenerAid.handlers[i].unboundListener, this.listenerAid.handlers[i].capture);
+									this.listenerAid.remove(arguments[0][targets[a]], this.listenerAid.handlers[i].type, this.listenerAid.handlers[i].unboundListener, this.listenerAid.handlers[i].capture);
 									break mainRemoveListenerLoop;
 								}
 							}
@@ -420,6 +409,8 @@ var listenerAid = {
 		return newListener;
 	}
 };
+// remove every listener placed when closing the window
+listenerAid.add(window, "unload", function() { listenerAid.clean(); }, false, true);
 
 // this lets me run functions asyncronously, basically it's a one shot timer with a delay of 0msec
 var aSync = function(aFunc) {
@@ -530,48 +521,107 @@ var prefAid = {
 	}
 };
 
-// Private browsing mode listener as on https://developer.mozilla.org/En/Supporting_private_browsing_mode, with a few modifications
-var PrivateBrowsingListener = {
-	OS: null,
-	autoStarted: false,
-	inPrivateBrowsing: false, // whether we are in private browsing mode
-	watcher: null, // the watcher object
+// Create the observer object from a function if that is what is provided and registers it
+var observerAid = {
+	obsService: null,
+	observers: [],
 	
-	init: function(aWatcher) {
-		this.watcher = aWatcher;
+	init: function() {
+		this.obsService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
+		this.init = function() { return false; };
+		return true;
+	},
+	
+	createObject: function(anObserver) {
+		return (typeof(anObserver) == 'function') ? { observe: anObserver } : anObserver;
+	},
+	
+	add: function(anObserver, aTopic, ownsWeak) {
+		this.init();
+		var observer = this.createObject(anObserver);
 		
-		this.OS = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
-		this.OS.addObserver(this, "private-browsing", false);
-		this.OS.addObserver(this, "quit-application", false);
+		for(var i = 0; i < this.observers.length; i++) {
+			if(this.observers[i].observer == observer && this.observers[i].topic == aTopic) {
+				return false;
+			}
+		}
 		
-		var pbs = Components.classes["@mozilla.org/privatebrowsing;1"].getService(Components.interfaces.nsIPrivateBrowsingService);
-		this.inPrivateBrowsing = pbs.privateBrowsingEnabled;
-		this.autoStarted = pbs.autoStarted;
-		if(this.autoStarted && this.watcher && "autoStarted" in this.watcher) {
-			this.watcher.autoStarted();
+		var newObs = {
+			topic: aTopic,
+			observer: observer
+		};
+		var i = this.observers.length;
+		this.observers.push(newObs);
+		this.obsService.addObserver(this.observers[i].observer, aTopic, ownsWeak);
+		return true;
+	},
+	
+	remove: function(anObserver, aTopic) {
+		this.init();
+		var observer = this.createObject(anObserver);
+		
+		for(var i = 0; i < this.observers.length; i++) {
+			if(this.observers[i].observer == observer && this.observers[i].topic == aTopic) {
+				this.obsService.removeObserver(this.observers[i].observer, this.observers[i].topic);
+				this.observers.splice(i, 1);
+				return true;
+			}
+		}
+		return false;
+	}
+};
+
+// Private browsing mode listener as on https://developer.mozilla.org/En/Supporting_private_browsing_mode, with a few modifications
+// Prepares an object to be used as a pb listener, expects methods autoStarted, onEnter, onExit, onQuit and applies them accordingly
+var privateBrowsingAid = {
+	pbService: null,
+	get autoStarted () { this.init(); return this.pbService.autoStarted; },
+	get inPrivateBrowsing () { this.init(); return this.pbService.privateBrowsingEnabled; },
+	
+	init: function() {
+		this.pbService = Components.classes["@mozilla.org/privatebrowsing;1"].getService(Components.interfaces.nsIPrivateBrowsingService);
+		this.init = function() { return false; };
+		return true;
+	},
+	
+	prepare: function(aWatcher) {
+		var watcherObj = aWatcher;
+		if(!watcherObj.observe) {
+			watcherObj.observe = function(aSubject, aTopic, aData) {
+				if(aTopic == "private-browsing") {
+					if(aData == "enter" && this.onEnter) {
+						this.onEnter();
+					} else if(aData == "exit" && this.onExit) {
+						this.onExit();
+					}
+				} else if(aTopic == "quit-application" && this.onQuit) {
+					this.onQuit();
+				}
+			};
+		}
+		if(!watcherObj.autoStarted) { watcherObj.autoStarted = null; }
+		if(!watcherObj.onEnter) { watcherObj.onEnter = null; }
+		if(!watcherObj.onExit) { watcherObj.onExit = null; }
+		if(!watcherObj.onQuit) { watcherObj.onQuit = null; }
+		return watcherObj;
+	},
+	
+	addWatcher: function(aWatcher) {
+		var watcher = this.prepare(aWatcher);
+		
+		observerAid.add(watcher, "private-browsing");
+		observerAid.add(watcher, "quit-application");
+		
+		if(this.autoStarted && watcher.autoStarted) {
+			watcher.autoStarted();
 		}
 	},
 	
-	observe: function(aSubject, aTopic, aData) {
-		if(aTopic == "private-browsing") {
-			if(aData == "enter") {
-				this.inPrivateBrowsing = true;
-				if(this.watcher && "onEnter" in this.watcher) {
-					this.watcher.onEnter();
-				}
-			} else if(aData == "exit") {
-				this.inPrivateBrowsing = false;
-				if(this.watcher && "onExit" in this.watcher) {
-					this.watcher.onExit();
-				}
-			}
-		} else if(aTopic == "quit-application") {
-			this.OS.removeObserver(this, "quit-application");
-			this.OS.removeObserver(this, "private-browsing");
-			if(this.watcher && "onQuit" in this.watcher) {
-				this.watcher.onQuit();
-			}
-		}
+	removeWatcher: function(aWatcher) {
+		var watcher = this.prepare(aWatcher);
+		
+		observerAid.remove(watcher, "private-browsing");
+		observerAid.remove(watcher, "quit-application");
 	}
 };
 
@@ -642,7 +692,7 @@ var styleAid = {
 	unload: function(aName, aPath) {
 		this.init();
 		
-		if(typeof(aName) == 'array') {
+		if(typeof(aName) != 'string') {
 			for(var a = 0; a < aName.length; a++) {
 				this.unload(aName[a]);
 			}

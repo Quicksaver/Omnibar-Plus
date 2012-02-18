@@ -1,12 +1,7 @@
-// This requires the utils module
-moduleAid.load("chrome://"+objPathString+"/content/utils.jsm");
-
 var init = function() {
 	if(typeof(Omnibar) == 'undefined') { return; }
 	
 	prefAid.init(objPathString, ['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
-	
-	this.panel = document.getElementById('PopupAutoCompleteRichResult');
 	
 	// this actually helps
 	gURLBar[objName] = this;
@@ -23,13 +18,7 @@ var init = function() {
 	toggleAnimated();
 	toggleEngineFocus();
 	
-	listenerAid.add(window, "unload", deinit, false, true);
-	
 	initialized = true;
-};
-
-var deinit = function() {
-	listenerAid.clean();
 };
 
 // Toggle middle click functionality
