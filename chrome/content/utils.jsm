@@ -1,3 +1,7 @@
+// Many times I can't use 'this' to refer to the owning var's context, so I'm setting 'this' as 'self', 
+// I can use 'self' from within functions, timers and listeners easily and to bind those functions to it as well
+var self = this;
+
 // Checks if aNode decends from aParent
 var hasAncestor = function(aNode, aParent, aWindow) {
 	if(!aNode || !aParent) { return false; };
@@ -264,7 +268,6 @@ var setWatchers = function(obj) {
 // Object to aid in setting and removing all kind of listeners
 var listenerAid = {
 	handlers: [],
-	owner: this,
 	
 	// if maxTriggers is set to the boolean false, it acts as a switch to not bind the function to our object
 	// but if it's set to anything else it will bind the function,
@@ -345,8 +348,14 @@ var listenerAid = {
 	},
 	
 	clean: function() {
-		for(var i=0; i<this.handlers.length; i++) {
+		var i = 0;
+		while(i < this.handlers.length) {
 			if(this.handlers[i].obj) {
+				if(this.handlers[i].obj == window && this.handlers[i].type == 'unload' && !this.handlers[i].capture) {
+					i++;
+					continue;
+				}
+				
 				if(this.handlers[i].obj.removeEventListener) {
 					this.handlers[i].obj.removeEventListener(this.handlers[i].type, this.handlers[i].listener, this.handlers[i].capture);
 				}
@@ -354,6 +363,7 @@ var listenerAid = {
 					this.handlers[i].obj.events.removeListener(this.handlers[i].type, this.handlers[i].listener);
 				}
 			}
+			this.handlers.splice(i, 1);
 		}
 		return true;
 	},
@@ -404,7 +414,7 @@ var listenerAid = {
 		}
 		
 		if(maxTriggers !== false && !forceUnbound) {
-			newListener = newListener.bind(this.owner);
+			newListener = newListener.bind(self);
 		}
 		return newListener;
 	}
@@ -421,21 +431,19 @@ var aSync = function(aFunc) {
 // Object to aid in setting, initializing and cancelling timers
 var timerAid = {
 	_timers: {},
-	owner: this,
 	
 	init: function(aName, aFunc, aDelay, aType) {
 		this.cancel(aName);
 		
 		var type = this._switchType(aType);
-		var self = this;
 		this._timers[aName] = {
 			timer: Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer),
 			handler: aFunc
 		};
 		this._timers[aName].timer.init(function(aSubject, aTopic, aData) {
-			self._timers[aName].handler.call(self.owner, aSubject, aTopic, aData);
+			timerAid._timers[aName].handler.call(self, aSubject, aTopic, aData);
 			if(aSubject.type == Components.interfaces.nsITimer.TYPE_ONE_SHOT) {
-				self.cancel(aName);
+				timerAid.cancel(aName);
 			}
 		}, aDelay, type);
 		
@@ -456,7 +464,7 @@ var timerAid = {
 		var type = this._switchType(aType);
 		var newTimer = {
 			timer: Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer),
-			handler: aFunc.bind(this.owner),
+			handler: aFunc.bind(self),
 			cancel: function() {
 				this.timer.cancel();
 			}
@@ -523,21 +531,17 @@ var prefAid = {
 
 // Create the observer object from a function if that is what is provided and registers it
 var observerAid = {
-	obsService: null,
+	// Since I'm immediatelly adding a 'quit-application' observer, I need the service right away, so no need in delaying it
+	obsService: Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService),
 	observers: [],
-	
-	init: function() {
-		this.obsService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
-		this.init = function() { return false; };
-		return true;
-	},
+	hasQuit: false,
 	
 	createObject: function(anObserver) {
-		return (typeof(anObserver) == 'function') ? { observe: anObserver } : anObserver;
+		var retObj = (typeof(anObserver) == 'function') ? { observe: anObserver } : anObserver;
+		return retObj;
 	},
 	
 	add: function(anObserver, aTopic, ownsWeak) {
-		this.init();
 		var observer = this.createObject(anObserver);
 		
 		for(var i = 0; i < this.observers.length; i++) {
@@ -557,7 +561,6 @@ var observerAid = {
 	},
 	
 	remove: function(anObserver, aTopic) {
-		this.init();
 		var observer = this.createObject(anObserver);
 		
 		for(var i = 0; i < this.observers.length; i++) {
@@ -568,8 +571,23 @@ var observerAid = {
 			}
 		}
 		return false;
+	},
+	
+	clean: function() {
+		// Sometimes the "unload" event comes before the "quit-application" observing, with "quit-application" most times not happening at all,
+		// this forces the observers for that to trigger before I remove them
+		if(!this.hasQuit) {
+			this.obsService.notifyObservers(null, 'quit-application', null);
+		}
+		
+		while(this.observers.length) {
+			this.obsService.removeObserver(this.observers[0].observer, this.observers[0].topic);
+			this.observers.shift();
+		}
 	}
 };
+observerAid.add(function() { observerAid.hasQuit = true; }, 'quit-application');
+listenerAid.add(window, "unload", function() { observerAid.clean(); }, false, true);
 
 // Private browsing mode listener as on https://developer.mozilla.org/En/Supporting_private_browsing_mode, with a few modifications
 // Prepares an object to be used as a pb listener, expects methods autoStarted, onEnter, onExit, onQuit and applies them accordingly
@@ -628,7 +646,6 @@ var privateBrowsingAid = {
 // Quick method to load subscripts into the context of "this"
 var moduleAid = {
 	_loadedModules: ["chrome://"+objPathString+"/content/utils.jsm"],
-	owner: this,
 	loader: mozIJSSubScriptLoader,
 	
 	load: function(aPath) {
@@ -639,7 +656,7 @@ var moduleAid = {
 		if(!this.loader) {
 			this.loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
 		}
-		this.loader.loadSubScript(aPath, this.owner);
+		this.loader.loadSubScript(aPath, self);
 		this.push(aPath);
 		return true;
 	},
