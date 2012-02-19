@@ -498,22 +498,26 @@ var prefAid = {
 	_prefObjects: {},
 	length: 0,
 	
-	init: function(branch, prefList) {
-		// Don't do Application as some kind of this.fuel, as it keeps an array of all current prefs and it's unnecessary to keep all that in the code
-		var Application = Components.classes["@mozilla.org/fuel/application;1"].getService(Components.interfaces.fuelIApplication);
-		
-		for(var i=0; i<prefList.length; i++) {
-			if(!this._prefObjects[prefList[i]]) {
-				this._prefObjects[prefList[i]] = Application.prefs.get('extensions.'+branch+'.' + prefList[i]);
-				this._setPref(prefList[i]);
+	init: function(prefList, branch) {
+		if(!branch) {
+			branch = objPathString;
+		}
+		if(typeof(prefList) == 'string') {
+			this._setPref(prefList, branch);
+		} else {
+			for(var i=0; i<prefList.length; i++) {
+				this._setPref(prefList[i], branch);
 			}
 		}
 	},
 	
-	_setPref: function(pref) {
-		this.__defineGetter__(pref, function() { return this._prefObjects[pref].value; });
-		this.__defineSetter__(pref, function(v) { return this._prefObjects[pref].value = v; });
-		this.length++;
+	_setPref: function(pref, branch) {
+		if(!this._prefObjects[pref]) {
+			this._prefObjects[pref] = Application.prefs.get('extensions.'+branch+'.' + pref);
+			this.__defineGetter__(pref, function() { return this._prefObjects[pref].value; });
+			this.__defineSetter__(pref, function(v) { return this._prefObjects[pref].value = v; });
+			this.length++;
+		}
 	},
 	
 	listen: function(pref, handler) {

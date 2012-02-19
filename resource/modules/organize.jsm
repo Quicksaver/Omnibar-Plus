@@ -540,7 +540,7 @@ var toggleOrganize = function() {
 	}
 };
 
-prefAid.init(objPathString, ['organizePopup', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
+prefAid.init(['organizePopup', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
 prefAid.listen('organizePopup', function() { toggleOrganize(); });
 
 // Grab types of entries to populate the organize list

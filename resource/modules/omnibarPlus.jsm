@@ -1,7 +1,7 @@
 var init = function() {
 	if(typeof(Omnibar) == 'undefined') { return; }
 	
-	prefAid.init(objPathString, ['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
+	prefAid.init(['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
 	
 	// this actually helps
 	gURLBar[objName] = this;

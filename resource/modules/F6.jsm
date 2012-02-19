@@ -29,7 +29,7 @@ var toggleF6 = function() {
 	}
 };
 
-prefAid.init(objPathString, ['f6']);
+prefAid.init('f6');
 prefAid.listen('f6', function() { toggleF6(); });
 
 toggleF6();

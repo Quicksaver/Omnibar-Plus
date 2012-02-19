@@ -9,7 +9,7 @@ var toggleEngineFocus = function() {
 	}
 };
 
-prefAid.init(objPathString, ['engineFocus']);
+prefAid.init('engineFocus');
 prefAid.listen('engineFocus', function() { toggleEngineFocus(); });
 
 toggleEngineFocus();

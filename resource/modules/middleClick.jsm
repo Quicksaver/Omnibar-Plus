@@ -38,7 +38,7 @@ var toggleMiddleClick = function() {
 	}
 };
 
-prefAid.init(objPathString, ['middleClick']);
+prefAid.init('middleClick');
 prefAid.listen('middleClick', function() { toggleMiddleClick(); });
 
 toggleMiddleClick();

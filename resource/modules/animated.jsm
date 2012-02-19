@@ -32,7 +32,7 @@ var toggleAnimated = function() {
 	}
 };
 
-prefAid.init(objPathString, ['animated', 'animatedScheme']);
+prefAid.init(['animated', 'animatedScheme']);
 prefAid.listen('animated', function() { toggleAnimated(); });
 
 // There's a weird bug where the scheme will not be changed on the first change for some reason, so this prevents it
