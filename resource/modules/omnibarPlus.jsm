@@ -24,35 +24,35 @@ var init = function() {
 // Toggle middle click functionality
 var toggleMiddleClick = function() {
 	if(prefAid.middleClick) {
-		moduleAid.load("chrome://"+objPathString+"/content/middleClick.jsm");
+		moduleAid.load("resource://"+objPathString+"/modules/middleClick.jsm");
 	}
 };
 
 // Toggle organize functionality
 var toggleOrganize = function() {
 	if(prefAid.organizePopup) {
-		moduleAid.load("chrome://"+objPathString+"/content/organize.jsm");
+		moduleAid.load("resource://"+objPathString+"/modules/organize.jsm");
 	}
 };
 
 // Toggle F6 functionality
 var toggleF6 = function() {
 	if(prefAid.f6) {
-		moduleAid.load("chrome://"+objPathString+"/content/F6.jsm");
+		moduleAid.load("resource://"+objPathString+"/modules/F6.jsm");
 	}
 };
 
 // Toggle animated effects for the suggestion list
 var toggleAnimated = function() {
 	if(prefAid.animated) {
-		moduleAid.load("chrome://"+objPathString+"/content/animated.jsm");
+		moduleAid.load("resource://"+objPathString+"/modules/animated.jsm");
 	}
 };
 
 // Toggles wether to focus the location bar when changing the search engine
 var toggleEngineFocus = function() {
 	if(prefAid.engineFocus) {
-		moduleAid.load("chrome://"+objPathString+"/content/engineFocus.jsm");
+		moduleAid.load("resource://"+objPathString+"/modules/engineFocus.jsm");
 	}
 };
 

@@ -1,4 +1,5 @@
 content   omnibarplus                   chrome/content/
+resource  omnibarplus                   resource/
 skin      omnibarplus     classic/1.0   chrome/skin/
 
 locale    omnibarplus     en-US         chrome/locale/en-US/

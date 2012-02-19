@@ -645,7 +645,7 @@ var privateBrowsingAid = {
 
 // Quick method to load subscripts into the context of "this"
 var moduleAid = {
-	_loadedModules: ["chrome://"+objPathString+"/content/utils.jsm"],
+	_loadedModules: ["resource://"+objPathString+"/modules/utils.jsm"],
 	loader: mozIJSSubScriptLoader,
 	
 	load: function(aPath) {
