@@ -1,9 +1,8 @@
 this.VERSION = '1.0.1';
+this.VARSLIST = ['engineName'];
 
 this.engineName = document.getElementById('omnibar-defaultEngineName');
 setWatchers(engineName);
-
-this.VARSLIST = ['engineName'];
 
 this.LOADMODULE = function() {
 	engineName.addPropertyWatcher('value', openLocation);

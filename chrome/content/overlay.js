@@ -1,5 +1,4 @@
 var OmnibarPlus = {
-	initialized: false,
 	objName: 'OmnibarPlus',
 	objPathString: 'omnibarplus',
 	

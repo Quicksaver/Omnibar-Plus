@@ -1,4 +1,5 @@
 this.VERSION = '1.0.0';
+this.VARSLIST = ['OS', 'omnibarClicker', 'onEngineClick'];
 
 // OS string
 this.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
@@ -27,8 +28,6 @@ this.onEngineClick = function(e) {
 		e.stopPropagation();
 	}
 };
-
-this.VARSLIST = ['OS', 'omnibarClicker', 'onEngineClick'];
 
 this.LOADMODULE = function() {
 	omnibarClicker.removeAttribute('onclick'); // We need to remove this first

@@ -1,4 +1,5 @@
 this.VERSION = '1.0.0';
+this.VARSLIST = ['willOrganize', 'escaped', 'selectedSuggestion', 'LBHelpers', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType'];
 
 this.willOrganize = false;
 this.escaped = false;
@@ -429,8 +430,6 @@ this.fireOnSelect = function(e) {
 		}
 	});
 };
-
-this.VARSLIST = ['willOrganize', 'escaped', 'selectedSuggestion', 'LBHelpers', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType'];
 
 this.LOADMODULE = function() {
 	prefAid.init(['agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);

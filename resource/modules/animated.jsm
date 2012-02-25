@@ -1,4 +1,5 @@
 this.VERSION = '1.0.0';
+this.VARSLIST = ['usingRichlist', 'toggleScheme'];
 
 this.usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
 
@@ -7,8 +8,6 @@ this.toggleScheme = function() {
 	styleAid.unload('animatedScheme');
 	styleAid.load('animatedScheme', 'chrome://'+objPathString+'/skin/'+prefAid.animatedScheme+'.css');
 };
-
-this.VARSLIST = ['usingRichlist', 'toggleScheme'];
 
 this.LOADMODULE = function() {
 	prefAid.init('animatedScheme');
@@ -41,4 +40,3 @@ this.UNLOADMODULE = function() {
 		delete gURLBar.popup._adjustHeight;
 	}
 };
-

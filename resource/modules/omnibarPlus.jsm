@@ -1,4 +1,5 @@
-this.VERSION = '1.0.2';
+this.VERSION = '1.0.3';
+this.VARSLIST = ['init', 'toggleMiddleClick', 'toggleOrganize', 'toggleF6', 'toggleAnimated', 'toggleEngineFocus'];
 
 this.init = function() {
 	prefAid.init(['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
@@ -17,8 +18,6 @@ this.init = function() {
 	toggleOrganize();
 	toggleAnimated();
 	toggleEngineFocus();
-	
-	initialized = true;
 };
 
 // Toggle middle click functionality
@@ -47,8 +46,6 @@ this.toggleEngineFocus = function() {
 	moduleAid.loadIf("resource://"+objPathString+"/modules/engineFocus.jsm", prefAid.engineFocus);
 };
 
-this.VARSLIST = ['init', 'toggleMiddleClick', 'toggleOrganize', 'toggleF6', 'toggleAnimated', 'toggleEngineFocus'];
-
 this.LOADMODULE = function() {
 	timerAid.init('preinit', init, 500);
 };
@@ -67,6 +64,4 @@ this.UNLOADMODULE = function() {
 	moduleAid.unload("resource://"+objPathString+"/modules/F6.jsm");
 	moduleAid.unload("resource://"+objPathString+"/modules/animated.jsm");
 	moduleAid.unload("resource://"+objPathString+"/modules/engineFocus.jsm");
-	
-	initialized = false;
 };

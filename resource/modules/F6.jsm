@@ -1,4 +1,5 @@
 this.VERSION = '1.0.1';
+this.VARSLIST = ['defaultF6key', 'keyset', 'commandSet', 'focusBar'];
 
 // An F6 functionality was added in the latest Nightly versions, somehow my own function won't work if I just disable that default one
 this.defaultF6key = document.getElementById('xxx_key33_Browser:FocusNextFrame');
@@ -10,8 +11,6 @@ this.focusBar = function() {
 	if(!gURLBar.focused) { openLocation(); } 
 	else { gBrowser.mCurrentBrowser.focus(); }
 };
-
-this.VARSLIST = ['defaultF6key', 'keyset', 'commandSet', 'focusBar'];
 
 this.LOADMODULE = function() {
 	commandSet = document.createElement('command');
