@@ -1,6 +1,6 @@
-this.VERSION = '1.0.0';
+this.VERSION = '1.0.1';
 
-var engineName = document.getElementById('omnibar-defaultEngineName');
+this.engineName = document.getElementById('omnibar-defaultEngineName');
 setWatchers(engineName);
 
 this.VARSLIST = ['engineName'];

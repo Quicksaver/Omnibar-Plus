@@ -1,4 +1,4 @@
-this.VERSION = '1.0.0';
+this.VERSION = '1.0.1';
 
 this.init = function() {
 	prefAid.init(['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
@@ -67,4 +67,6 @@ this.UNLOADMODULE = function() {
 	moduleAid.unload("resource://"+objPathString+"/modules/F6.jsm");
 	moduleAid.unload("resource://"+objPathString+"/modules/animated.jsm");
 	moduleAid.unload("resource://"+objPathString+"/modules/engineFocus.jsm");
+	
+	initialized = false;
 };
