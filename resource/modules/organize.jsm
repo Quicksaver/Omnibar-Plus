@@ -1,5 +1,5 @@
-this.VERSION = '1.0.0';
-this.VARSLIST = ['willOrganize', 'escaped', 'selectedSuggestion', 'LBHelpers', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType'];
+this.VERSION = '1.0.1';
+this.VARSLIST = ['willOrganize', 'escaped', 'selectedSuggestion', 'LBHelpers', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
 
 this.willOrganize = false;
 this.escaped = false;
