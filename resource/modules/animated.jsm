@@ -1,4 +1,4 @@
-this.VERSION = '1.0.0';
+this.VERSION = '1.0.1';
 this.VARSLIST = ['usingRichlist', 'toggleScheme'];
 
 this.usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
@@ -10,7 +10,7 @@ this.toggleScheme = function() {
 };
 
 this.LOADMODULE = function() {
-	prefAid.init('animatedScheme');
+	prefAid.ready('animatedScheme');
 	prefAid.listen('animatedScheme', toggleScheme);
 	
 	toggleScheme();

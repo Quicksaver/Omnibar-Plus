@@ -1,4 +1,4 @@
-this.VERSION = '1.0.4';
+this.VERSION = '1.0.5';
 this.VARSLIST = ['toggleMiddleClick', 'toggleOrganize', 'toggleF6', 'toggleAnimated', 'toggleEngineFocus'];
 
 // Toggle middle click functionality
@@ -28,7 +28,22 @@ this.toggleEngineFocus = function() {
 };
 
 this.LOADMODULE = function() {
-	prefAid.init(['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
+	prefAid.setDefaults({
+		f6: true,
+		middleClick: true,
+		organizePopup: true,
+		animated: false,
+		engineFocus: true,
+		animatedScheme: 'sky',
+		agrenon: false,
+		smarterwiki: false,
+		organize1: 'EE',
+		organize2: 'agrenon',
+		organize3: 'smarterwiki',
+		organize4: 'omnibar',
+		autoSelect: 'true'
+	});
+	prefAid.ready(['f6', 'middleClick', 'organizePopup', 'animated', 'engineFocus']);
 	
 	// this actually helps
 	gURLBar[objName] = this;

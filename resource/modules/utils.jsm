@@ -7,17 +7,25 @@ this.moduleAid = {
 	loader: mozIJSSubScriptLoader,
 	_loadedModules: [{
 		path: "resource://"+objPathString+"/modules/utils.jsm",
-		load: null,
+		load: function() {
+			delete self.mozIJSSubScriptLoader; // self removes unnecessary javascript warnings that show up in the console
+			moduleAid.createVars(moduleAid._loadedModules[0].vars);
+			moduleAid._loadedModules[0].loaded = true;
+			
+			// This is so the observers aren't called twice on quitting sometimes
+			observerAid.add(function() { observerAid.hasQuit = true; }, 'quit-application');
+			
+			// Will remove this later
+			listenerAid.add(window, 'unload', function() { moduleAid.unload("resource://"+objPathString+"/modules/utils.jsm"); }, false, true);
+		},
 		unload: function() {
-			while(moduleAid._loadedModules.length > 1) {
-				moduleAid.unload(moduleAid._loadedModules[1].path);
-			}
-			timerAid.cancelAll();
-			listenerAid.clean();
+			timerAid.clean();
 			observerAid.clean();
+			listenerAid.clean();
+			moduleAid.clean();
 		},
 		vars: ['hasAncestor', 'hideIt', 'modifyFunction', 'setWatchers', 'listenerAid', 'aSync', 'timerAid', 'prefAid', 'observerAid', 'privateBrowsingAid', 'styleAid', 'moduleAid', 'self'],
-		version: '1.0.4',
+		version: '1.0.6',
 		loaded: false
 	}],
 	_moduleVars: {},
@@ -61,6 +69,9 @@ this.moduleAid = {
 				}, 500);
 			}
 		}
+		else {
+			this._loadedModules[moduleIndex].loaded = true;
+		}
 		
 		delete self.VARSLIST;
 		delete self.LOADMODULE;
@@ -72,7 +83,7 @@ this.moduleAid = {
 	unload: function(aPath) {
 		for(var i = 0; i < this._loadedModules.length; i++) {
 			if(this._loadedModules[i].path == aPath) {
-				if(this._loadedModules[i].unload) {
+				if(this._loadedModules[i].unload && this._loadedModules[i].loaded) {
 					this._loadedModules[i].unload();
 				}
 				if(this._loadedModules[i].vars) {
@@ -85,6 +96,12 @@ this.moduleAid = {
 			}
 		}
 		return false;
+	},
+	
+	clean: function() {
+		while(moduleAid._loadedModules.length > 1) {
+			moduleAid.unload(moduleAid._loadedModules[1].path);
+		}
 	},
 	
 	loaded: function(aPath) {
@@ -118,8 +135,6 @@ this.moduleAid = {
 		return false;
 	}
 };
-delete self.mozIJSSubScriptLoader; // self removes unnecessary javascript warnings that show up in the console
-moduleAid.createVars(moduleAid._loadedModules[0].vars);
 
 // Checks if aNode decends from aParent
 this.hasAncestor = function(aNode, aParent, aWindow) {
@@ -538,8 +553,6 @@ this.listenerAid = {
 		return newListener;
 	}
 };
-// remove every listener placed when closing the window
-listenerAid.add(window, "unload", function() { listenerAid.clean(); }, false, true);
 
 // this lets me run functions asyncronously, basically it's a one shot timer with a delay of 0msec
 this.aSync = function(aFunc, aDelay) {
@@ -579,7 +592,7 @@ this.timerAid = {
 		return false;
 	},
 	
-	cancelAll: function() {
+	clean: function() {
 		for(var timerObj in this._timers) {
 			this.cancel(timerObj);
 		}
@@ -618,16 +631,34 @@ this.timerAid = {
 		return false;
 	}
 };
-listenerAid.add(window, 'unload', function() { timerAid.cancelAll(); }, false, true);
 
 this.prefAid = {
 	_prefObjects: {},
 	length: 0,
+	nsIPrefService: Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService),
 	
-	init: function(prefList, branch) {
+	setDefaults: function(prefList, branch) {
 		if(!branch) {
 			branch = objPathString;
 		}
+		
+		var defaultBranch = this.nsIPrefService.getDefaultBranch('extensions.'+branch+'.');
+		for(var pref in prefList) {
+			if(typeof(prefList[pref]) == 'string') {
+				defaultBranch.setCharPref(pref, prefList[pref]);
+			} else if(typeof(prefList[pref]) == 'boolean') {
+				defaultBranch.setBoolPref(pref, prefList[pref]);
+			} else if(typeof(prefList[pref]) == 'number') {
+				defaultBranch.setIntPref(pref, prefList[pref]);
+			}
+		}
+	},
+	
+	ready: function(prefList, branch) {
+		if(!branch) {
+			branch = objPathString;
+		}
+		
 		if(typeof(prefList) == 'string') {
 			this._setPref(prefList, branch);
 		} else {
@@ -639,7 +670,7 @@ this.prefAid = {
 	
 	_setPref: function(pref, branch) {
 		if(!this._prefObjects[pref]) {
-			this._prefObjects[pref] = Application.prefs.get('extensions.'+branch+'.' + pref);
+			this._prefObjects[pref] = Application.prefs.get('extensions.'+branch+'.'+pref);
 			this.__defineGetter__(pref, function() { return this._prefObjects[pref].value; });
 			this.__defineSetter__(pref, function(v) { return this._prefObjects[pref].value = v; });
 			this.length++;
@@ -704,20 +735,18 @@ this.observerAid = {
 	},
 	
 	clean: function() {
-		// Sometimes the "unload" event comes before the "quit-application" observing, with "quit-application" most times not happening at all,
-		// this forces the observers for that to trigger before I remove them
-		if(!this.hasQuit) {
-			this.obsService.notifyObservers(null, 'quit-application', null);
-		}
-		
 		while(this.observers.length) {
+			// Sometimes the "unload" event comes before the "quit-application" observing, with "quit-application" most times not happening at all,
+			// this forces the observers for that to trigger before I remove them
+			if(!this.hasQuit && this.observers[0].topic == 'quit-application') {
+				this.observers[0].observer.observe.call(self, window, 'quit-application', null);
+			}
+			
 			this.obsService.removeObserver(this.observers[0].observer, this.observers[0].topic);
 			this.observers.shift();
 		}
 	}
 };
-observerAid.add(function() { observerAid.hasQuit = true; }, 'quit-application');
-listenerAid.add(window, "unload", function() { observerAid.clean(); }, false, true);
 
 // Private browsing mode listener as on https://developer.mozilla.org/En/Supporting_private_browsing_mode, with a few modifications
 // Prepares an object to be used as a pb listener, expects methods autoStarted, onEnter, onExit, onQuit and applies them accordingly
@@ -834,4 +863,4 @@ this.styleAid = {
 	}
 };
 
-moduleAid._loadedModules[0].loaded = true;
+moduleAid._loadedModules[0].load();
