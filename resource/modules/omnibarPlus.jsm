@@ -1,3 +1,5 @@
+this.VERSION = '1.0.0';
+
 this.init = function() {
 	prefAid.init(['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
 	

@@ -1,3 +1,5 @@
+this.VERSION = '1.0.0';
+
 // An F6 functionality was added in the latest Nightly versions, somehow my own function won't work if I just disable that default one
 this.defaultF6key = document.getElementById('xxx_key33_Browser:FocusNextFrame');
 this.keyset = document.getElementById('key_'+objPathString+'_f6');

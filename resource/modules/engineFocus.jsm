@@ -1,3 +1,5 @@
+this.VERSION = '1.0.0';
+
 var engineName = document.getElementById('omnibar-defaultEngineName');
 setWatchers(engineName);
 

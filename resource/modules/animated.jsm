@@ -1,3 +1,5 @@
+this.VERSION = '1.0.0';
+
 this.usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
 
 this.toggleScheme = function() {

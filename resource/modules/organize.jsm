@@ -1,3 +1,5 @@
+this.VERSION = '1.0.0';
+
 this.willOrganize = false;
 this.escaped = false;
 this.selectedSuggestion = false;

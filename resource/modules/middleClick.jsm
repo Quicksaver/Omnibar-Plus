@@ -1,3 +1,5 @@
+this.VERSION = '1.0.0';
+
 // OS string
 this.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
 

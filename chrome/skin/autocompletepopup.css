@@ -72,20 +72,15 @@
 	background: none !important;
 }
 
-#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem:first-child,
-#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"]:first-child,
-#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"]:first-child {
-	border-top-color: transparent !important;
-}
 #PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current] + richlistitem.autocomplete-richlistitem,
 #PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current] + richlistitem.autocomplete-richlistitem[type="agrenondefault"],
 #PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current] + richlistitem.autocomplete-richlistitem[type="agrenondefault-first"] {
 	border-top-style: solid !important;
 }
 
-#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type*="omnibar-suggestion"] {
+#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type*="omnibar-suggestion"]:not([actiontype="switchtab"]):not([current]):not([selected]):not(:active):not(:hover) {
 	background: none !important;
-} 
+}
 
 #PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[actiontype="switchtab"],
 #PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"][actiontype="switchtab"],
