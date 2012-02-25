@@ -1,25 +1,22 @@
-var usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
+this.willOrganize = false;
+this.escaped = false;
+this.selectedSuggestion = false;
+this.LBHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
+this.types = [];
+this.deletedIndex = null;
+this.deletedText = null;
 
-var organizing = false;
-var willOrganize = false;
-var escaped = false;
-var selectedSuggestion = false;
-var LBHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
-var types = [];
-var deletedIndex = null;
-var deletedText = null;
-
-var goButton = document.getElementById('go-button');
-var panel = document.getElementById('PopupAutoCompleteRichResult');
-var richlistbox = panel.richlistbox;
-var richlist = richlistbox.childNodes;
+this.goButton = document.getElementById('go-button');
+this.panel = document.getElementById('PopupAutoCompleteRichResult');
+this.richlistbox = panel.richlistbox;
+this.richlist = richlistbox.childNodes;
 
 // helper objects to get current popup status and set it
-__defineGetter__('panelState', function() {
+this.__defineGetter__('panelState', function() {
 	// For some reason, just mPopupOpen and popupOpen aren't reliable in every case
 	return (!panel.mPopupOpen && panel.state != "open") ? false : true;
 });
-__defineSetter__('panelState', function(val) {
+this.__defineSetter__('panelState', function(val) {
 	if(val) {
 		panel._openAutocompletePopup(gURLBar, gURLBar);
 		aSync(function() {
@@ -38,28 +35,24 @@ __defineSetter__('panelState', function(val) {
 });
 
 // Called when a search begins and ends in the location bar
-var searchBegin = function() {
-	if(prefAid.organizePopup) {
-		willOrganize = false;
-		selectedSuggestion = false;
-		escaped = false;
-		doIndexes();
-	}
+this.searchBegin = function() {
+	willOrganize = false;
+	selectedSuggestion = false;
+	escaped = false;
+	doIndexes();
 	if(LBHelpers) {
 		LocationBarHelpers._searchBegin();
 	}
 };
-var searchComplete = function() {
-	if(prefAid.organizePopup) {
-		popupshowing();
-	}
+this.searchComplete = function() {
+	popupshowing();
 	if(LBHelpers) {
 		LocationBarHelpers._searchComplete();
 	}
 };
 
 // Handler for when the autocomplete pops up
-var popupshowing = function() {
+this.popupshowing = function() {
 	if(escaped) { return false; }
 	willOrganize = true;
 	timerAid.init('popupshowing', organize, 100);
@@ -67,7 +60,7 @@ var popupshowing = function() {
 };
 
 // This method simply cleans the selection in the autocomplete popup
-var doIndexes = function(selected, current) {
+this.doIndexes = function(selected, current) {
 	if(selected == undefined) { selected = -1; }
 	if(current == undefined) { current = -1; }
 	
@@ -77,7 +70,7 @@ var doIndexes = function(selected, current) {
 };
 
 // Goes by each 'type' to be organized and organizes each entry of type 'type'
-var organize = function() {
+this.organize = function() {
 	if(!panelState || escaped) { return; }
 	
 	var originalSelectedIndex = richlistbox.selectedIndex;
@@ -136,7 +129,7 @@ var organize = function() {
 	panel.adjustHeight();
 };
 
-var getTypes = function() {
+this.getTypes = function() {
 	// entries are sorted in the order they appear in this list
 	// 'agrenon' is for Peers extension entries
 	// 'smarterwiki' is for FastestFox extension entries
@@ -164,7 +157,7 @@ var getTypes = function() {
 	}
 };
 
-var getEntryType = function(aType) {
+this.getEntryType = function(aType) {
 	for(var type in types) {
 		if(types[type] == 'EE') {
 			var returnEE = type;
@@ -176,7 +169,7 @@ var getEntryType = function(aType) {
 	return returnEE;
 };
 
-var removeEntry = function(str) {
+this.removeEntry = function(str) {
 	for(var i=0; i<types.length; i++) {
 		if(types[i] == str) {
 			types.splice(i, 1);
@@ -186,7 +179,7 @@ var removeEntry = function(str) {
 };
 
 // Our takes on key navigation from gURLBar.onkeypress(event), if returns false, original onkeypress is called
-var urlBarKeyDown = function(e) {
+this.urlBarKeyDown = function(e) {
 	// Compatibility with the UI Enhancer add-on
 	// don't handle keystrokes on it's editing box
 	if(hasAncestor(document.commandDispatcher.focusedElement, document.getElementById('UIEnhancer_URLBar_Editing_Stack_Text'))) { return true; }
@@ -320,7 +313,7 @@ var urlBarKeyDown = function(e) {
 };
 
 // Set urlbar ontextentered attribute to work with our handler
-var checkOnHandlers = function() {
+this.checkOnHandlers = function() {
 	if(gURLBar.getAttribute('ontextentered').indexOf(objName) < 0) {
 		gURLBar._ontextentered = gURLBar.getAttribute('ontextentered');
 		gURLBar.setAttribute('ontextentered', objName+'.fireOnSelect(param);');
@@ -331,7 +324,7 @@ var checkOnHandlers = function() {
 	}	
 };
 
-var onGoClick = function(aEvent) {
+this.onGoClick = function(aEvent) {
 	// This comes from TMP_goButtonClick() (from Tab Mix Plus), the original onclick is simply gURLBar.handleCommand()
 	if(goButton._onclick.indexOf('TMP') > -1 && aEvent.button == 1 && gURLBar.value == gBrowser.currentURI.spec) {
 		gBrowser.duplicateTab(gBrowser.mCurrentTab);
@@ -344,7 +337,7 @@ var onGoClick = function(aEvent) {
 
 // Make sure all the paste commands trigger our .overrideURL
 // Note that all the returns and checks are just prevention, I have no reason to put them here other than just making sure it works correctly
-var fixContextMenu = function() {
+this.fixContextMenu = function(areWeOrganizing) {
 	// Don't know exactly in which version of firefox .inputBox was removed, I just noticed it in 9.0a1
 	var getFromHere = gURLBar.inputBox || document.getAnonymousElementByAttribute(gURLBar, 'anonid', 'textbox-container').childNodes[0];
 	var contextMenu = document.getAnonymousElementByAttribute(getFromHere, 'anonid', 'input-box-contextmenu');
@@ -355,7 +348,7 @@ var fixContextMenu = function() {
 	var pasteItem = contextMenu.getElementsByAttribute('cmd', 'cmd_paste')[0];
 	var pasteAndGoItem = contextMenu.getElementsByAttribute('anonid', 'paste-and-go')[0];
 	
-	if(prefAid.organizePopup) {
+	if(areWeOrganizing) {
 		if(undoItem) {
 			listenerAid.add(undoItem, 'command', paste, false);
 		}
@@ -366,9 +359,7 @@ var fixContextMenu = function() {
 			listenerAid.add(pasteItem, 'command', paste, false);
 		}
 		if(pasteAndGoItem) {
-			if(!pasteAndGoItem._oncommand) {
-				pasteAndGoItem._oncommand = pasteAndGoItem.getAttribute('oncommand');
-			}
+			pasteAndGoItem._oncommand = pasteAndGoItem.getAttribute('oncommand');
 			pasteAndGoItem.setAttribute('oncommand', objName+'.pasteAndGo(event);');
 		}
 	}
@@ -382,24 +373,25 @@ var fixContextMenu = function() {
 		if(pasteItem) {
 			listenerAid.remove(pasteItem, 'command', paste, false);
 		}
-		if(pasteAndGoItem && pasteAndGoItem._oncommand) {
+		if(pasteAndGoItem) {
 			pasteAndGoItem.setAttribute('oncommand', pasteAndGoItem._oncommand);
+			delete pasteAndGoItem._oncommand;
 		}
 	}
 };
 
-var pasteAndGo = function(event) {
+this.pasteAndGo = function(event) {
 	gURLBar.select();
 	goDoCommand('cmd_paste');
 	doIndexes();
 	fireOnSelect(event);
 };
 
-var paste = function() {
+this.paste = function() {
 	doIndexes();
 };
 
-var fireOnSelect = function(e) {
+this.fireOnSelect = function(e) {
 	// We need the enter key to always call it from our handler or it won't work right sometimes
 	if(e && e.type == 'keydown' && (e.keyCode == e.DOM_VK_RETURN || e.keyCode == e.DOM_VK_ENTER) && !e.okToProceed) { return; }
 	
@@ -436,119 +428,132 @@ var fireOnSelect = function(e) {
 	});
 };
 
-// Toggle Organize Functionality, we'll use a delay to let the popup fill up before organizing it
-var toggleOrganize = function() {
-	// We don't organize the simple autocomplete
-	if(!usingRichlist) { return; }
+this.VARSLIST = ['willOrganize', 'escaped', 'selectedSuggestion', 'LBHelpers', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType'];
+
+this.LOADMODULE = function() {
+	prefAid.init(['agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
+	
+	// Grab types of entries to populate the organize list
+	// Also sets whether Peers/FastestFox is enabled
+	getTypes();
+	prefAid.listen('organize1', getTypes);
+	prefAid.listen('organize2', getTypes);
+	prefAid.listen('organize3', getTypes);
+	prefAid.listen('organize4', getTypes);
 	
 	// Compatibility with latest versions of firefox (aurora FF11 as far as I can tell doesn't have LocationBarHelpers anymore)
 	// Setting these always, the switch On/Off are inside the functions themselves
 	gURLBar.setAttribute('onsearchbegin', objName+'.searchBegin();');
 	gURLBar.setAttribute('onsearchcomplete', objName+'.searchComplete();');
 	
-	if(prefAid.organizePopup && !organizing) {
-		gURLBar._onKeyPress = gURLBar.onKeyPress;
-		gURLBar.onKeyPress = function(aEvent) {
-			return urlBarKeyDown(aEvent);
-		}
-		
-		checkOnHandlers();
-		fixContextMenu();
-		
-		richlistbox._appendChild = richlistbox.appendChild;
-		richlistbox.appendChild = function(aNode) {
-			if(willOrganize) { popupshowing(); }
-			return richlistbox._appendChild(aNode);
-		}
-		
-		// For the auto-select the first result feature
-		// Basically a copy/paste from Speak Words equivalent functionality
-		gURLBar.__defineGetter__("willHandle", function() {
-			// Potentially it's a url if there's no spaces
-			var search = this.controller.searchString.trim();
-			if (search.match(/ /) == null) {
-				try {
-					// Quit early if the input is already a URI
-					return Services.io.newURI(gURLBar.value, null, null);
-				}
-				catch(ex) {}
-				
-				try {
-					// Quit early if the input is domain-like (e.g., site.com/page)
-					return Cc["@mozilla.org/network/effective-tld-service;1"].getService(Ci.nsIEffectiveTLDService).getBaseDomainFromHost(gURLBar.value);
-				}
-				catch(ex) {}
-			}
-			
-			// Check if there's an search engine registered for the first keyword
-			var keyword = search.split(/\s+/)[0];
-			return Services.search.getEngineByAlias(keyword);
-		});
-		
-		// At first I was going to simply replace this with a pre-written function, but TabMixPlus also changes this function and there's no way to
-		// discriminate without saving at least two pre-written functions, this method seems much more direct
-		panel._onPopupClick = panel.onPopupClick;
-		panel.onPopupClick = modifyFunction(panel.onPopupClick, [
-			['if (aEvent.button == 2) {',
-			<![CDATA[
-			if (aEvent.button == 2) {
-				if(this.richlistbox.currentItem) {
-					this.input.value = this.richlistbox.currentItem.getAttribute('url') || this.richlistbox.currentItem.getAttribute('text');
-				}
-			]]>
-			],
-			['controller.handleEnter(true);',
-			'this.input.{([objName])}.fireOnSelect(aEvent);'
-			]
-		]);
-		
-		// mPopupOpen simply is not reliable in some cases, f.i. for a split second after deleting all entries it thinks the popup is closed when it is not,
-		// so it doesn't actually close when I want it to
-		panel._closePopup = panel.closePopup;
-		panel.closePopup = modifyFunction(panel.closePopup, [
-			['this.mPopupOpen',
-			'{([objName])}.panelState'
-			]
-		]);
-		
-		richlistbox._actualIndex = -1;
-		richlistbox.__defineGetter__("_actualItem", function() {
-			if(this._actualIndex > -1 && this._actualIndex < this.childNodes.length) {
-				return this.childNodes[this._actualIndex];
-			}
-			this._actualIndex = -1;
-			return null;
-		});
-		
-		organizing = true;
-	} 
-	else if(!prefAid.organizePopup && organizing) {
-		gURLBar.onKeyPress = gURLBar._onKeyPress;
-		
-		// Changed in checkOnHandlers()
-		gURLBar.setAttribute("ontextentered", gURLBar._ontextentered);
-		goButton.setAttribute('onclick', goButton._onclick);
-		
-		fixContextMenu();
-		
-		richlistbox.appendChild = richlistbox._appendChild;
-		
-		panel.onPopupClick = panel._onPopupClick;
-		panel.closePopup = panel._closePopup;
-		
-		organizing = false;
+	gURLBar._onKeyPress = gURLBar.onKeyPress;
+	gURLBar.onKeyPress = function(aEvent) {
+		return urlBarKeyDown(aEvent);
 	}
+	
+	checkOnHandlers();
+	fixContextMenu(true);
+	
+	richlistbox._appendChild = richlistbox.appendChild;
+	richlistbox.appendChild = function(aNode) {
+		if(willOrganize) { popupshowing(); }
+		return richlistbox._appendChild(aNode);
+	}
+	
+	// For the auto-select the first result feature
+	// Basically a copy/paste from Speak Words equivalent functionality
+	// Don't delete this on unload as Speak Words uses it
+	gURLBar.__defineGetter__("willHandle", function() {
+		// Potentially it's a url if there's no spaces
+		var search = this.controller.searchString.trim();
+		if (search.match(/ /) == null) {
+			try {
+				// Quit early if the input is already a URI
+				return Services.io.newURI(gURLBar.value, null, null);
+			}
+			catch(ex) {}
+			
+			try {
+				// Quit early if the input is domain-like (e.g., site.com/page)
+				return Cc["@mozilla.org/network/effective-tld-service;1"].getService(Ci.nsIEffectiveTLDService).getBaseDomainFromHost(gURLBar.value);
+			}
+			catch(ex) {}
+		}
+		
+		// Check if there's an search engine registered for the first keyword
+		var keyword = search.split(/\s+/)[0];
+		return Services.search.getEngineByAlias(keyword);
+	});
+	
+	// At first I was going to simply replace this with a pre-written function, but TabMixPlus also changes this function and there's no way to
+	// discriminate without saving at least two pre-written functions, this method seems much more direct
+	panel._onPopupClick = panel.onPopupClick;
+	panel.onPopupClick = modifyFunction(panel.onPopupClick, [
+		['if (aEvent.button == 2) {',
+		<![CDATA[
+		if (aEvent.button == 2) {
+			if(this.richlistbox.currentItem) {
+				this.input.value = this.richlistbox.currentItem.getAttribute('url') || this.richlistbox.currentItem.getAttribute('text');
+			}
+		]]>
+		],
+		['controller.handleEnter(true);',
+		'this.input.{([objName])}.fireOnSelect(aEvent);'
+		]
+	]);
+	
+	// mPopupOpen simply is not reliable in some cases, f.i. for a split second after deleting all entries it thinks the popup is closed when it is not,
+	// so it doesn't actually close when I want it to
+	panel._closePopup = panel.closePopup;
+	panel.closePopup = modifyFunction(panel.closePopup, [
+		['this.mPopupOpen',
+		'{([objName])}.panelState'
+		]
+	]);
+	
+	richlistbox._actualIndex = -1;
+	richlistbox.__defineGetter__("_actualItem", function() {
+		if(this._actualIndex > -1 && this._actualIndex < this.childNodes.length) {
+			return this.childNodes[this._actualIndex];
+		}
+		this._actualIndex = -1;
+		return null;
+	});
 };
 
-prefAid.init(['organizePopup', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
-prefAid.listen('organizePopup', function() { toggleOrganize(); });
-
-// Grab types of entries to populate the organize list
-// Also sets whether Peers/FastestFox is enabled
-getTypes();
-prefAid.listen('organize1', getTypes);
-prefAid.listen('organize2', getTypes);
-prefAid.listen('organize3', getTypes);
-prefAid.listen('organize4', getTypes);
-
-toggleOrganize();
+this.UNLOADMODULE = function() {
+	prefAid.unlisten('organize1', getTypes);
+	prefAid.unlisten('organize2', getTypes);
+	prefAid.unlisten('organize3', getTypes);
+	prefAid.unlisten('organize4', getTypes);
+	
+	gURLBar.onKeyPress = gURLBar._onKeyPress;
+	delete gURLBar._onKeyPress;
+	
+	if(!LBHelpers) {
+		gURLBar.removeAttribute('onsearchbegin');
+		gURLBar.removeAttribute('onsearchcomplete');
+	} else {
+		gURLBar.setAttribute('onsearchbegin', 'LocationBarHelpers._searchBegin();');
+		gURLBar.setAttribute('onsearchcomplete', 'LocationBarHelpers._searchComplete();');
+	}
+	
+	// Changed in checkOnHandlers()
+	gURLBar.setAttribute("ontextentered", gURLBar._ontextentered);
+	goButton.setAttribute('onclick', goButton._onclick);
+	delete gURLBar._ontextentered;
+	delete goButton._onclick;
+	
+	fixContextMenu(false);
+	
+	richlistbox.appendChild = richlistbox._appendChild;
+	delete richlistbox._appendChild;
+	
+	panel.onPopupClick = panel._onPopupClick;
+	panel.closePopup = panel._closePopup;
+	delete panel._onPopupClick;
+	delete panel._closePopup;
+	
+	delete richlistbox._actualIndex;
+	delete richlistbox._actualItem;
+};

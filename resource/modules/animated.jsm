@@ -1,48 +1,42 @@
-var usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
+this.usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
 
-var toggleAnimated = function() {
+this.toggleScheme = function() {
+	gURLBar.popup.setAttribute('animatedPopup', prefAid.animatedScheme);
 	styleAid.unload('animatedScheme');
+	styleAid.load('animatedScheme', 'chrome://'+objPathString+'/skin/'+prefAid.animatedScheme+'.css');
+};
+
+this.VARSLIST = ['usingRichlist', 'toggleScheme'];
+
+this.LOADMODULE = function() {
+	prefAid.init('animatedScheme');
+	prefAid.listen('animatedScheme', toggleScheme);
 	
-	if(prefAid.animated) {
-		gURLBar.popup.setAttribute('animatedPopup', prefAid.animatedScheme);
-		styleAid.load('animatedPopup', 'chrome://'+objPathString+'/skin/autocompletepopup.css');
-		styleAid.load('animatedScheme', 'chrome://'+objPathString+'/skin/'+prefAid.animatedScheme+'.css');
-		
-		if(!usingRichlist) {
-			if(!gURLBar.popup._adjustHeight) {
-				gURLBar.popup._adjustHeight = gURLBar.popup.adjustHeight;
-			}
-			gURLBar.popup.adjustHeight = modifyFunction(gURLBar.popup._adjustHeight, [
-				['var rows = this.maxRows;',
-				<![CDATA[
-				var rows = Math.round(this.maxRows * 2.5);
-				]]>
-				]
-			]);
-		}
-	} else {
-		gURLBar.popup.removeAttribute('animatedPopup');
-		styleAid.unload('animatedPopup');
-		
-		if(!usingRichlist) {
-			if(gURLBar.popup._adjustHeight) {
-				gURLBar.popup.adjustHeight = gURLBar.popup._adjustHeight;
-			}
-		}
+	toggleScheme();
+	styleAid.load('animatedPopup', 'chrome://'+objPathString+'/skin/autocompletepopup.css');
+	
+	if(!usingRichlist) {
+		gURLBar.popup._adjustHeight = gURLBar.popup.adjustHeight;
+		gURLBar.popup.adjustHeight = modifyFunction(gURLBar.popup._adjustHeight, [
+			['var rows = this.maxRows;',
+			<![CDATA[
+			var rows = Math.round(this.maxRows * 2.5);
+			]]>
+			]
+		]);
 	}
 };
 
-prefAid.init(['animated', 'animatedScheme']);
-prefAid.listen('animated', function() { toggleAnimated(); });
-
-// There's a weird bug where the scheme will not be changed on the first change for some reason, so this prevents it
-var schemeListener = function() {
-	toggleAnimated();
-	toggleAnimated();
-	schemeListener = function() {
-		toggleAnimated();
-	};
+this.UNLOADMODULE = function() {
+	prefAid.unlisten('animatedScheme', toggleScheme);
+	
+	gURLBar.popup.removeAttribute('animatedPopup');
+	styleAid.unload('animatedPopup');
+	styleAid.unload('animatedScheme');
+	
+	if(!usingRichlist) {
+		gURLBar.popup.adjustHeight = gURLBar.popup._adjustHeight;
+		delete gURLBar.popup._adjustHeight;
+	}
 };
-prefAid.listen('animatedScheme', function() { schemeListener(); });
 
-toggleAnimated();

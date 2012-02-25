@@ -1,35 +1,29 @@
 // An F6 functionality was added in the latest Nightly versions, somehow my own function won't work if I just disable that default one
-var defaultF6key = document.getElementById('xxx_key33_Browser:FocusNextFrame');
-var keyset = document.getElementById('key_'+objPathString+'_f6');
+this.defaultF6key = document.getElementById('xxx_key33_Browser:FocusNextFrame');
+this.keyset = document.getElementById('key_'+objPathString+'_f6');
 
 // function to use for our F6 command
-var focusBar = function() {
+this.focusBar = function() {
 	if(!gURLBar.focused) { openLocation(); } 
 	else { gBrowser.mCurrentBrowser.focus(); }
 };
 
-var toggleF6 = function() {
+this.VARSLIST = ['defaultF6key', 'keyset', 'focusBar'];
+
+this.LOADMODULE = function() {
 	if(defaultF6key) {
-		if(prefAid.f6) {
-			if(!defaultF6key.getAttribute('defaultCommand')) {
-				defaultF6key.setAttribute('defaultCommand', defaultF6key.getAttribute('command'));
-			}
-			defaultF6key.setAttribute('command', 'command_'+objPathString+'_f6');
-		}
-		else if(defaultF6key.getAttribute('defaultCommand')) {
-			defaultF6key.setAttribute('command', defaultF6key.getAttribute('defaultCommand'));
-		}
-	}
-	else {
-		if(prefAid.f6) {
-			keyset.removeAttribute('disabled');
-		} else {
-			keyset.setAttribute('disabled', 'true');
-		}
+		defaultF6key.setAttribute('defaultCommand', defaultF6key.getAttribute('command'));
+		defaultF6key.setAttribute('command', 'command_'+objPathString+'_f6');
+	} else {
+		keyset.removeAttribute('disabled');
 	}
 };
 
-prefAid.init('f6');
-prefAid.listen('f6', function() { toggleF6(); });
-
-toggleF6();
+this.UNLOADMODULE = function() {
+	if(defaultF6key) {
+		defaultF6key.setAttribute('command', defaultF6key.getAttribute('defaultCommand'));
+		defaultF6key.removeAttribute('defaultCommand');
+	} else {
+		keyset.setAttribute('disabled', 'true');
+	}
+};

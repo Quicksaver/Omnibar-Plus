@@ -1,11 +1,11 @@
 // OS string
-var OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
+this.OS = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULRuntime).OS;
 
 // omnibar menu item in urlbar (search button)		
-var omnibarClicker = document.getElementById('omnibar-in-urlbar');
+this.omnibarClicker = document.getElementById('omnibar-in-urlbar');
 
 // Left click: default omnibar functionality; Middle Click: open the search engine homepage
-var onEngineClick = function(e) {
+this.onEngineClick = function(e) {
 	var modKey = (OS == 'Darwin') ? e.metaKey : e.ctrlKey;
 	
 	if(e.button == 0 && !e.altKey && !modKey) {
@@ -26,19 +26,15 @@ var onEngineClick = function(e) {
 	}
 };
 
-var toggleMiddleClick = function() {
+this.VARSLIST = ['OS', 'omnibarClicker', 'onEngineClick'];
+
+this.LOADMODULE = function() {
 	omnibarClicker.removeAttribute('onclick'); // We need to remove this first
-	if(prefAid.middleClick) {
-		listenerAid.remove(omnibarClicker, 'click', Omnibar.onButtonClick, false, false);
-		listenerAid.add(omnibarClicker, 'click', onEngineClick, false);
-	}
-	else {
-		listenerAid.remove(omnibarClicker, 'click', onEngineClick, false); 
-		listenerAid.add(omnibarClicker, 'click', Omnibar.onButtonClick, false, false);
-	}
+	listenerAid.remove(omnibarClicker, 'click', Omnibar.onButtonClick, false, false);
+	listenerAid.add(omnibarClicker, 'click', onEngineClick, false);
 };
 
-prefAid.init('middleClick');
-prefAid.listen('middleClick', function() { toggleMiddleClick(); });
-
-toggleMiddleClick();
+this.UNLOADMODULE = function() {
+	listenerAid.remove(omnibarClicker, 'click', onEngineClick, false); 
+	listenerAid.add(omnibarClicker, 'click', Omnibar.onButtonClick, false, false);
+};

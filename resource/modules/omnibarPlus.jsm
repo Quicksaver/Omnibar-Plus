@@ -1,16 +1,14 @@
-var init = function() {
-	if(typeof(Omnibar) == 'undefined') { return; }
-	
+this.init = function() {
 	prefAid.init(['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
 	
 	// this actually helps
 	gURLBar[objName] = this;
 	
-	prefAid.listen('f6', function() { toggleF6(); });
-	prefAid.listen('middleClick', function() { toggleMiddleClick(); });
-	prefAid.listen('organizePopup', function() { toggleOrganize(); });
-	prefAid.listen('animated', function() { toggleAnimated(); });
-	prefAid.listen('engineFocus', function() { toggleEngineFocus(); });
+	prefAid.listen('f6', toggleF6);
+	prefAid.listen('middleClick', toggleMiddleClick);
+	prefAid.listen('organizePopup', toggleOrganize);
+	prefAid.listen('animated', toggleAnimated);
+	prefAid.listen('engineFocus', toggleEngineFocus);
 	
 	toggleF6();
 	toggleMiddleClick();		
@@ -22,38 +20,49 @@ var init = function() {
 };
 
 // Toggle middle click functionality
-var toggleMiddleClick = function() {
-	if(prefAid.middleClick) {
-		moduleAid.load("resource://"+objPathString+"/modules/middleClick.jsm");
-	}
+this.toggleMiddleClick = function() {
+	moduleAid.loadIf("resource://"+objPathString+"/modules/middleClick.jsm", prefAid.middleClick);
 };
 
 // Toggle organize functionality
-var toggleOrganize = function() {
-	if(prefAid.organizePopup) {
-		moduleAid.load("resource://"+objPathString+"/modules/organize.jsm");
-	}
+this.toggleOrganize = function() {
+	// We don't organize the simple autocomplete
+	moduleAid.loadIf("resource://"+objPathString+"/modules/organize.jsm", (prefAid.organizePopup && gURLBar.popup == document.getElementById('PopupAutoComplete')));
 };
 
 // Toggle F6 functionality
-var toggleF6 = function() {
-	if(prefAid.f6) {
-		moduleAid.load("resource://"+objPathString+"/modules/F6.jsm");
-	}
+this.toggleF6 = function() {
+	moduleAid.loadIf("resource://"+objPathString+"/modules/F6.jsm", prefAid.f6);
 };
 
 // Toggle animated effects for the suggestion list
-var toggleAnimated = function() {
-	if(prefAid.animated) {
-		moduleAid.load("resource://"+objPathString+"/modules/animated.jsm");
-	}
+this.toggleAnimated = function() {
+	moduleAid.loadIf("resource://"+objPathString+"/modules/animated.jsm", prefAid.animated);
 };
 
 // Toggles wether to focus the location bar when changing the search engine
-var toggleEngineFocus = function() {
-	if(prefAid.engineFocus) {
-		moduleAid.load("resource://"+objPathString+"/modules/engineFocus.jsm");
-	}
+this.toggleEngineFocus = function() {
+	moduleAid.loadIf("resource://"+objPathString+"/modules/engineFocus.jsm", prefAid.engineFocus);
 };
 
-timerAid.init('preinit', init, 500);
+this.VARSLIST = ['init', 'toggleMiddleClick', 'toggleOrganize', 'toggleF6', 'toggleAnimated', 'toggleEngineFocus'];
+
+this.LOADMODULE = function() {
+	timerAid.init('preinit', init, 500);
+};
+
+this.UNLOADMODULE = function() {
+	delete gURLBar[objName];
+	
+	prefAid.unlisten('f6', toggleF6);
+	prefAid.unlisten('middleClick', toggleMiddleClick);
+	prefAid.unlisten('organizePopup', toggleOrganize);
+	prefAid.unlisten('animated', toggleAnimated);
+	prefAid.unlisten('engineFocus', toggleEngineFocus);
+	
+	moduleAid.unload("resource://"+objPathString+"/modules/middleClick.jsm");
+	moduleAid.unload("resource://"+objPathString+"/modules/organize.jsm");
+	moduleAid.unload("resource://"+objPathString+"/modules/F6.jsm");
+	moduleAid.unload("resource://"+objPathString+"/modules/animated.jsm");
+	moduleAid.unload("resource://"+objPathString+"/modules/engineFocus.jsm");
+};
