@@ -145,7 +145,7 @@ this.getTypes = function() {
 	];
 	
 	// Remove entries that aren't needed as to reduce the number of loops
-	if(typeof(agrenonLoader) == 'undefined') { 
+	if(typeof(agrenonLoader) == 'undefined') {
 		removeEntry('agrenon');
 		prefAid.agrenon = false;
 	} else {

@@ -1,4 +1,4 @@
-this.VERSION = '1.0.1';
+this.VERSION = '1.0.2';
 
 this.init = function() {
 	prefAid.init(['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
@@ -29,7 +29,7 @@ this.toggleMiddleClick = function() {
 // Toggle organize functionality
 this.toggleOrganize = function() {
 	// We don't organize the simple autocomplete
-	moduleAid.loadIf("resource://"+objPathString+"/modules/organize.jsm", (prefAid.organizePopup && gURLBar.popup == document.getElementById('PopupAutoComplete')));
+	moduleAid.loadIf("resource://"+objPathString+"/modules/organize.jsm", (prefAid.organizePopup && gURLBar.popup != document.getElementById('PopupAutoComplete')));
 };
 
 // Toggle F6 functionality
