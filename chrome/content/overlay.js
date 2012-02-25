@@ -9,7 +9,7 @@ var OmnibarPlus = {
 	},
 	
 	preinit: function() {
-		this.moduleAid.loadIf("resource://omnibarplus/modules/omnibarPlus.jsm", (typeof(Omnibar) != 'undefined'));
+		this.moduleAid.loadIf("resource://omnibarplus/modules/omnibarPlus.jsm", (typeof(Omnibar) != 'undefined'), true);
 	}
 }
 

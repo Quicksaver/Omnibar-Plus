@@ -1,24 +1,5 @@
-this.VERSION = '1.0.3';
-this.VARSLIST = ['init', 'toggleMiddleClick', 'toggleOrganize', 'toggleF6', 'toggleAnimated', 'toggleEngineFocus'];
-
-this.init = function() {
-	prefAid.init(['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
-	
-	// this actually helps
-	gURLBar[objName] = this;
-	
-	prefAid.listen('f6', toggleF6);
-	prefAid.listen('middleClick', toggleMiddleClick);
-	prefAid.listen('organizePopup', toggleOrganize);
-	prefAid.listen('animated', toggleAnimated);
-	prefAid.listen('engineFocus', toggleEngineFocus);
-	
-	toggleF6();
-	toggleMiddleClick();		
-	toggleOrganize();
-	toggleAnimated();
-	toggleEngineFocus();
-};
+this.VERSION = '1.0.4';
+this.VARSLIST = ['toggleMiddleClick', 'toggleOrganize', 'toggleF6', 'toggleAnimated', 'toggleEngineFocus'];
 
 // Toggle middle click functionality
 this.toggleMiddleClick = function() {
@@ -47,7 +28,22 @@ this.toggleEngineFocus = function() {
 };
 
 this.LOADMODULE = function() {
-	timerAid.init('preinit', init, 500);
+	prefAid.init(['f6', 'middleClick', 'organizePopup', 'animated', 'animatedScheme', 'engineFocus', 'agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
+	
+	// this actually helps
+	gURLBar[objName] = this;
+	
+	prefAid.listen('f6', toggleF6);
+	prefAid.listen('middleClick', toggleMiddleClick);
+	prefAid.listen('organizePopup', toggleOrganize);
+	prefAid.listen('animated', toggleAnimated);
+	prefAid.listen('engineFocus', toggleEngineFocus);
+	
+	toggleF6();
+	toggleMiddleClick();
+	toggleOrganize();
+	toggleAnimated();
+	toggleEngineFocus();
 };
 
 this.UNLOADMODULE = function() {
