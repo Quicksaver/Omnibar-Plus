@@ -1,5 +1,5 @@
-moduleAid.VERSION = '1.0.0';
-moduleAid.VARSLIST = ['tree', 'list', 'getLabel', 'removeDisabled', 'moveListRow', 'selectAndFocus', 'getCell', 'inRange', 'blurOnDisabled', 'onOverlayLoad', 'onOverlayUnload'];
+moduleAid.VERSION = '1.0.1';
+moduleAid.VARSLIST = ['tree', 'list', 'getLabel', 'removeDisabled', 'moveListRow', 'selectAndFocus', 'getCell', 'inRange', 'blurOnDisabled', 'blurOrderList', 'onOverlayLoad', 'onOverlayUnload'];
 
 this.__defineGetter__('tree', function() { return document.getElementById('orderList'); });
 this.__defineGetter__('list', function() { return tree.view; });
@@ -78,6 +78,13 @@ this.inRange = function(i) {
 this.blurOnDisabled = function(attr, oldval, newval) {
 	if(newval == 'true') {
 		list.selection.clearSelection();
+	}
+};
+
+this.blurOrderList = function() {
+	var list = document.getElementById('orderList');
+	if(list.getAttribute('disabled') == 'true') {
+		list.view.selection.clearSelection();
 	}
 };
 

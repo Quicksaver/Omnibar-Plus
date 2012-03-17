@@ -6,15 +6,6 @@
 ]>
 
 <overlay id="OmnibarPlus-options-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="text/javascript">
-		function blurOrderList() {
-			var list = document.getElementById('orderList');
-			if(list.getAttribute('disabled') == 'true') {
-				list.view.selection.clearSelection();
-			}
-		}
-	</script>
-	
 	<prefpane id="mainPane">
 		<preferences>
 			<preference id="extensions.omnibarplus.organizePopup" name="extensions.omnibarplus.organizePopup" type="bool" />
@@ -74,7 +65,7 @@
 									width="350"
 									seltype="single"
 									hidecolumnpicker="true"
-									onblur="setTimeout(blurOrderList, 0);"
+									onblur="objName.aSync(objName.blurOrderList);"
 									dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox">
 									<treecols style="visibility: hidden; height: 0;">
 										<treecol label="" flex="1" style="text-align: right;"/>
