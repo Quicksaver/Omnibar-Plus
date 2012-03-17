@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.0.1';
+moduleAid.VERSION = '1.0.2';
 moduleAid.VARSLIST = ['Omnibar', 'gBrowser', 'omnibarClicker', 'onEngineClick'];
 
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
@@ -30,11 +30,10 @@ this.onEngineClick = function(e) {
 
 moduleAid.LOADMODULE = function() {
 	omnibarClicker.removeAttribute('onclick'); // We need to remove this first
-	listenerAid.remove(omnibarClicker, 'click', Omnibar.onButtonClick, false, false);
 	listenerAid.add(omnibarClicker, 'click', onEngineClick, false);
 };
 
 moduleAid.UNLOADMODULE = function() {
 	listenerAid.remove(omnibarClicker, 'click', onEngineClick, false); 
-	listenerAid.add(omnibarClicker, 'click', Omnibar.onButtonClick, false, false);
+	omnibarClicker.setAttribute('onclick', 'Omnibar.onButtonClick();');
 };

@@ -1,4 +1,4 @@
-var defaultsVersion = '1.0.0';
+var defaultsVersion = '1.0.1';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
@@ -30,9 +30,8 @@ function startConditions(aReason) {
 }
 
 function startAddon(window) {
-	let obj = prepareObject(window);
-	
-	obj.moduleAid.load(objName, started == APP_STARTUP);
+	prepareObject(window);
+	window[objName].moduleAid.load(objName, started == APP_STARTUP);
 }
 
 function stopAddon(window) {
@@ -40,6 +39,7 @@ function stopAddon(window) {
 }
 
 function windowWatcher(aSubject, aTopic) {
+	if(unloaded) { return; }
 	windowMediator.callOnLoad(aSubject, startAddon, 'navigator:browser');
 }
 
@@ -58,8 +58,8 @@ function onStartup(aReason) {
 	// Apply overlay to Omnibar preferences dialog
 	overlayAid.overlayURI("chrome://omnibar/content/options.xul", "chrome://omnibarplus/content/omnibarOptions.xul", 
 		function(window) {
-			let optionsObj = prepareObject(window);
-			optionsObj.moduleAid.load('options');
+			prepareObject(window);
+			window[objName].moduleAid.load('options');
 		},
 		function(window) {
 			preparePreferences(window);
@@ -67,6 +67,7 @@ function onStartup(aReason) {
 		},
 		function(window) {
 			window[objName].onOverlayUnload();
+			removeObject(window);
 		}
 	);
 	if(Services.appinfo.OS == 'Darwin') {
@@ -76,6 +77,5 @@ function onStartup(aReason) {
 
 function onShutdown(aReason) {
 	// remove the add-on from all windows
-	windowMediator.callOnAll(stopAddon, 'navigator:browser');
-	windowMediator.unregister(windowWatcher, 'domwindowopened');
+	windowMediator.callOnAll(stopAddon, 'navigator:browser', true);
 }
