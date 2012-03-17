@@ -1,5 +1,4 @@
 content   omnibarplus                   chrome/content/
-resource  omnibarplus                   resource/
 skin      omnibarplus     classic/1.0   chrome/skin/
 
 locale    omnibarplus     en-US         chrome/locale/en-US/
@@ -9,9 +8,3 @@ locale    omnibarplus     pt-PT         chrome/locale/pt-PT/
 locale    omnibarplus     sv-SE         chrome/locale/sv-SE/
 locale    omnibarplus     zh-CN         chrome/locale/zh-CN/
 locale    omnibarplus     zh-TW         chrome/locale/zh-TW/
-
-overlay   chrome://browser/content/browser.xul   chrome://omnibarplus/content/overlay.xul
-overlay   chrome://omnibar/content/options.xul   chrome://omnibarplus/content/omnibarOptions.xul
-style     chrome://omnibar/content/options.xul   chrome://omnibarplus/skin/options.css
-
-overlay   chrome://omnibarplus/content/omnibarOptions.xul   chrome://omnibarplus/content/omnibarOptionsMac.xul   os=Darwin

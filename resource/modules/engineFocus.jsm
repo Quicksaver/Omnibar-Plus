@@ -1,13 +1,13 @@
-this.VERSION = '1.0.1';
-this.VARSLIST = ['engineName'];
+moduleAid.VERSION = '1.0.2';
+moduleAid.VARSLIST = ['engineName'];
 
 this.engineName = document.getElementById('omnibar-defaultEngineName');
-setWatchers(engineName);
 
-this.LOADMODULE = function() {
-	engineName.addPropertyWatcher('value', openLocation);
+moduleAid.LOADMODULE = function() {
+	setWatchers(engineName);
+	engineName.addAttributeWatcher('value', window.openLocation);
 };
 
-this.UNLOADMODULE = function() {
-	engineName.removePropertyWatcher('value', openLocation);
+moduleAid.UNLOADMODULE = function() {
+	setWatchers(engineName, true);
 };

@@ -15,9 +15,5 @@
 <!ENTITY omnibarPlusplus.label "Plus">
 <!ENTITY omnibarPlussuggestionList.label "Popup de suggestions">
 <!ENTITY omnibarPlusfunctionality.label "Raccourcis clavier">
-<!ENTITY omnibarPlusorganizeList.EE "Tout le reste (marque-pages, historique, etc…)">
-<!ENTITY omnibarPlusorganizeList.agrenon "Suggestions de Peers">
-<!ENTITY omnibarPlusorganizeList.smarterwiki "Suggestions de FastestFox">
-<!ENTITY omnibarPlusorganizeList.omnibar "Suggestions de recherche Omnibar">
 <!ENTITY omnibarPlusmiddleClick.mac "Clic du milieu ou Command/Option + clic gauche sur un moteur de recherche ouvre sa page Web">
 <!ENTITY omnibarPlusmiddleClick.win "Clic du milieu ou Ctrl/Alt + clic gauche sur un moteur de recherche ouvre sa page Web">

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<overlay id="F6-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<commandset id="mainCommandSet">
+		<command id="command_objPathString_f6" oncommand="objName.focusBar();"/>
+	</commandset>
+	
+	<command id="Browser:FocusNextFrame" disabled="true"/>
+	
+	<window id="main-window">
+		<keyset id="keyset_objPathString">
+			<key id="key_objPathString_f6" command="command_objPathString_f6" keycode="VK_F6"/>
+		</keyset>
+	</window>
+</overlay>

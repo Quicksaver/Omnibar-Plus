@@ -1,20 +1,20 @@
-this.VERSION = '1.0.1';
-this.VARSLIST = ['usingRichlist', 'toggleScheme'];
+moduleAid.VERSION = '1.0.2';
+moduleAid.VARSLIST = ['gURLBar', 'usingRichlist', 'toggleScheme'];
+
+this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 
 this.usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
 
 this.toggleScheme = function() {
 	gURLBar.popup.setAttribute('animatedPopup', prefAid.animatedScheme);
-	styleAid.unload('animatedScheme');
-	styleAid.load('animatedScheme', 'chrome://'+objPathString+'/skin/'+prefAid.animatedScheme+'.css');
+	styleAid.load('animatedScheme', prefAid.animatedScheme);
 };
 
-this.LOADMODULE = function() {
-	prefAid.ready('animatedScheme');
+moduleAid.LOADMODULE = function() {
 	prefAid.listen('animatedScheme', toggleScheme);
 	
 	toggleScheme();
-	styleAid.load('animatedPopup', 'chrome://'+objPathString+'/skin/autocompletepopup.css');
+	styleAid.load('animatedPopup', 'autocompletepopup');
 	
 	if(!usingRichlist) {
 		gURLBar.popup._adjustHeight = gURLBar.popup.adjustHeight;
@@ -28,7 +28,7 @@ this.LOADMODULE = function() {
 	}
 };
 
-this.UNLOADMODULE = function() {
+moduleAid.UNLOADMODULE = function() {
 	prefAid.unlisten('animatedScheme', toggleScheme);
 	
 	gURLBar.popup.removeAttribute('animatedPopup');

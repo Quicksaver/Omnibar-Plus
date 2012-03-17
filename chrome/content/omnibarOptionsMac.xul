@@ -4,6 +4,6 @@
   %optionsDTD;
 ]>
 
-<overlay id="OmnibarPlus-options-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="options-mac-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<checkbox id="middleClickCheckbox" label="&omnibarPlusmiddleClick.mac;"/>
 </overlay>

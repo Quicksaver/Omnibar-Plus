@@ -15,9 +15,5 @@
 <!ENTITY omnibarPlusplus.label "Plus">
 <!ENTITY omnibarPlussuggestionList.label "Förslagsruta">
 <!ENTITY omnibarPlusfunctionality.label "Kortkommandon">
-<!ENTITY omnibarPlusorganizeList.EE "Allting annat (bokmärken, historik, o.s.v.)">
-<!ENTITY omnibarPlusorganizeList.agrenon "Förslag från Peers">
-<!ENTITY omnibarPlusorganizeList.smarterwiki "Förslag från FastestFox">
-<!ENTITY omnibarPlusorganizeList.omnibar "Sökförslag från Omnibar">
 <!ENTITY omnibarPlusmiddleClick.mac "Mittenklick eller Cmd/Option+Vänsterklick på sökmotor öppnar dess webbplats">
 <!ENTITY omnibarPlusmiddleClick.win "Mittenklick eller Ctrl/Alt+Vänsterklick på sökmotor öppnar dess webbplats">

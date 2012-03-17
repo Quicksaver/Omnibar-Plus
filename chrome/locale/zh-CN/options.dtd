@@ -15,9 +15,5 @@
 <!ENTITY omnibarPlusplus.label "Plus">
 <!ENTITY omnibarPlussuggestionList.label "弹出建议表单">
 <!ENTITY omnibarPlusfunctionality.label "捷径">
-<!ENTITY omnibarPlusorganizeList.EE "其它（书签，历史，等等）">
-<!ENTITY omnibarPlusorganizeList.agrenon "Peers建议">
-<!ENTITY omnibarPlusorganizeList.smarterwiki "FastestFox建议">
-<!ENTITY omnibarPlusorganizeList.omnibar "Omnibar搜索建议">
 <!ENTITY omnibarPlusmiddleClick.mac "中键点击或Command/Option + 左键点击搜索引擎打开其主页">
 <!ENTITY omnibarPlusmiddleClick.win "中键点击或CTRL/ALT + 左键点击搜索引擎打开其主页">

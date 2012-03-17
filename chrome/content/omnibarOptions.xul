@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://omnibarplus/skin/options.css" type="text/css"?>
 <!DOCTYPE window [
   <!ENTITY % optionsDTD SYSTEM "chrome://omnibarplus/locale/options.dtd">
   %optionsDTD;
 ]>
 
 <overlay id="OmnibarPlus-options-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script id="OmnibarPlus_options_script" type="application/x-javascript" src="chrome://omnibarplus/content/options.js"/>
+	<script type="text/javascript">
+		function blurOrderList() {
+			var list = document.getElementById('orderList');
+			if(list.getAttribute('disabled') == 'true') {
+				list.view.selection.clearSelection();
+			}
+		}
+	</script>
 	
 	<prefpane id="mainPane">
 		<preferences>
@@ -15,22 +23,21 @@
 			<preference id="extensions.omnibarplus.animatedScheme" name="extensions.omnibarplus.animatedScheme" type="string" />
 			<preference id="extensions.omnibarplus.f6" name="extensions.omnibarplus.f6" type="bool" />
 			<preference id="extensions.omnibarplus.engineFocus" name="extensions.omnibarplus.engineFocus" type="bool" />
+			<preference id="extensions.omnibarplus.organize0" name="extensions.omnibarplus.organize0" type="string" />
 			<preference id="extensions.omnibarplus.organize1" name="extensions.omnibarplus.organize1" type="string" />
 			<preference id="extensions.omnibarplus.organize2" name="extensions.omnibarplus.organize2" type="string" />
 			<preference id="extensions.omnibarplus.organize3" name="extensions.omnibarplus.organize3" type="string" />
-			<preference id="extensions.omnibarplus.organize4" name="extensions.omnibarplus.organize4" type="string" />
 			<preference id="extensions.omnibarplus.autoSelect" name="extensions.omnibarplus.autoSelect" type="bool" />
 		</preferences>
 		
 		<tabbox id="omnibarTabBox" flex="1">
-
 			<tabs id="tabsElement">
 				<tab id="omnibarTab" label="&omnibarPlusmain.label;"/>
 				<tab id="plusTab" label="&omnibarPlusplus.label;"/>
 			</tabs>
 			
 			<tabpanels id="tabPanels" flex="1">
-				<tabpanel id="omnibarTab" orient="vertical"/>
+				<tabpanel id="omnibarTab" orient="vertical" getchildrenof="mainPane"/>
 				
 				<tabpanel id="plusTab" orient="vertical">
 					<groupbox align="start">
@@ -38,11 +45,10 @@
 						<groupbox align="center">
 							<caption><checkbox id="animatedCheckbox" 
 								label="&omnibarPlusanimated.label;" 
-								preference="extensions.omnibarplus.animated"
-								oncommand="OmnibarPlusOptions.toggleAnimated();"/></caption>
+								preference="extensions.omnibarplus.animated"/></caption>
 							<hbox style="vertical-align: middle;">
 								<label style="margin-top: 7px;" value="&omnibarPlusanimatedScheme.label;"/>
-								<menulist id="animatedMenulist" preference="extensions.omnibarplus.animatedScheme">
+								<menulist id="animatedMenulist" preference="extensions.omnibarplus.animatedScheme" dependson="animatedCheckbox">
 									<menupopup>
 										<menuitem id="scheme1" value="sky" label="&omnibarPlusanimatedScheme.sky;"/>
 										<menuitem id="scheme2" value="ruby" label="&omnibarPlusanimatedScheme.ruby;"/>
@@ -59,42 +65,69 @@
 							<caption><checkbox id="organizeCheckbox" 
 								label="&omnibarPlusorganizePopup.label;" 
 								preference="extensions.omnibarplus.organizePopup"
-								oncommand="OmnibarPlusOptions.toggleOrganize();"/></caption>
-							<textbox hidden="true" id="hiddenOrderListLabel_EE" value="&omnibarPlusorganizeList.EE;"/>
-							<textbox hidden="true" id="hiddenOrderListLabel_agrenon" value="&omnibarPlusorganizeList.agrenon;"/>
-							<textbox hidden="true" id="hiddenOrderListLabel_smarterwiki" value="&omnibarPlusorganizeList.smarterwiki;"/>
-							<textbox hidden="true" id="hiddenOrderListLabel_omnibar" value="&omnibarPlusorganizeList.omnibar;"/>
+								dependson="!extensions.omnibar.popupstyle:SIMPLE"/></caption>
 							<hbox style="margin: 0 5px;">
-								<tree id="orderList" class="organize" flex="1" rows="4" width="350" seltype="single" hidecolumnpicker="true">
+								<tree id="orderList"
+									class="organize"
+									flex="1"
+									rows="4"
+									width="350"
+									seltype="single"
+									hidecolumnpicker="true"
+									onblur="setTimeout(blurOrderList, 0);"
+									dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox">
 									<treecols style="visibility: hidden; height: 0;">
 										<treecol label="" flex="1" style="text-align: right;"/>
 										<treecol label="" flex="5"/>
 									</treecols>
 									<treechildren id="orderListChildren">
-										<treeitem><treerow>
+										<treeitem id="treeitem-0"><treerow>
+											<treecell style="text-align: right;" label="0"/>
+											<treecell id="treecell-0"
+												preference="extensions.omnibarplus.organize0"
+												preference-editable="true"
+												onsyncfrompreference="objName.getLabel(this);"
+												onsynctopreference="return this.getAttribute('value');"/>
+										</treerow></treeitem>
+										<treeitem id="treeitem-1"><treerow>
 											<treecell style="text-align: right;" label="1"/>
-											<treecell label="First"/>
+											<treecell id="treecell-1"
+												preference="extensions.omnibarplus.organize1"
+												preference-editable="true"
+												onsyncfrompreference="objName.getLabel(this);"
+												onsynctopreference="return this.getAttribute('value');"/>
 										</treerow></treeitem>
-										<treeitem><treerow>
+										<treeitem id="treeitem-2"><treerow>
 											<treecell style="text-align: right;" label="2"/>
-											<treecell label="Second"/>
+											<treecell id="treecell-2"
+												preference="extensions.omnibarplus.organize2"
+												preference-editable="true"
+												onsyncfrompreference="objName.getLabel(this);"
+												onsynctopreference="return this.getAttribute('value');"/>
 										</treerow></treeitem>
-										<treeitem><treerow>
+										<treeitem id="treeitem-3"><treerow>
 											<treecell style="text-align: right;" label="3"/>
-											<treecell label="Third"/>
-										</treerow></treeitem>
-										<treeitem><treerow>
-											<treecell style="text-align: right;" label="4"/>
-											<treecell label="Fourth"/>
+											<treecell id="treecell-3"
+												preference="extensions.omnibarplus.organize3"
+												preference-editable="true"
+												onsyncfrompreference="objName.getLabel(this);"
+												onsynctopreference="return this.getAttribute('value');"/>
 										</treerow></treeitem>
 									</treechildren>
 								</tree>
 								<vbox align="center" style="padding: 3px 0;">
-									<button id="ListUpButton" class="organize" oncommand="OmnibarPlusOptions.moveListRow(false);"/>
-									<button id="ListDownButton" class="organize" oncommand="OmnibarPlusOptions.moveListRow(true);"/>
+									<button id="ListUpButton"
+										oncommand="objName.moveListRow(false);"
+										dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>
+									<button id="ListDownButton"
+										oncommand="objName.moveListRow(true);"
+										dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>
 								</vbox>
 							</hbox>
-							<checkbox id="autoSelectCheckbox" label="&omnibarPlusautoSelect.label;" preference="extensions.omnibarplus.autoSelect"/>
+							<checkbox id="autoSelectCheckbox"
+								label="&omnibarPlusautoSelect.label;"
+								preference="extensions.omnibarplus.autoSelect"
+								dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>
 						</groupbox>
 					</groupbox>
 					<groupbox align="start">

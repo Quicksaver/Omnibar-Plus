@@ -1,10 +1,13 @@
-this.VERSION = '1.0.2';
-this.VARSLIST = ['willOrganize', 'escaped', 'selectedSuggestion', 'LBHelpers', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
+moduleAid.VERSION = '1.0.3';
+moduleAid.VARSLIST = ['gURLBar', 'gBrowser', 'Omnibar', 'willOrganize', 'escaped', 'selectedSuggestion', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
+
+this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
+this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
+this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 
 this.willOrganize = false;
 this.escaped = false;
 this.selectedSuggestion = false;
-this.LBHelpers = (typeof(LocationBarHelpers) != 'undefined') ? true : false;
 this.types = [];
 this.deletedIndex = null;
 this.deletedText = null;
@@ -43,14 +46,14 @@ this.searchBegin = function() {
 	selectedSuggestion = false;
 	escaped = false;
 	doIndexes();
-	if(LBHelpers) {
-		LocationBarHelpers._searchBegin();
+	if(window.LocationBarHelpers) {
+		window.LocationBarHelpers._searchBegin();
 	}
 };
 this.searchComplete = function() {
 	popupshowing();
-	if(LBHelpers) {
-		LocationBarHelpers._searchComplete();
+	if(window.LocationBarHelpers) {
+		window.LocationBarHelpers._searchComplete();
 	}
 };
 
@@ -139,24 +142,18 @@ this.getTypes = function() {
 	// 'omnibar' is for omnibar added search suggestions
 	// 'EE' is for everything else; 
 	types = [
+		prefAid.organize0,
 		prefAid.organize1,
 		prefAid.organize2,
-		prefAid.organize3,
-		prefAid.organize4
+		prefAid.organize3
 	];
 	
 	// Remove entries that aren't needed as to reduce the number of loops
 	if(typeof(agrenonLoader) == 'undefined') {
 		removeEntry('agrenon');
-		prefAid.agrenon = false;
-	} else {
-		prefAid.agrenon = true;
 	}
 	if(typeof(SmarterWiki) == 'undefined') { 
 		removeEntry('smarterwiki'); 
-		prefAid.smarterwiki = false;
-	} else {
-		prefAid.smarterwiki = true;
 	}
 };
 
@@ -185,7 +182,7 @@ this.removeEntry = function(str) {
 this.urlBarKeyDown = function(e) {
 	// Compatibility with the UI Enhancer add-on
 	// don't handle keystrokes on it's editing box
-	if(hasAncestor(document.commandDispatcher.focusedElement, document.getElementById('UIEnhancer_URLBar_Editing_Stack_Text'))) { return true; }
+	if(isAncestor(document.commandDispatcher.focusedElement, document.getElementById('UIEnhancer_URLBar_Editing_Stack_Text'))) { return true; }
 	
 	// Sometimes the ontextentered attribute is reset (for some reason), this leads to double tabs being opened
 	checkOnHandlers();
@@ -228,7 +225,7 @@ this.urlBarKeyDown = function(e) {
 				case e.DOM_VK_PAGE_UP:
 				case e.DOM_VK_UP:
 					if(currentIndex > -1) {
-						currentIndex = (key == e.DOM_VK_PAGE_UP) ? Math.max(currentIndex -5, -1) : currentIndex -1;
+						currentIndex = (key == e.DOM_VK_PAGE_UP && currentIndex > 0) ? Math.max(currentIndex -5, 0) : currentIndex -1;
 					} else {
 						currentIndex = richlist.length-1;
 					}
@@ -321,7 +318,7 @@ this.checkOnHandlers = function() {
 		gURLBar._ontextentered = gURLBar.getAttribute('ontextentered');
 		gURLBar.setAttribute('ontextentered', objName+'.fireOnSelect(param);');
 	}
-	if(goButton.getAttribute('onclick').indexOf('objName') < 0) {
+	if(goButton.getAttribute('onclick').indexOf(objName) < 0) {
 		goButton._onclick = goButton.getAttribute('onclick');
 		goButton.setAttribute('onclick', objName+'.onGoClick(event);'); 
 	}	
@@ -385,7 +382,7 @@ this.fixContextMenu = function(areWeOrganizing) {
 
 this.pasteAndGo = function(event) {
 	gURLBar.select();
-	goDoCommand('cmd_paste');
+	window.goDoCommand('cmd_paste');
 	doIndexes();
 	fireOnSelect(event);
 };
@@ -431,16 +428,14 @@ this.fireOnSelect = function(e) {
 	});
 };
 
-this.LOADMODULE = function() {
-	prefAid.ready(['agrenon', 'smarterwiki', 'organize1', 'organize2', 'organize3', 'organize4', 'autoSelect']);
-
+moduleAid.LOADMODULE = function() {
 	// Grab types of entries to populate the organize list
 	// Also sets whether Peers/FastestFox is enabled
 	getTypes();
+	prefAid.listen('organize0', getTypes);
 	prefAid.listen('organize1', getTypes);
 	prefAid.listen('organize2', getTypes);
 	prefAid.listen('organize3', getTypes);
-	prefAid.listen('organize4', getTypes);
 	
 	// Compatibility with latest versions of firefox (aurora FF11 as far as I can tell doesn't have LocationBarHelpers anymore)
 	// Setting these always, the switch On/Off are inside the functions themselves
@@ -461,31 +456,6 @@ this.LOADMODULE = function() {
 		return richlistbox._appendChild(aNode);
 	}
 	
-	// For the auto-select the first result feature
-	// Basically a copy/paste from Speak Words equivalent functionality
-	// Don't delete this on unload as Speak Words uses it
-	gURLBar.__defineGetter__("willHandle", function() {
-		// Potentially it's a url if there's no spaces
-		var search = this.controller.searchString.trim();
-		if (search.match(/ /) == null) {
-			try {
-				// Quit early if the input is already a URI
-				return Services.io.newURI(gURLBar.value, null, null);
-			}
-			catch(ex) {}
-			
-			try {
-				// Quit early if the input is domain-like (e.g., site.com/page)
-				return Cc["@mozilla.org/network/effective-tld-service;1"].getService(Ci.nsIEffectiveTLDService).getBaseDomainFromHost(gURLBar.value);
-			}
-			catch(ex) {}
-		}
-		
-		// Check if there's an search engine registered for the first keyword
-		var keyword = search.split(/\s+/)[0];
-		return Services.search.getEngineByAlias(keyword);
-	});
-	
 	// At first I was going to simply replace this with a pre-written function, but TabMixPlus also changes this function and there's no way to
 	// discriminate without saving at least two pre-written functions, this method seems much more direct
 	panel._onPopupClick = panel.onPopupClick;
@@ -499,7 +469,10 @@ this.LOADMODULE = function() {
 		]]>
 		],
 		['controller.handleEnter(true);',
-		'this.input.{([objName])}.fireOnSelect(aEvent);'
+		'fireOnSelect(aEvent);'
+		],
+		['openUILink',
+		'window.openUILink'
 		]
 	]);
 	
@@ -508,7 +481,7 @@ this.LOADMODULE = function() {
 	panel._closePopup = panel.closePopup;
 	panel.closePopup = modifyFunction(panel.closePopup, [
 		['this.mPopupOpen',
-		'{([objName])}.panelState'
+		'panelState'
 		]
 	]);
 	
@@ -522,16 +495,16 @@ this.LOADMODULE = function() {
 	});
 };
 
-this.UNLOADMODULE = function() {
+moduleAid.UNLOADMODULE = function() {
+	prefAid.unlisten('organize0', getTypes);
 	prefAid.unlisten('organize1', getTypes);
 	prefAid.unlisten('organize2', getTypes);
 	prefAid.unlisten('organize3', getTypes);
-	prefAid.unlisten('organize4', getTypes);
 	
 	gURLBar.onKeyPress = gURLBar._onKeyPress;
 	delete gURLBar._onKeyPress;
 	
-	if(!LBHelpers) {
+	if(!window.LocationBarHelpers) {
 		gURLBar.removeAttribute('onsearchbegin');
 		gURLBar.removeAttribute('onsearchcomplete');
 	} else {

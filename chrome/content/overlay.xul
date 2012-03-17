@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<overlay id="OmnibarPlus-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script id="OmnibarPlus_overlay_script" type="application/x-javascript" src="chrome://omnibarplus/content/overlay.js"/>
-</overlay>

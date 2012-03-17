@@ -15,9 +15,5 @@
 <!ENTITY omnibarPlusplus.label "פלוס">
 <!ENTITY omnibarPlussuggestionList.label "הצעות מוקפצות">
 <!ENTITY omnibarPlusfunctionality.label "קיצורי דרך">
-<!ENTITY omnibarPlusorganizeList.EE "כל השאר (סימניות, היסטוריה, וכו \'..)">
-<!ENTITY omnibarPlusorganizeList.agrenon "Peers שילוב הצעות חיפוש של ההרחבה">
-<!ENTITY omnibarPlusorganizeList.smarterwiki "FastestFox שילוב הצעות חיפוש של ההרחבה">
-<!ENTITY omnibarPlusorganizeList.omnibar "Omnibar הצעות חיפוש">
 <!ENTITY omnibarPlusmiddleClick.mac "לחיצה אמצעית או Command / Option + לחיצה שמאלית על סמל מנוע החיפוש פותחת את דף הבית שלו">
 <!ENTITY omnibarPlusmiddleClick.win "ליחצנ אמצעית או Ctrl / Alt + לחיצה שמאלית על סמל מנוע החיפוש פותחת דף הבית שלו">

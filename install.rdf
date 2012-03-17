@@ -8,12 +8,13 @@
 		<em:creator>Quicksaver</em:creator>
 		<em:iconURL>chrome://omnibarplus/skin/icon.png</em:iconURL>
 		<em:homepageURL>https://addons.mozilla.org/en-US/firefox/addon/omnibar-plus/</em:homepageURL>
+		<em:bootstrap>true</em:bootstrap>
 		
 		<em:targetApplication>
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-				<em:minVersion>4.0</em:minVersion>
-				<em:maxVersion>13.0a1</em:maxVersion>
+				<em:minVersion>10.0</em:minVersion>
+				<em:maxVersion>14.0a1</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		

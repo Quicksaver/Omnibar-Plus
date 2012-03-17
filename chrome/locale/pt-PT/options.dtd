@@ -19,10 +19,5 @@
 <!ENTITY omnibarPlussuggestionList.label "Painel de sugestões">
 <!ENTITY omnibarPlusfunctionality.label "Atalhos">
 
-<!ENTITY omnibarPlusorganizeList.EE "Restantes (favoritos, histórico, etc...)">
-<!ENTITY omnibarPlusorganizeList.agrenon "Sugestões Peers">
-<!ENTITY omnibarPlusorganizeList.smarterwiki "Sugestões FastestFox">
-<!ENTITY omnibarPlusorganizeList.omnibar "Sugestões de procura Omnibar">
-
 <!ENTITY omnibarPlusmiddleClick.mac "Clique com o botão do meio ou Comando/Opção + Clique esquerdo no motor de procura abre a sua página principal">
 <!ENTITY omnibarPlusmiddleClick.win "Clique com o botão do meio ou Ctrl/Alt + Clique esquerdo no motor de procura abre a sua página principal">
