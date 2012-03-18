@@ -23,9 +23,11 @@
 	background: white !important;
 }
 #PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox {
-	display: block !important;
 	background: white -moz-linear-gradient(left, rgb(242,242,242) 26px, transparent 0) repeat-y !important;
 	margin: 1px !important;
+}
+#PopupAutoCompleteRichResult[animatedPopup]:not([linux]) .autocomplete-richlistbox {
+	display: block !important;
 }
 
 #PopupAutoComplete[animatedPopup] *,
@@ -44,7 +46,7 @@
 	color: black !important;
 }
 #PopupAutoComplete[animatedPopup] .autocomplete-treebody::-moz-tree-cell-text {
-    color: black !important;
+	color: black !important;
 }
 #PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox .autocomplete-richlistitem .ac-url-box {
 	margin: 0 !important;

@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.0.2';
+moduleAid.VERSION = '1.0.3';
 moduleAid.VARSLIST = ['gURLBar', 'usingRichlist', 'toggleScheme'];
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
@@ -7,6 +7,9 @@ this.usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplet
 
 this.toggleScheme = function() {
 	gURLBar.popup.setAttribute('animatedPopup', prefAid.animatedScheme);
+	if(Services.appinfo.OS != 'Darwin' && Services.appinfo.OS != 'WINNT') {
+		gURLBar.popup.setAttribute('linux', 'true');
+	}
 	styleAid.load('animatedScheme', prefAid.animatedScheme);
 };
 
@@ -32,6 +35,7 @@ moduleAid.UNLOADMODULE = function() {
 	prefAid.unlisten('animatedScheme', toggleScheme);
 	
 	gURLBar.popup.removeAttribute('animatedPopup');
+	gURLBar.popup.removeAttribute('linux');
 	styleAid.unload('animatedPopup');
 	styleAid.unload('animatedScheme');
 	
