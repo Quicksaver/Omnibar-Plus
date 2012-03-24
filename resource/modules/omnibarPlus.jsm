@@ -1,5 +1,5 @@
-moduleAid.VERSION = '1.1.0';
-moduleAid.VARSLIST = ['toggleMiddleClick', 'toggleOrganize', 'toggleF6', 'toggleAnimated', 'toggleEngineFocus'];
+moduleAid.VERSION = '1.1.1';
+moduleAid.VARSLIST = ['toggleMiddleClick', 'toggleOrganize', 'toggleAnimated', 'toggleEngineFocus'];
 
 // Toggle middle click functionality
 this.toggleMiddleClick = function() {
@@ -10,11 +10,6 @@ this.toggleMiddleClick = function() {
 this.toggleOrganize = function() {
 	// We don't organize the simple autocomplete
 	moduleAid.loadIf("organize", (prefAid.organizePopup && window.gURLBar.popup != document.getElementById('PopupAutoComplete')));
-};
-
-// Toggle F6 functionality
-this.toggleF6 = function() {
-	moduleAid.loadIf("F6", prefAid.f6);
 };
 
 // Toggle animated effects for the suggestion list
@@ -28,13 +23,11 @@ this.toggleEngineFocus = function() {
 };
 	
 moduleAid.LOADMODULE = function() {
-	prefAid.listen('f6', toggleF6);
 	prefAid.listen('middleClick', toggleMiddleClick);
 	prefAid.listen('organizePopup', toggleOrganize);
 	prefAid.listen('animated', toggleAnimated);
 	prefAid.listen('engineFocus', toggleEngineFocus);
 	
-	toggleF6();
 	toggleMiddleClick();
 	toggleOrganize();
 	toggleAnimated();
@@ -42,7 +35,6 @@ moduleAid.LOADMODULE = function() {
 };
 
 moduleAid.UNLOADMODULE = function() {
-	prefAid.unlisten('f6', toggleF6);
 	prefAid.unlisten('middleClick', toggleMiddleClick);
 	prefAid.unlisten('organizePopup', toggleOrganize);
 	prefAid.unlisten('animated', toggleAnimated);
@@ -50,7 +42,6 @@ moduleAid.UNLOADMODULE = function() {
 	
 	moduleAid.unload("middleClick");
 	moduleAid.unload("organize");
-	moduleAid.unload("F6");
 	moduleAid.unload("animated");
 	moduleAid.unload("engineFocus");
 };

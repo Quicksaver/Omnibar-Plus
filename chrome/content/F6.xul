@@ -2,7 +2,14 @@
 
 <overlay id="F6-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<commandset id="mainCommandSet">
-		<command id="command_objPathString_f6" oncommand="objName.focusBar();"/>
+		<command id="command_objPathString_f6" oncommand="
+			if(!gURLBar.focused) {
+				openLocation();
+			}
+			else if(gBrowser) {
+				gBrowser.mCurrentBrowser.focus();
+			}
+		"/>
 	</commandset>
 	
 	<key id="xxx_key33_Browser:FocusNextFrame" disabled="true"/>

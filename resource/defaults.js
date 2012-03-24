@@ -1,4 +1,4 @@
-var defaultsVersion = '1.0.2';
+var defaultsVersion = '1.0.3';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
@@ -45,6 +45,11 @@ function windowWatcher(aSubject, aTopic) {
 	windowMediator.callOnLoad(aSubject, startAddon, 'navigator:browser');
 }
 
+// Toggle F6 functionality
+function toggleF6() {
+	moduleAid.loadIf("F6", prefAid.f6);
+}
+
 function onStartup(aReason) {
 	AddonManager.getAddonByID("{dd7515c0-0820-4234-806b-74197fa5955c}", function(addon) {
 		prefAid.agrenon = (addon && addon.isActive) ? true : false;
@@ -56,6 +61,10 @@ function onStartup(aReason) {
 	// Apply the add-on to every window opened and to be opened
 	windowMediator.callOnAll(startAddon, 'navigator:browser');
 	windowMediator.register(windowWatcher, 'domwindowopened');
+	
+	// Toggle F6 functionality
+	toggleF6();
+	prefAid.listen('f6', toggleF6);
 	
 	// Apply overlay to Omnibar preferences dialog
 	overlayAid.overlayURI("chrome://omnibar/content/options.xul", "chrome://omnibarplus/content/omnibarOptions.xul", 
