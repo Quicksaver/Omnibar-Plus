@@ -1,4 +1,4 @@
-var defaultsVersion = '1.0.1';
+var defaultsVersion = '1.0.2';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
@@ -14,7 +14,7 @@ var prefList = {
 	organize1: 'agrenon',
 	organize2: 'smarterwiki',
 	organize3: 'omnibar',
-	autoSelect: 'true'
+	autoSelect: true
 };
 
 function startConditions(aReason) {
