@@ -1,5 +1,5 @@
-moduleAid.VERSION = '1.0.1';
-moduleAid.VARSLIST = ['tree', 'list', 'getLabel', 'removeDisabled', 'moveListRow', 'selectAndFocus', 'getCell', 'inRange', 'blurOnDisabled', 'blurOrderList', 'onOverlayLoad', 'onOverlayUnload'];
+moduleAid.VERSION = '1.0.2';
+moduleAid.VARSLIST = ['tree', 'list', 'getLabel', 'removeEntries', 'moveListRow', 'selectAndFocus', 'getCell', 'inRange', 'blurOnDisabled', 'blurOrderList', 'onOverlayLoad'];
 
 this.__defineGetter__('tree', function() { return document.getElementById('orderList'); });
 this.__defineGetter__('list', function() { return tree.view; });
@@ -94,20 +94,13 @@ this.onOverlayLoad = function() {
 	tree.addAttributeWatcher('disabled', blurOnDisabled);
 };
 
-this.onOverlayUnload = function() {
-	setWatchers(tree, true);
-};
-
 moduleAid.LOADMODULE = function() {
 	window.Options._updateDependents = window.Options.updateDependents;
 	window.Options.updateDependents = function(c) { return; };
 };
 
 moduleAid.UNLOADMODULE = function() {
+	setWatchers(tree, true);
 	window.Options.updateDependents = window.Options._updateDependents;
 	delete window.Options._updateDependents;
-	
-	if(tree && tree.removeAttributeWatcher) {
-		tree.removeAttributeWatcher('disabled', blurOnDisabled);
-	}
 };
