@@ -115,11 +115,11 @@
 										dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>
 								</vbox>
 							</hbox>
-							<checkbox id="autoSelectCheckbox"
-								label="&omnibarPlusautoSelect.label;"
-								preference="extensions.omnibarplus.autoSelect"
-								dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>
 						</groupbox>
+						<checkbox id="autoSelectCheckbox"
+							label="&omnibarPlusautoSelect.label;"
+							preference="extensions.omnibarplus.autoSelect"
+							dependson="!extensions.omnibar.popupstyle:SIMPLE"/>
 					</groupbox>
 					<groupbox align="start">
 						<caption label="&omnibarPlusfunctionality.label;"/>

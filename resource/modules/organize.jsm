@@ -1,5 +1,5 @@
-moduleAid.VERSION = '1.0.3';
-moduleAid.VARSLIST = ['gURLBar', 'gBrowser', 'Omnibar', 'willOrganize', 'escaped', 'selectedSuggestion', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
+moduleAid.VERSION = '1.0.4';
+moduleAid.VARSLIST = ['gURLBar', 'gBrowser', 'Omnibar', 'willOrganize', 'escaped', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
@@ -7,7 +7,6 @@ this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 
 this.willOrganize = false;
 this.escaped = false;
-this.selectedSuggestion = false;
 this.types = [];
 this.deletedIndex = null;
 this.deletedText = null;
@@ -43,7 +42,6 @@ this.__defineSetter__('panelState', function(val) {
 // Called when a search begins and ends in the location bar
 this.searchBegin = function() {
 	willOrganize = false;
-	selectedSuggestion = false;
 	escaped = false;
 	doIndexes();
 	if(window.LocationBarHelpers) {
@@ -115,19 +113,11 @@ this.organize = function() {
 	}
 	
 	// Speak words auto select first result feature is overriden by ours
-	if(originalSelectedIndex >= 0
-	&& (originalSelectedIndex >= richlist.length || !richlist[originalSelectedIndex] || !selectedSuggestion)) {
+	if(originalSelectedIndex >= richlist.length) {
 		originalSelectedIndex = -1;
 	}
-	if(originalSelectedIndex == -1 && prefAid.autoSelect && richlist.length > 0) {
-		originalSelectedIndex = 0;
-	}
-	if(originalCurrentIndex >= 0
-	&& (originalCurrentIndex >= richlist.length || !richlist[originalCurrentIndex] || !selectedSuggestion)) {
+	if(originalCurrentIndex >= richlist.length) {
 		originalCurrentIndex = -1;
-	}
-	if(originalCurrentIndex == -1 && prefAid.autoSelect && richlist.length > 0) {
-		originalCurrentIndex = 0;
 	}
 	doIndexes(originalSelectedIndex, originalCurrentIndex);
 	
@@ -242,7 +232,6 @@ this.urlBarKeyDown = function(e) {
 			}
 			
 			doIndexes(currentIndex, currentIndex);
-			selectedSuggestion = true;
 			
 			if(currentIndex > -1 && richlist[currentIndex] && richlist[currentIndex].getAttribute('url')) {
 				gURLBar.value = richlist[currentIndex].getAttribute('url');

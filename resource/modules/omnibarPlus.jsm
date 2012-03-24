@@ -1,5 +1,5 @@
-moduleAid.VERSION = '1.1.1';
-moduleAid.VARSLIST = ['toggleMiddleClick', 'toggleOrganize', 'toggleAnimated', 'toggleEngineFocus'];
+moduleAid.VERSION = '1.1.2';
+moduleAid.VARSLIST = ['toggleMiddleClick', 'toggleOrganize', 'toggleAnimated', 'toggleEngineFocus', 'toggleAutoSelect'];
 
 // Toggle middle click functionality
 this.toggleMiddleClick = function() {
@@ -21,17 +21,24 @@ this.toggleAnimated = function() {
 this.toggleEngineFocus = function() {
 	moduleAid.loadIf("engineFocus", prefAid.engineFocus);
 };
+
+// Toggles autoSelect feature
+this.toggleAutoSelect = function() {
+	moduleAid.loadIf("autoSelect", prefAid.autoSelect);
+};
 	
 moduleAid.LOADMODULE = function() {
 	prefAid.listen('middleClick', toggleMiddleClick);
 	prefAid.listen('organizePopup', toggleOrganize);
 	prefAid.listen('animated', toggleAnimated);
 	prefAid.listen('engineFocus', toggleEngineFocus);
+	prefAid.listen('autoSelect', toggleAutoSelect);
 	
 	toggleMiddleClick();
 	toggleOrganize();
 	toggleAnimated();
 	toggleEngineFocus();
+	toggleAutoSelect();
 };
 
 moduleAid.UNLOADMODULE = function() {
@@ -39,9 +46,11 @@ moduleAid.UNLOADMODULE = function() {
 	prefAid.unlisten('organizePopup', toggleOrganize);
 	prefAid.unlisten('animated', toggleAnimated);
 	prefAid.unlisten('engineFocus', toggleEngineFocus);
+	prefAid.unlisten('autoSelect', toggleAutoSelect);
 	
 	moduleAid.unload("middleClick");
 	moduleAid.unload("organize");
 	moduleAid.unload("animated");
 	moduleAid.unload("engineFocus");
+	moduleAid.unload("autoSelect");
 };
