@@ -21,8 +21,10 @@ function startConditions(aReason) {
 	AddonManager.getAddonByID("omnibar@ajitk.com", function(addon) {
 		if(addon && addon.isActive) {
 			continueStartup(aReason);
-		}
-		else {
+		} else {
+			windowMediator.callOnMostRecent(function(window) {
+				window.alert(stringsAid.get('addon', 'requirementWarning'));
+			}, 'navigator:browser');
 			disable();
 		}
 	});
