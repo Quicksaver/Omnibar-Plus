@@ -5,7 +5,7 @@
 		<command id="command_objPathString_f6" oncommand="objName.focusBar();"/>
 	</commandset>
 	
-	<command id="Browser:FocusNextFrame" disabled="true"/>
+	<key id="xxx_key33_Browser:FocusNextFrame" disabled="true"/>
 	
 	<window id="main-window">
 		<keyset id="keyset_objPathString">
