@@ -1,15 +1,9 @@
 moduleAid.VERSION = '1.1.2';
-moduleAid.VARSLIST = ['toggleMiddleClick', 'toggleOrganize', 'toggleAnimated', 'toggleEngineFocus', 'toggleAutoSelect'];
+moduleAid.VARSLIST = ['toggleMiddleClick', 'toggleAnimated', 'toggleEngineFocus', 'toggleURLBarHandlers'];
 
 // Toggle middle click functionality
 this.toggleMiddleClick = function() {
 	moduleAid.loadIf("middleClick", prefAid.middleClick);
-};
-
-// Toggle organize functionality
-this.toggleOrganize = function() {
-	// We don't organize the simple autocomplete
-	moduleAid.loadIf("organize", (prefAid.organizePopup && window.gURLBar.popup != document.getElementById('PopupAutoComplete')));
 };
 
 // Toggle animated effects for the suggestion list
@@ -23,34 +17,44 @@ this.toggleEngineFocus = function() {
 };
 
 // Toggles autoSelect feature
-this.toggleAutoSelect = function() {
-	moduleAid.loadIf("autoSelect", prefAid.autoSelect);
+this.toggleURLBarHandlers = function() {
+	if(window.gURLBar.popup == document.getElementById('PopupAutoComplete')) { return; }
+	
+	if(!prefAid.autoSelect && !prefAid.organizePopup) {
+		moduleAid.unload("autoSelect");
+		moduleAid.unload("organize");
+		moduleAid.unload("urlbarHandlers");
+	} else {
+		moduleAid.load("urlbarHandlers");
+		moduleAid.loadIf("autoSelect", prefAid.autoSelect);
+		moduleAid.loadIf("organize", prefAid.organizePopup);
+	}
 };
 	
 moduleAid.LOADMODULE = function() {
 	prefAid.listen('middleClick', toggleMiddleClick);
-	prefAid.listen('organizePopup', toggleOrganize);
+	prefAid.listen('organizePopup', toggleURLBarHandlers);
 	prefAid.listen('animated', toggleAnimated);
 	prefAid.listen('engineFocus', toggleEngineFocus);
-	prefAid.listen('autoSelect', toggleAutoSelect);
+	prefAid.listen('autoSelect', toggleURLBarHandlers);
 	
 	toggleMiddleClick();
-	toggleOrganize();
 	toggleAnimated();
 	toggleEngineFocus();
-	toggleAutoSelect();
+	toggleURLBarHandlers();
 };
 
 moduleAid.UNLOADMODULE = function() {
 	prefAid.unlisten('middleClick', toggleMiddleClick);
-	prefAid.unlisten('organizePopup', toggleOrganize);
+	prefAid.unlisten('organizePopup', toggleURLBarHandlers);
 	prefAid.unlisten('animated', toggleAnimated);
 	prefAid.unlisten('engineFocus', toggleEngineFocus);
-	prefAid.unlisten('autoSelect', toggleAutoSelect);
+	prefAid.unlisten('autoSelect', toggleURLBarHandlers);
 	
 	moduleAid.unload("middleClick");
-	moduleAid.unload("organize");
 	moduleAid.unload("animated");
 	moduleAid.unload("engineFocus");
 	moduleAid.unload("autoSelect");
+	moduleAid.unload("organize");
+	moduleAid.unload("urlbarHandlers");
 };

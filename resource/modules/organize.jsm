@@ -1,66 +1,21 @@
-moduleAid.VERSION = '1.0.4';
-moduleAid.VARSLIST = ['gURLBar', 'gBrowser', 'Omnibar', 'willOrganize', 'escaped', 'types', 'deletedIndex', 'deletedText', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'searchBegin', 'searchComplete', 'popupshowing', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
+moduleAid.VERSION = '1.0.5';
+moduleAid.VARSLIST = ['gBrowser', 'Omnibar', 'escaped', 'types', 'deletedIndex', 'deletedText', 'goButton', 'richlist', 'delayOrganize', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
 
-this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 
-this.willOrganize = false;
 this.escaped = false;
 this.types = [];
 this.deletedIndex = null;
 this.deletedText = null;
 
 this.goButton = document.getElementById('go-button');
-this.panel = document.getElementById('PopupAutoCompleteRichResult');
-this.richlistbox = panel.richlistbox;
 this.richlist = richlistbox.childNodes;
 
-// helper objects to get current popup status and set it
-this.__defineGetter__('panelState', function() {
-	// For some reason, just mPopupOpen and popupOpen aren't reliable in every case
-	return (!panel.mPopupOpen && panel.state != "open") ? false : true;
-});
-this.__defineSetter__('panelState', function(val) {
-	if(val) {
-		panel._openAutocompletePopup(gURLBar, gURLBar);
-		aSync(function() {
-			if(!panel.mPopupOpen) { panel.mPopupOpen = true; }
-			if(!panel.popupOpen) { panel.popupOpen = true; }
-			if(panel.state != 'open') { panel.state = 'open'; }
-		});
-	} else {
-		panel.closePopup();
-		aSync(function() {
-			if(panel.mPopupOpen) { panel.mPopupOpen = false; }
-			if(panel.popupOpen) { panel.popupOpen = false; }
-			if(panel.state != 'closed') { panel.state = 'closed'; }
-		});
-	}
-});
-
-// Called when a search begins and ends in the location bar
-this.searchBegin = function() {
-	willOrganize = false;
+// Called when a search ends in the location bar
+this.delayOrganize = function() {
 	escaped = false;
-	doIndexes();
-	if(window.LocationBarHelpers) {
-		window.LocationBarHelpers._searchBegin();
-	}
-};
-this.searchComplete = function() {
-	popupshowing();
-	if(window.LocationBarHelpers) {
-		window.LocationBarHelpers._searchComplete();
-	}
-};
-
-// Handler for when the autocomplete pops up
-this.popupshowing = function() {
-	if(escaped) { return false; }
-	willOrganize = true;
-	timerAid.init('popupshowing', organize, 100);
-	return true;
+	timerAid.init('delayOrganize', organize, 100);
 };
 
 // This method simply cleans the selection in the autocomplete popup
@@ -77,8 +32,12 @@ this.doIndexes = function(selected, current) {
 this.organize = function() {
 	if(!panelState || escaped) { return; }
 	
-	var originalSelectedIndex = richlistbox.selectedIndex;
-	var originalCurrentIndex = richlistbox.currentIndex;
+	var selectFirst = timerAid.cancel('autoSelect');
+	if(!selectFirst) {
+		var originalSelectedIndex = richlistbox.selectedIndex;
+		var originalCurrentIndex = richlistbox.currentIndex;
+	}
+	
 	doIndexes();
 	var nodes = [];
 	
@@ -101,27 +60,27 @@ this.organize = function() {
 			if(nodes[types[type]][node].collapsed) {
 				if(nodes[types[type]][node].getAttribute('text') == gURLBar.value) {
 					nodes[types[type]][node].removeAttribute('collapsed');
-					nodes[types[type]][node] = richlistbox.appendChild(nodes[types[type]][node]);
+					nodes[types[type]][node] = richlistbox._appendChild(nodes[types[type]][node]);
 				} else {
 					// Remove collapsed entries so they're not triggered when hitting the up and down keys
 					richlistbox.removeChild(nodes[types[type]][node]);
 				}
 			} else {
-				nodes[types[type]][node] = richlistbox.appendChild(nodes[types[type]][node]);
+				nodes[types[type]][node] = richlistbox._appendChild(nodes[types[type]][node]);
 			}
 		}
 	}
 	
-	// Speak words auto select first result feature is overriden by ours
-	if(originalSelectedIndex >= richlist.length) {
-		originalSelectedIndex = -1;
+	// AutoSelect if it hasn't already
+	if(selectFirst) {
+		autoSelect();
+	} else {
+		if(originalSelectedIndex >= richlist.length) { originalSelectedIndex = -1; }
+		if(originalCurrentIndex >= richlist.length) { originalCurrentIndex = -1; }
+		
+		doIndexes(originalSelectedIndex, originalCurrentIndex);
 	}
-	if(originalCurrentIndex >= richlist.length) {
-		originalCurrentIndex = -1;
-	}
-	doIndexes(originalSelectedIndex, originalCurrentIndex);
 	
-	willOrganize = false;
 	panel.adjustHeight();
 };
 
@@ -170,21 +129,36 @@ this.removeEntry = function(str) {
 
 // Our takes on key navigation from gURLBar.onkeypress(event), if returns false, original onkeypress is called
 this.urlBarKeyDown = function(e) {
-	// Compatibility with the UI Enhancer add-on
-	// don't handle keystrokes on it's editing box
-	if(isAncestor(document.commandDispatcher.focusedElement, document.getElementById('UIEnhancer_URLBar_Editing_Stack_Text'))) { return true; }
-	
 	// Sometimes the ontextentered attribute is reset (for some reason), this leads to double tabs being opened
 	checkOnHandlers();
-	
-	// Just discriminating using the same criteria the original onKeyPress does
-	if (e.target.localName != "textbox") { return false; }
 	
 	var key = e.keyCode;
 	var tab = false;
 	if(key == e.DOM_VK_TAB && gURLBar.tabScrolling && panelState) {
 		key = (e.shiftKey) ? e.DOM_VK_UP : e.DOM_VK_DOWN;
 		tab = true;
+	}
+	
+	if(prefAid.autoSelect) {
+		dontSelect = false;
+		if(panelState) {
+			switch(e.keyCode) {
+				case e.DOM_VK_TAB:
+				case e.DOM_VK_PAGE_UP:
+				case e.DOM_VK_PAGE_DOWN:
+				case e.DOM_VK_UP:
+				case e.DOM_VK_DOWN:
+				case e.DOM_VK_ESCAPE:
+				case e.DOM_VK_LEFT:
+				case e.DOM_VK_RIGHT:
+				case e.DOM_VK_HOME:
+				case e.DOM_VK_END:
+				case e.DOM_VK_CONTEXT_MENU:
+					dontSelect = true;
+					break;
+				default: break;
+			}
+		}
 	}
 	
 	switch(key) {
@@ -268,12 +242,19 @@ this.urlBarKeyDown = function(e) {
 			}
 			
 			// Don't delete before organizing as it can screw up the handler
-			if(willOrganize) {
+			if(timerAid.delayOrganize) {
+				if(prefAid.autoSelect) {
+					dontSelect = true;
+				}
 				return false;
 			}
 			
 			// Delete entries from the popup list if applicable
 			if(richlistbox.currentIndex > -1) {
+				if(prefAid.autoSelect) {
+					dontSelect = true;
+				}
+				
 				deletedIndex = richlistbox.currentIndex;
 				deletedText = richlistbox.currentItem.getAttribute('text');
 				richlistbox.removeChild(richlistbox.currentItem);
@@ -294,7 +275,15 @@ this.urlBarKeyDown = function(e) {
 			}
 			
 			return gURLBar._onKeyPress(e);
-						
+		
+		case e.DOM_VK_LEFT:
+		case e.DOM_VK_RIGHT:
+		case e.DOM_VK_HOME:
+		case e.DOM_VK_END:
+		case e.DOM_VK_CONTEXT_MENU:
+			doIndexes();
+			return gURLBar._onKeyPress(e);
+		
 		default:
 			doIndexes();
 			return gURLBar._onKeyPress(e);
@@ -426,22 +415,12 @@ moduleAid.LOADMODULE = function() {
 	prefAid.listen('organize2', getTypes);
 	prefAid.listen('organize3', getTypes);
 	
-	// Compatibility with latest versions of firefox (aurora FF11 as far as I can tell doesn't have LocationBarHelpers anymore)
-	// Setting these always, the switch On/Off are inside the functions themselves
-	gURLBar.setAttribute('onsearchbegin', objName+'.searchBegin();');
-	gURLBar.setAttribute('onsearchcomplete', objName+'.searchComplete();');
-	
-	gURLBar._onKeyPress = gURLBar.onKeyPress;
-	gURLBar.onKeyPress = function(aEvent) {
-		return urlBarKeyDown(aEvent);
-	}
-	
 	checkOnHandlers();
 	fixContextMenu(true);
 	
 	richlistbox._appendChild = richlistbox.appendChild;
 	richlistbox.appendChild = function(aNode) {
-		if(willOrganize) { popupshowing(); }
+		delayOrganize();
 		return richlistbox._appendChild(aNode);
 	}
 	
@@ -485,20 +464,17 @@ moduleAid.LOADMODULE = function() {
 };
 
 moduleAid.UNLOADMODULE = function() {
+	timerAid.cancel('delayOrganize');
+	
 	prefAid.unlisten('organize0', getTypes);
 	prefAid.unlisten('organize1', getTypes);
 	prefAid.unlisten('organize2', getTypes);
 	prefAid.unlisten('organize3', getTypes);
 	
-	gURLBar.onKeyPress = gURLBar._onKeyPress;
-	delete gURLBar._onKeyPress;
-	
-	if(!window.LocationBarHelpers) {
-		gURLBar.removeAttribute('onsearchbegin');
-		gURLBar.removeAttribute('onsearchcomplete');
-	} else {
-		gURLBar.setAttribute('onsearchbegin', 'LocationBarHelpers._searchBegin();');
-		gURLBar.setAttribute('onsearchcomplete', 'LocationBarHelpers._searchComplete();');
+	// We remove every entry from the richlist when unloading organize module to prevent any conflicts
+	panelState = false;
+	while(richlist.length > 0) {
+		richlistbox.removeChild(richlist[0]);
 	}
 	
 	// Changed in checkOnHandlers()
