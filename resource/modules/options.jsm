@@ -1,11 +1,11 @@
-moduleAid.VERSION = '1.0.2';
+moduleAid.VERSION = '1.0.3';
 moduleAid.VARSLIST = ['tree', 'list', 'getLabel', 'removeEntries', 'moveListRow', 'selectAndFocus', 'getCell', 'inRange', 'blurOnDisabled', 'blurOrderList', 'onOverlayLoad'];
 
-this.__defineGetter__('tree', function() { return document.getElementById('orderList'); });
+this.__defineGetter__('tree', function() { return $('orderList'); });
 this.__defineGetter__('list', function() { return tree.view; });
 
 this.getLabel = function(cell) {
-	cell.setAttribute('label', stringsAid.get('options', 'organizeList.'+document.getElementById(cell.getAttribute('preference')).value));
+	cell.setAttribute('label', stringsAid.get('options', 'organizeList.'+$(cell.getAttribute('preference')).value));
 };
 
 this.removeEntries = function() {
@@ -13,15 +13,15 @@ this.removeEntries = function() {
 	for(var h = 0; h < toHide.length; h++) {
 		for(var i = 0; i <= 3; i++) {
 			if(prefAid['organize'+i] == toHide[h]) {
-				document.getElementById('treeitem-'+i).hidden = !prefAid[toHide[h]];
+				$('treeitem-'+i).hidden = !prefAid[toHide[h]];
 			}
 		}
 	}
 	
 	var j = 1;
 	for(var i = 0; i <= 3; i++) {
-		document.getElementById('treecell-'+i).previousSibling.setAttribute('label', j);
-		if(!document.getElementById('treeitem-'+i).hidden) {
+		$('treecell-'+i).previousSibling.setAttribute('label', j);
+		if(!$('treeitem-'+i).hidden) {
 			j++;
 		}
 	}		
@@ -82,7 +82,7 @@ this.blurOnDisabled = function(attr, oldval, newval) {
 };
 
 this.blurOrderList = function() {
-	var list = document.getElementById('orderList');
+	var list = $('orderList');
 	if(list.getAttribute('disabled') == 'true') {
 		list.view.selection.clearSelection();
 	}

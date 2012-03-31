@@ -1,7 +1,7 @@
-moduleAid.VERSION = '1.0.2';
+moduleAid.VERSION = '1.0.3';
 moduleAid.VARSLIST = ['engineName'];
 
-this.engineName = document.getElementById('omnibar-defaultEngineName');
+this.engineName = $('omnibar-defaultEngineName');
 
 moduleAid.LOADMODULE = function() {
 	setWatchers(engineName);

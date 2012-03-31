@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.0.5';
+moduleAid.VERSION = '1.0.6';
 moduleAid.VARSLIST = ['gBrowser', 'Omnibar', 'escaped', 'types', 'deletedIndex', 'deletedText', 'goButton', 'richlist', 'delayOrganize', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
 
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
@@ -9,7 +9,7 @@ this.types = [];
 this.deletedIndex = null;
 this.deletedText = null;
 
-this.goButton = document.getElementById('go-button');
+this.goButton = $('go-button');
 this.richlist = richlistbox.childNodes;
 
 // Called when a search ends in the location bar

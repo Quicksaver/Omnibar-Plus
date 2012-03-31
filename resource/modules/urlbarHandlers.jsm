@@ -1,8 +1,8 @@
-moduleAid.VERSION = '1.0.0';
+moduleAid.VERSION = '1.0.1';
 moduleAid.VARSLIST = ['gURLBar', 'panel', 'richlistbox', 'panelState', 'searchBegin', 'searchComplete', 'onKeyPress'];
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
-this.panel = document.getElementById('PopupAutoCompleteRichResult');
+this.panel = $('PopupAutoCompleteRichResult');
 this.richlistbox = panel.richlistbox;
 
 // helper objects to get current popup status and set it
@@ -49,7 +49,7 @@ this.searchComplete = function() {
 this.onKeyPress = function(e) {
 	// Compatibility with the UI Enhancer add-on
 	// don't handle keystrokes on it's editing box
-	if(isAncestor(document.commandDispatcher.focusedElement, document.getElementById('UIEnhancer_URLBar_Editing_Stack_Text'))) { return gURLBar._onKeyPress(e); }
+	if(isAncestor(document.commandDispatcher.focusedElement, $('UIEnhancer_URLBar_Editing_Stack_Text'))) { return gURLBar._onKeyPress(e); }
 	
 	// Just discriminating using the same criteria the original onKeyPress does
 	if (e.target.localName != "textbox") { return false; }

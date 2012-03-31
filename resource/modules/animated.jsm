@@ -1,9 +1,9 @@
-moduleAid.VERSION = '1.0.3';
+moduleAid.VERSION = '1.0.4';
 moduleAid.VARSLIST = ['gURLBar', 'usingRichlist', 'toggleScheme'];
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 
-this.usingRichlist = (gURLBar.popup == document.getElementById('PopupAutoComplete')) ? false : true;
+this.usingRichlist = (gURLBar.popup == $('PopupAutoComplete')) ? false : true;
 
 this.toggleScheme = function() {
 	gURLBar.popup.setAttribute('animatedPopup', prefAid.animatedScheme);

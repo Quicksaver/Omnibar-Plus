@@ -1,17 +1,17 @@
-moduleAid.VERSION = '1.0.3';
+moduleAid.VERSION = '1.0.4';
 moduleAid.VARSLIST = ['Omnibar', 'gBrowser', 'omnibarClicker', 'onEngineClick'];
 
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 
 // omnibar menu item in urlbar (search button)		
-this.omnibarClicker = document.getElementById('omnibar-in-urlbar');
+this.omnibarClicker = $('omnibar-in-urlbar');
 
 // Left click: default omnibar functionality; Middle Click: open the search engine homepage
 this.onEngineClick = function(e) {
 	var modKey = (Services.appinfo.OS == 'Darwin') ? e.metaKey : e.ctrlKey;
 	
 	if(e.button == 0 && !e.altKey && !modKey) {
-		document.getElementById('omnibar-engine-menu').openPopup(Omnibar._imageElBox, "after_end", -1, -1);
+		$('omnibar-engine-menu').openPopup(Omnibar._imageElBox, "after_end", -1, -1);
 		e.preventDefault();
 		e.stopPropagation();
 	}

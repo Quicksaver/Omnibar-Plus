@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.2';
+moduleAid.VERSION = '1.1.3';
 moduleAid.VARSLIST = ['toggleMiddleClick', 'toggleAnimated', 'toggleEngineFocus', 'toggleURLBarHandlers'];
 
 // Toggle middle click functionality
@@ -18,7 +18,7 @@ this.toggleEngineFocus = function() {
 
 // Toggles autoSelect feature
 this.toggleURLBarHandlers = function() {
-	if(window.gURLBar.popup == document.getElementById('PopupAutoComplete')) { return; }
+	if(window.gURLBar.popup == $('PopupAutoComplete')) { return; }
 	
 	if(!prefAid.autoSelect && !prefAid.organizePopup) {
 		moduleAid.unload("autoSelect");
