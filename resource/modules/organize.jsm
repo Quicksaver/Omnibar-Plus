@@ -1,5 +1,5 @@
-moduleAid.VERSION = '1.0.6';
-moduleAid.VARSLIST = ['gBrowser', 'Omnibar', 'escaped', 'types', 'deletedIndex', 'deletedText', 'goButton', 'richlist', 'delayOrganize', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
+moduleAid.VERSION = '1.0.7';
+moduleAid.VARSLIST = ['gBrowser', 'Omnibar', 'escaped', 'types', 'deletedIndex', 'deletedText', 'goButton', 'delayOrganize', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
 
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
@@ -10,7 +10,6 @@ this.deletedIndex = null;
 this.deletedText = null;
 
 this.goButton = $('go-button');
-this.richlist = richlistbox.childNodes;
 
 // Called when a search ends in the location bar
 this.delayOrganize = function() {
@@ -33,10 +32,8 @@ this.organize = function() {
 	if(!panelState || escaped) { return; }
 	
 	var selectFirst = timerAid.cancel('autoSelect');
-	if(!selectFirst) {
-		var originalSelectedIndex = richlistbox.selectedIndex;
-		var originalCurrentIndex = richlistbox.currentIndex;
-	}
+	var originalSelectedIndex = richlistbox.selectedIndex;
+	var originalCurrentIndex = richlistbox.currentIndex;
 	
 	doIndexes();
 	var nodes = [];
@@ -72,7 +69,7 @@ this.organize = function() {
 	}
 	
 	// AutoSelect if it hasn't already
-	if(selectFirst) {
+	if(prefAid.autoSelect && (selectFirst || (originalSelectedIndex <= 0 && originalCurrentIndex <= 0))) {
 		autoSelect();
 	} else {
 		if(originalSelectedIndex >= richlist.length) { originalSelectedIndex = -1; }
@@ -154,6 +151,8 @@ this.urlBarKeyDown = function(e) {
 				case e.DOM_VK_HOME:
 				case e.DOM_VK_END:
 				case e.DOM_VK_CONTEXT_MENU:
+				case e.DOM_VK_ENTER:
+				case e.DOM_VK_RETURN:
 					dontSelect = true;
 					break;
 				default: break;
@@ -373,14 +372,8 @@ this.fireOnSelect = function(e) {
 	// We need the enter key to always call it from our handler or it won't work right sometimes
 	if(e && e.type == 'keydown' && (e.keyCode == e.DOM_VK_RETURN || e.keyCode == e.DOM_VK_ENTER) && !e.okToProceed) { return; }
 	
-	if(richlistbox.currentItem) {
-		gURLBar.value = richlistbox.currentItem.getAttribute('url');
-	}
-	else if(richlistbox.selectedItem) {
-		gURLBar.value = richlistbox.selectedItem.getAttribute('url');
-	}
-	else if(richlistbox._actualItem) {
-		gURLBar.value = richlistbox._actualItem.getAttribute('url');
+	if(anyItem) {
+		gURLBar.value = anyItem.getAttribute('url');
 	}
 	doIndexes();
 	panelState = false;

@@ -1,9 +1,10 @@
-moduleAid.VERSION = '1.0.1';
-moduleAid.VARSLIST = ['gURLBar', 'panel', 'richlistbox', 'panelState', 'searchBegin', 'searchComplete', 'onKeyPress'];
+moduleAid.VERSION = '1.0.2';
+moduleAid.VARSLIST = ['gURLBar', 'panel', 'richlistbox', 'richlist', 'panelState', 'anyItem', 'searchBegin', 'searchComplete', 'onKeyPress'];
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 this.panel = $('PopupAutoCompleteRichResult');
 this.richlistbox = panel.richlistbox;
+this.richlist = richlistbox.childNodes;
 
 // helper objects to get current popup status and set it
 this.__defineGetter__('panelState', function() {
@@ -31,6 +32,20 @@ this.__defineSetter__('panelState', function(val) {
 	}
 });
 
+// Goes through currentIndex, selectedIndex and _actualIndex and returns the item associated with it, or null
+this.__defineGetter__('anyItem', function() {
+	if(richlistbox.currentItem) {
+		return richlistbox.currentItem;
+	}
+	else if(richlistbox.selectedItem) {
+		return richlistbox.selectedItem;
+	}
+	else if(richlistbox._actualItem) {
+		return richlistbox._actualItem;
+	}
+	return null;
+});
+
 this.searchBegin = function() {
 	if(prefAid.autoSelect) {
 		delaySelect();
@@ -42,7 +57,9 @@ this.searchComplete = function() {
 		delayOrganize();
 	}
 	if(prefAid.autoSelect) {
-		cancelSelect();
+		if(cancelSelect()) {
+			autoSelect();
+		}
 	}
 };
 
@@ -60,6 +77,7 @@ this.onKeyPress = function(e) {
 };
 
 moduleAid.LOADMODULE = function() {
+	// Not sure in which version of Firefox were these implemented, maybe 14?
 	if(typeof(gURLBar._searchBeginHandler) != 'undefined') {
 		gURLBar._searchBeginHandler = searchBegin;
 		gURLBar._searchCompleteHandler = searchComplete;
