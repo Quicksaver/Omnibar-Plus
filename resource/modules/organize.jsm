@@ -1,15 +1,12 @@
-moduleAid.VERSION = '1.0.7';
-moduleAid.VARSLIST = ['gBrowser', 'Omnibar', 'escaped', 'types', 'deletedIndex', 'deletedText', 'goButton', 'delayOrganize', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'checkOnHandlers', 'onGoClick', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
+moduleAid.VERSION = '1.0.8';
+moduleAid.VARSLIST = ['gBrowser', 'escaped', 'types', 'deletedIndex', 'deletedText', 'delayOrganize', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'onGoClick', 'checkOnTextEntered', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
 
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
-this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 
 this.escaped = false;
 this.types = [];
 this.deletedIndex = null;
 this.deletedText = null;
-
-this.goButton = $('go-button');
 
 // Called when a search ends in the location bar
 this.delayOrganize = function() {
@@ -127,7 +124,7 @@ this.removeEntry = function(str) {
 // Our takes on key navigation from gURLBar.onkeypress(event), if returns false, original onkeypress is called
 this.urlBarKeyDown = function(e) {
 	// Sometimes the ontextentered attribute is reset (for some reason), this leads to double tabs being opened
-	checkOnHandlers();
+	checkOnTextEntered();
 	
 	var key = e.keyCode;
 	var tab = false;
@@ -289,26 +286,15 @@ this.urlBarKeyDown = function(e) {
 	}
 };
 
-// Set urlbar ontextentered attribute to work with our handler
-this.checkOnHandlers = function() {
+this.onGoClick = function(aEvent) {
+	doIndexes();
+	fireOnSelect(aEvent);
+};
+
+this.checkOnTextEntered = function() {
 	if(gURLBar.getAttribute('ontextentered').indexOf(objName) < 0) {
 		gURLBar._ontextentered = gURLBar.getAttribute('ontextentered');
 		gURLBar.setAttribute('ontextentered', objName+'.fireOnSelect(param);');
-	}
-	if(goButton.getAttribute('onclick').indexOf(objName) < 0) {
-		goButton._onclick = goButton.getAttribute('onclick');
-		goButton.setAttribute('onclick', objName+'.onGoClick(event);'); 
-	}	
-};
-
-this.onGoClick = function(aEvent) {
-	// This comes from TMP_goButtonClick() (from Tab Mix Plus), the original onclick is simply gURLBar.handleCommand()
-	if(goButton._onclick.indexOf('TMP') > -1 && aEvent.button == 1 && gURLBar.value == gBrowser.currentURI.spec) {
-		gBrowser.duplicateTab(gBrowser.mCurrentTab);
-	}
-	else if(aEvent.button != 2) {
-		doIndexes();
-		fireOnSelect(aEvent);
 	}
 };
 
@@ -408,7 +394,7 @@ moduleAid.LOADMODULE = function() {
 	prefAid.listen('organize2', getTypes);
 	prefAid.listen('organize3', getTypes);
 	
-	checkOnHandlers();
+	checkOnTextEntered();
 	fixContextMenu(true);
 	
 	richlistbox._appendChild = richlistbox.appendChild;
@@ -470,11 +456,8 @@ moduleAid.UNLOADMODULE = function() {
 		richlistbox.removeChild(richlist[0]);
 	}
 	
-	// Changed in checkOnHandlers()
 	gURLBar.setAttribute("ontextentered", gURLBar._ontextentered);
-	goButton.setAttribute('onclick', goButton._onclick);
 	delete gURLBar._ontextentered;
-	delete goButton._onclick;
 	
 	fixContextMenu(false);
 	

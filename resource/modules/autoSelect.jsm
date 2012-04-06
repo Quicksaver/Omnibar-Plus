@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.0.2';
+moduleAid.VERSION = '1.0.3';
 moduleAid.VARSLIST = ['willHandle', 'inFirst', 'dontSelect', 'selectI', 'autoSelect', 'delaySelect', 'cancelSelect', 'keySelect'];
 
 // Helper to check whether the value input is already uri like or not
@@ -68,7 +68,7 @@ this.delaySelect = function() {
 	if(dontSelect) { return; }
 	
 	if(!timerAid.autoSelect) {
-		selectI(-1);
+		unSelect();
 		if(autoSelect()) {
 			timerAid.init('autoSelect', autoSelect, 200, 'slack');
 		}
@@ -105,7 +105,7 @@ this.keySelect = function(e) {
 		case e.DOM_VK_ESCAPE:
 			dontSelect = true;
 			if(panelState && richlistbox.selectedIndex > -1) {
-				selectI(-1);
+				unSelect();
 				return false;
 			}
 			break;
@@ -127,7 +127,7 @@ this.keySelect = function(e) {
 		
 		case e.DOM_VK_DELETE:
 			if(e.ctrlKey || gURLBar.selectionStart != gURLBar.selectionEnd || gURLBar.selectionStart != gURLBar.textLength) {
-				selectI(-1);
+				unSelect();
 			}
 			break;
 		
