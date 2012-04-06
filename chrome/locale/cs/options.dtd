@@ -1,0 +1,19 @@
+<!ENTITY omnibarPlusorganizePopup.label "Uspořádat seznam návrhů">
+<!ENTITY omnibarPlusautoSelect.label "Automatický výběr prvního návrhu v seznamu">
+<!ENTITY omnibarPlusF6.label "Přepnout na adresní řádek stisknutím klávesy F6">
+<!ENTITY omnibarPlusengineFocus.label "Po změně vyhledávače přepnout na adresní řádek">
+<!ENTITY omnibarPlusanimated.label "Kompaktní, animovaný styl. Autor: frog">
+<!ENTITY omnibarPlusanimatedScheme.label "Barevné téma:">
+<!ENTITY omnibarPlusanimatedScheme.sky "Nebeská modrá">
+<!ENTITY omnibarPlusanimatedScheme.ruby "Rubínově červená">
+<!ENTITY omnibarPlusanimatedScheme.taupe "Světle hnědošedá">
+<!ENTITY omnibarPlusanimatedScheme.grass "Trávově zelená">
+<!ENTITY omnibarPlusanimatedScheme.sea "Mořská modrá">
+<!ENTITY omnibarPlusanimatedScheme.lavender "Levandulová">
+<!ENTITY omnibarPlusanimatedScheme.bubblegum "Žvýkačková">
+<!ENTITY omnibarPlusmain.label "Omnibar">
+<!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY omnibarPlussuggestionList.label "Vyskakovací okno s návrhy">
+<!ENTITY omnibarPlusfunctionality.label "Klávesové zkratky">
+<!ENTITY omnibarPlusmiddleClick.mac "Kliknutím prostředním tlačítkem myši nebo stisknutím klávesy Command/Option a kliknutím levým tlačítkem myši na vyhledávači otevřete domovskou stránku daného vyhledávače">
+<!ENTITY omnibarPlusmiddleClick.win "Kliknutím prostředním tlačítkem myši nebo stisknutím klávesy Ctrl/Alt a kliknutím levým tlačítkem myši na vyhledávači otevřete domovskou stránku daného vyhledávače">
