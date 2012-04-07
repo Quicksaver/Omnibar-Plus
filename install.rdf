@@ -4,7 +4,7 @@
 		<em:id>omnibarplus@quicksaver</em:id>
 		<em:name>Omnibar Plus</em:name>
 		<em:type>2</em:type>
-		<em:version>0.6</em:version>
+		<em:version>1</em:version>
 		<em:creator>Quicksaver</em:creator>
 		<em:iconURL>chrome://omnibarplus/skin/icon.png</em:iconURL>
 		<em:homepageURL>https://addons.mozilla.org/en-US/firefox/addon/omnibar-plus/</em:homepageURL>
@@ -23,6 +23,14 @@
 				<em:locale>en-US</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Extra functionality for your Omnibar.</em:description>
+			</Description>
+		</em:localized>
+		<em:localized>
+			<Description>
+				<em:locale>cs</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>Nové funkce pro váš omnibar.</em:description>
+				<em:translator>zvedavaolihen - BabelZilla</em:translator>
 			</Description>
 		</em:localized>
 		<em:localized>
