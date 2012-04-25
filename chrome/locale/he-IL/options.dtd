@@ -1,19 +1,19 @@
-<!ENTITY omnibarPlusorganizePopup.label "סדר רשימה הצעה">
+<!ENTITY omnibarPlusorganizePopup.label "ארגון רשימה הצעה">
 <!ENTITY omnibarPlusautoSelect.label "בחירה אוטומטית בהצעה הראשונה ברשימה">
-<!ENTITY omnibarPlusF6.label "התמקד בשורת המיקום של כתובת האינטרנט על ידי לחיצה על F6">
-<!ENTITY omnibarPlusengineFocus.label "התמקד בשורת המיקום של כתובת האינטרנט לאחר שינוי מנוע החיפוש">
-<!ENTITY omnibarPlusanimated.label "סגנון קומפקטי, אנימציה על ידי פרוג">
-<!ENTITY omnibarPlusanimatedScheme.label "תרשים צבע:">
+<!ENTITY omnibarPlusF6.label "התמקד בשורת כתובת ה־URL ע&quot;י לחיצה על F6">
+<!ENTITY omnibarPlusengineFocus.label "התמקד בשורת כתובת ה־URL לאחר שינוי מנוע החיפוש">
+<!ENTITY omnibarPlusanimated.label "מוקטן, סגנון מונפש (עוצב ע&quot;י המשתמש frog)">
+<!ENTITY omnibarPlusanimatedScheme.label "ערכת צבעים:">
 <!ENTITY omnibarPlusanimatedScheme.sky "שמים">
 <!ENTITY omnibarPlusanimatedScheme.ruby "אודם">
 <!ENTITY omnibarPlusanimatedScheme.taupe "אפור חום">
 <!ENTITY omnibarPlusanimatedScheme.grass "ירוק דשא">
 <!ENTITY omnibarPlusanimatedScheme.sea "ים">
 <!ENTITY omnibarPlusanimatedScheme.lavender "אזוביון">
-<!ENTITY omnibarPlusanimatedScheme.bubblegum "באבל">
+<!ENTITY omnibarPlusanimatedScheme.bubblegum "מסטיק">
 <!ENTITY omnibarPlusmain.label "Omnibar">
-<!ENTITY omnibarPlusplus.label "פלוס">
-<!ENTITY omnibarPlussuggestionList.label "הצעות מוקפצות">
+<!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY omnibarPlussuggestionList.label "הצעות קופצות">
 <!ENTITY omnibarPlusfunctionality.label "קיצורי דרך">
-<!ENTITY omnibarPlusmiddleClick.mac "לחיצה אמצעית או Command / Option + לחיצה שמאלית על סמל מנוע החיפוש פותחת את דף הבית שלו">
-<!ENTITY omnibarPlusmiddleClick.win "ליחצנ אמצעית או Ctrl / Alt + לחיצה שמאלית על סמל מנוע החיפוש פותחת דף הבית שלו">
+<!ENTITY omnibarPlusmiddleClick.mac "לחיצה אמצעית, (או Command/Option + לחיצה שמאלית, עבור משתמשי Mac) על סמל מנוע החיפוש פותחת את דף הבית שלו">
+<!ENTITY omnibarPlusmiddleClick.win "לחיצה אמצעית (או Ctrl/Alt + לחיצה שמאלית, עבור משתמשי Mac) על סמל מנוע החיפוש פותחת דף הבית שלו">

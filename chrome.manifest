@@ -4,6 +4,7 @@ skin      omnibarplus     classic/1.0   chrome/skin/
 locale    omnibarplus-en  en-US         chrome/locale/en-US/
 locale    omnibarplus     en-US         chrome/locale/en-US/
 locale    omnibarplus     cs            chrome/locale/cs/
+locale    omnibarplus     de            chrome/locale/de/
 locale    omnibarplus     fr            chrome/locale/fr/
 locale    omnibarplus     he-IL         chrome/locale/he-IL/
 locale    omnibarplus     pt-PT         chrome/locale/pt-PT/

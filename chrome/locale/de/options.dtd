@@ -1,0 +1,19 @@
+<!ENTITY omnibarPlusorganizePopup.label "organisiere die Vorschlags Liste">
+<!ENTITY omnibarPlusautoSelect.label "Automatische Auswahl des ersten Vorschlags in der Liste">
+<!ENTITY omnibarPlusF6.label "Bei drücken von F6 gelangen Sie zur location bar">
+<!ENTITY omnibarPlusengineFocus.label "Nach dem ändern des Suchanbieters gelangen Sie zur location bar">
+<!ENTITY omnibarPlusanimated.label "Kompatkes animiertes style by frog">
+<!ENTITY omnibarPlusanimatedScheme.label "Farbschema">
+<!ENTITY omnibarPlusanimatedScheme.sky "Himmel">
+<!ENTITY omnibarPlusanimatedScheme.ruby "Rubin">
+<!ENTITY omnibarPlusanimatedScheme.taupe "Taupe">
+<!ENTITY omnibarPlusanimatedScheme.grass "Grass">
+<!ENTITY omnibarPlusanimatedScheme.sea "See">
+<!ENTITY omnibarPlusanimatedScheme.lavender "Lavendel">
+<!ENTITY omnibarPlusanimatedScheme.bubblegum "Kaugummi">
+<!ENTITY omnibarPlusmain.label "Omnibar">
+<!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY omnibarPlussuggestionList.label "Vorschlags Popup">
+<!ENTITY omnibarPlusfunctionality.label "Shortcuts">
+<!ENTITY omnibarPlusmiddleClick.mac "Mausradklick oder Command/Option und Linksklick öffnet die Homepage der Suchmaschine">
+<!ENTITY omnibarPlusmiddleClick.win "Mausradklick oder Strg/Alt und Linksklick öffnet die Homepage der Suchmaschine">
