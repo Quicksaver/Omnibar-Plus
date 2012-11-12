@@ -6,6 +6,12 @@
 			if(!gURLBar.focused) {
 				openLocation();
 			}
+			else if(focusNextFrame) {
+				focusNextFrame(event);
+			}
+			else if(window.content) {
+				window.content.focus();
+			}
 			else if(gBrowser) {
 				gBrowser.mCurrentBrowser.focus();
 			}
@@ -13,6 +19,7 @@
 	</commandset>
 	
 	<key id="xxx_key33_Browser:FocusNextFrame" disabled="true"/>
+	<key id="xxx_key35_Browser:FocusNextFrame" disabled="true"/>
 	
 	<window id="main-window">
 		<keyset id="keyset_objPathString">
