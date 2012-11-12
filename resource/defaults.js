@@ -1,4 +1,4 @@
-var defaultsVersion = '1.0.4';
+var defaultsVersion = '1.0.5';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
@@ -33,16 +33,11 @@ function startConditions(aReason) {
 
 function startAddon(window) {
 	prepareObject(window);
-	window[objName].moduleAid.load(objName, started == APP_STARTUP);
+	window[objName].moduleAid.load(objName, true);
 }
 
 function stopAddon(window) {
 	removeObject(window);
-}
-
-function windowWatcher(aSubject, aTopic) {
-	if(unloaded) { return; }
-	windowMediator.callOnLoad(aSubject, startAddon, 'navigator:browser');
 }
 
 // Toggle F6 functionality
@@ -60,14 +55,14 @@ function onStartup(aReason) {
 	
 	// Apply the add-on to every window opened and to be opened
 	windowMediator.callOnAll(startAddon, 'navigator:browser');
-	windowMediator.register(windowWatcher, 'domwindowopened');
+	windowMediator.register(startAddon, 'domwindowopened', 'navigator:browser');
 	
 	// Toggle F6 functionality
 	toggleF6();
 	prefAid.listen('f6', toggleF6);
 	
 	// Apply overlay to Omnibar preferences dialog
-	overlayAid.overlayURI("chrome://omnibar/content/options.xul", "chrome://omnibarplus/content/omnibarOptions.xul", 
+	overlayAid.overlayURI("chrome://omnibar/content/options.xul", "chrome://"+objPathString+"/content/omnibarOptions.xul", 
 		function(window) {
 			// This prevents a (very weird) zombie compartment. Without this fix, if I enable the add-on, open Omnibar's preferences dialog, close it and disable the add-on,
 			// a ZC will exist until I open Ominbar's preferences dialog again. This ZC won't exist if I disable the add-on with the preferences dialog still open or if
@@ -87,11 +82,11 @@ function onStartup(aReason) {
 		}
 	);
 	if(Services.appinfo.OS == 'Darwin') {
-		overlayAid.overlayURI("chrome://omnibarplus/content/omnibarOptions.xul", "chrome://omnibarplus/content/omnibarOptionsMac.xul");
+		overlayAid.overlayURI("chrome://"+objPathString+"/content/omnibarOptions.xul", "chrome://"+objPathString+"/content/omnibarOptionsMac.xul");
 	}
 }
 
 function onShutdown(aReason) {
 	// remove the add-on from all windows
-	windowMediator.callOnAll(stopAddon, 'navigator:browser', true);
+	windowMediator.callOnAll(stopAddon, 'navigator:browser', null, true);
 }

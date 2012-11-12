@@ -15,26 +15,31 @@ this.self = this;
 //	see load()
 // subscript modules are run in the context of self, all objects should be set using this.whateverObject so they can be deleted on unload, moduleAid optionally expects these:
 //	moduleAid.VERSION - (string) module version
-//	moduleAid.VARSLIST - (array) list with all the objects the module inserts into the object when loaded, for easy unloading
+//	moduleAid.VARSLIST - (array) list with all the objects the module inserts into the object when loaded, for easy unloading. If not set, it will be automatically compiled.
 //	moduleAid.LOADMODULE - (function) to be executed on module loading
 //	moduleAid.UNLOADMODULE - (function) to be executed on module unloading
+//	moduleAid.LAZY - (bool) vital modules that should be the last ones to be unloaded (like the utils) should have this set to true
 this.moduleAid = {
-	version: '2.0.4',
+	version: '2.2.1',
 	modules: [],
 	moduleVars: {},
 	
 	loadIf: function(aModule, anIf, delayed) {
 		if(anIf) {
-			this.load(aModule, delayed);
+			return this.load(aModule, delayed);
 		} else {
-			this.unload(aModule);
+			return !this.unload(aModule);
 		}
 	},
 	
 	load: function(aModule, delayed) {
 		var path = this.preparePath(aModule);
-		if(!path || this.loaded(path) !== false) {
+		if(!path) {
 			return false;
+		}
+		
+		if(this.loaded(path) !== false) {
+			return true;
 		}
 		
 		try { Services.scriptloader.loadSubScript(path, self); }
@@ -50,6 +55,7 @@ this.moduleAid = {
 			unload: (this.UNLOADMODULE) ? this.UNLOADMODULE : null,
 			vars: (this.VARSLIST) ? this.VARSLIST : null,
 			version: (this.VERSION) ? this.VERSION : null,
+			lazy: (this.LAZY) ? this.LAZY : null,
 			loaded: false,
 			failed: false
 		};
@@ -59,6 +65,32 @@ this.moduleAid = {
 		delete this.LOADMODULE;
 		delete this.UNLOADMODULE;
 		delete this.VERSION;
+		delete this.LAZY;
+		
+		if(!this.modules[i].vars) {
+			if(!Globals.moduleCache[aModule]) {
+				var tempScope = {
+					moduleAid: {},
+					$: function(a) { return null; },
+					$$: function(a) { return null; }
+				};
+				try { Services.scriptloader.loadSubScript(path, tempScope); }
+				catch(ex) {
+					Cu.reportError(ex);
+					return false;
+				}
+				delete tempScope.moduleAid;
+				delete tempScope.$;
+				delete tempScope.$$;
+				
+				var scopeVars = [];
+				for(var v in tempScope) {
+					scopeVars.push(v);
+				}
+				Globals.moduleCache[aModule] = { vars: scopeVars };
+			}
+			this.modules[i].vars = Globals.moduleCache[aModule].vars;
+		}
 		
 		try { this.createVars(this.modules[i].vars); }
 		catch(ex) {
@@ -77,15 +109,20 @@ this.moduleAid = {
 				}
 				this.modules[i].loaded = true;
 			} else {
-				aSync(function() {
-					try { moduleAid.modules[i].load(); }
+				this.modules[i].aSync = aSync(function() {
+					if(typeof(moduleAid) == 'undefined') { return; } // when disabling the add-on before it's had time to perform the load call
+					
+					try {
+						moduleAid.modules[i].load();
+					}
 					catch(ex) {
 						Cu.reportError(ex);
 						moduleAid.unload(aModule, true);
 						return;
-					}	
+					}
+					delete moduleAid.modules[i].aSync;
 					moduleAid.modules[i].loaded = true; 
-				}, 500);
+				}, 250);
 			}
 		}
 		else {
@@ -97,10 +134,10 @@ this.moduleAid = {
 	
 	unload: function(aModule, force, justVars) {
 		var path = this.preparePath(aModule);
-		if(!path) { return false; }
+		if(!path) { return true; }
 		
 		var i = this.loaded(aModule);
-		if(i === false) { return false; }
+		if(i === false) { return true; }
 		
 		if(!justVars && this.modules[i].unload && (this.modules[i].loaded || force)) {
 			try { this.modules[i].unload(); }
@@ -126,6 +163,15 @@ this.moduleAid = {
 		// We can't unload modules in i++ mode for two reasons:
 		// One: dependencies, some modules require others to run, so by unloading in the inverse order they were loaded we are assuring dependencies are maintained
 		// Two: creates endless loops when unloading a module failed, it would just keep trying to unload that module
+		// We also need to unload main modules before lazy (utils) modules.
+		var i = moduleAid.modules.length -1;
+		while(i > 0) {
+			if(!moduleAid.modules[i].lazy) {
+				moduleAid.unload(moduleAid.modules[i].name);
+			}
+			i--;
+		}
+		
 		var i = moduleAid.modules.length -1;
 		while(i > 0) {
 			moduleAid.unload(moduleAid.modules[i].name);
@@ -174,3 +220,5 @@ this.moduleAid = {
 		return "resource://"+objPathString+"/modules/"+aModule+".jsm";
 	}
 };
+
+Globals.moduleCache = {};

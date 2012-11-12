@@ -1,8 +1,6 @@
-moduleAid.VERSION = '1.0.5';
-moduleAid.VARSLIST = ['gURLBar', 'usingRichlist', 'toggleScheme', 'loadSheets'];
+moduleAid.VERSION = '1.0.6';
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
-
 this.usingRichlist = (gURLBar.popup == $('PopupAutoComplete')) ? false : true;
 
 this.toggleScheme = function() {
@@ -43,8 +41,6 @@ moduleAid.UNLOADMODULE = function() {
 	
 	gURLBar.popup.removeAttribute('animatedPopup');
 	gURLBar.popup.removeAttribute('linux');
-	styleAid.unload('animatedPopup');
-	styleAid.unload('animatedScheme');
 	
 	if(!usingRichlist) {
 		gURLBar.popup.adjustHeight = gURLBar.popup._adjustHeight;
@@ -52,4 +48,9 @@ moduleAid.UNLOADMODULE = function() {
 	}
 	
 	listenerAid.remove(gURLBar.popup, 'popupshowing', loadSheets, false);
+	
+	if(UNLOADED) {
+		styleAid.unload('animatedPopup');
+		styleAid.unload('animatedScheme');
+	}
 };

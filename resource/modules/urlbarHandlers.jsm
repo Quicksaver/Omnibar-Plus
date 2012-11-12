@@ -1,8 +1,9 @@
-moduleAid.VERSION = '1.0.3';
-moduleAid.VARSLIST = ['gURLBar', 'Omnibar', 'goButton', 'panel', 'richlistbox', 'richlist', 'panelState', 'anyItem', 'searchBegin', 'searchComplete', 'onKeyPress', 'setGo', 'onGo', 'unSelect'];
+moduleAid.VERSION = '1.0.4';
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
+this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
+
 this.goButton = $('go-button');
 this.panel = $('PopupAutoCompleteRichResult');
 this.richlistbox = panel.richlistbox;
@@ -86,7 +87,7 @@ this.onKeyPress = function(e) {
 this.setGo = function() {
 	if(goButton.getAttribute('onclick').indexOf(objName) < 0) {
 		goButton._onclick = goButton.getAttribute('onclick');
-		goButton.setAttribute('onclick', objName+'.onGo(event);');
+		setAttribute(goButton, 'onclick', objName+'.onGo(event);');
 	}
 };
 
@@ -120,8 +121,8 @@ moduleAid.LOADMODULE = function() {
 		gURLBar._searchBeginHandler = searchBegin;
 		gURLBar._searchCompleteHandler = searchComplete;
 	} else {
-		gURLBar.setAttribute('onsearchbegin', objName+".searchBegin();");
-		gURLBar.setAttribute('onsearchcomplete', objName+".searchComplete();");
+		setAttribute(gURLBar, 'onsearchbegin', objName+".searchBegin();");
+		setAttribute(gURLBar, 'onsearchcomplete', objName+".searchComplete();");
 	}
 	
 	gURLBar._onKeyPress = gURLBar.onKeyPress;
@@ -147,8 +148,10 @@ moduleAid.UNLOADMODULE = function() {
 	}
 	
 	// Changed in checkOnHandlers()
-	goButton.setAttribute('onclick', goButton._onclick);
-	delete goButton._onclick;
+	if(goButton._onclick) {
+		setAttribute(goButton, 'onclick', goButton._onclick);
+		delete goButton._onclick;
+	}
 	
 	listenerAid.remove(gURLBar, 'focus', unSelect, true);
 	listenerAid.remove(gURLBar, 'click', unSelect, true);

@@ -1,7 +1,7 @@
-moduleAid.VERSION = '1.0.4';
-moduleAid.VARSLIST = ['Omnibar', 'gBrowser', 'omnibarClicker', 'onEngineClick'];
+moduleAid.VERSION = '1.0.5';
 
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
+this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
 
 // omnibar menu item in urlbar (search button)		
 this.omnibarClicker = $('omnibar-in-urlbar');
@@ -35,5 +35,5 @@ moduleAid.LOADMODULE = function() {
 
 moduleAid.UNLOADMODULE = function() {
 	listenerAid.remove(omnibarClicker, 'click', onEngineClick, false); 
-	omnibarClicker.setAttribute('onclick', 'Omnibar.onButtonClick(event);');
+	setAttribute(omnibarClicker, 'onclick', 'Omnibar.onButtonClick(event);');
 };

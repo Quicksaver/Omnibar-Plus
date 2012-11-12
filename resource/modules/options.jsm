@@ -1,5 +1,4 @@
-moduleAid.VERSION = '1.0.3';
-moduleAid.VARSLIST = ['tree', 'list', 'getLabel', 'removeEntries', 'moveListRow', 'selectAndFocus', 'getCell', 'inRange', 'blurOnDisabled', 'blurOrderList', 'onOverlayLoad'];
+moduleAid.VERSION = '1.0.4';
 
 this.__defineGetter__('tree', function() { return $('orderList'); });
 this.__defineGetter__('list', function() { return tree.view; });
@@ -50,14 +49,10 @@ this.moveListRow = function(down) {
 	}
 	
 	getCell(i).setAttribute('value', moveValue);
-	var change = document.createEvent('Event');
-	change.initEvent('change', true, false);
-	getCell(i).dispatchEvent(change);
+	dispatch(getCell(i), { type: 'change', cancelable: false });
 	
 	getCell(j).setAttribute('value', curValue);
-	var change = document.createEvent('Event');
-	change.initEvent('change', true, false);
-	getCell(j).dispatchEvent(change);
+	dispatch(getCell(j), { type: 'change', cancelable: false });
 	
 	selectAndFocus(j);
 };
@@ -82,16 +77,14 @@ this.blurOnDisabled = function(attr, oldval, newval) {
 };
 
 this.blurOrderList = function() {
-	var list = $('orderList');
-	if(list.getAttribute('disabled') == 'true') {
-		list.view.selection.clearSelection();
+	if($('orderList').getAttribute('disabled') == 'true') {
+		$('orderList').view.selection.clearSelection();
 	}
 };
 
 this.onOverlayLoad = function() {
 	removeEntries();
-	setWatchers(tree);
-	tree.addAttributeWatcher('disabled', blurOnDisabled);
+	objectWatcher.addAttributeWatcher(tree, 'disabled', blurOnDisabled);
 };
 
 moduleAid.LOADMODULE = function() {
@@ -100,7 +93,7 @@ moduleAid.LOADMODULE = function() {
 };
 
 moduleAid.UNLOADMODULE = function() {
-	setWatchers(tree, true);
+	objectWatcher.removeAttributeWatcher(tree, 'disabled', blurOnDisabled);
 	window.Options.updateDependents = window.Options._updateDependents;
 	delete window.Options._updateDependents;
 };

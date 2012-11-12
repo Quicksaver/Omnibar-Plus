@@ -1,5 +1,5 @@
-moduleAid.VERSION = '1.0.1';
-moduleAid.VARSLIST = ['dependsOn'];
+moduleAid.VERSION = '1.0.6';
+moduleAid.LAZY = true;
 
 // dependsOn - object that adds a dependson attribute functionality to xul preference elements.
 // Just add the attribute to the desired xul element and let the script do its thing. dependson accepts comma-separated strings in the following format:
@@ -15,13 +15,13 @@ moduleAid.VARSLIST = ['dependsOn'];
 //		!element5:someOtherValue - checks if element5 has any value other than 'someOtherValue'
 this.dependsOn = {
 	getAll: function() {
-		return document.getElementsByAttribute('dependson', '*');
+		return $$("[dependson]");
 	},
 	
 	changed: function(e) {
 		if(e.target.localName != 'preference' || !e.target.id) { return; }
 		
-		var fields = document.getElementsByAttribute('preference', e.target.id);
+		var fields = $$("[preference='"+e.target.id+"']");
 		var elements = dependsOn.getAll();
 		var alreadyChanged = [];
 		
@@ -85,9 +85,9 @@ this.dependsOn = {
 				dependency[1] = trim(dependency[1]);
 			}
 			
-			var pref = document.getElementById(dependency[0]);
+			var pref = $(dependency[0]);
 			if(pref.localName != 'preference') {
-				pref = document.getElementById(pref.getAttribute('preference'));
+				pref = $(pref.getAttribute('preference'));
 			}
 			switch(pref.type) {
 				case 'int':
@@ -111,11 +111,30 @@ this.dependsOn = {
 	}
 };
 
+
+// This is so scales are properly initialized if they have a preference attribute, should work in most cases.
+// If you want to bypass this you can set onsyncfrompreference attribute on scale
+this.initScales = function() {
+	var scales = $$('scale');
+	for(var x=0; x<scales.length; x++) {
+		var scale = scales[x];
+		if(!scale.getAttribute('onsyncfrompreference') && scale.getAttribute('preference')) {
+			scale.value = $(scale.getAttribute('preference')).value;
+		}
+	}
+};
+
 moduleAid.LOADMODULE = function() {
 	dependsOn.updateAll();
 	listenerAid.add(window, "change", dependsOn.changed, false);
+	
+	initScales();
 };
 
 moduleAid.UNLOADMODULE = function() {
 	listenerAid.remove(window, "change", dependsOn.changed, false);
-}
+	
+	if(UNLOADED) {
+		window.close();
+	}
+};

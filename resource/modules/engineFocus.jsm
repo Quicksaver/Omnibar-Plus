@@ -1,13 +1,9 @@
-moduleAid.VERSION = '1.0.3';
-moduleAid.VARSLIST = ['engineName'];
-
-this.engineName = $('omnibar-defaultEngineName');
+moduleAid.VERSION = '1.0.4';
 
 moduleAid.LOADMODULE = function() {
-	setWatchers(engineName);
-	engineName.addAttributeWatcher('value', window.openLocation);
+	objectWatcher.addAttributeWatcher($('omnibar-defaultEngineName'), 'value', window.openLocation);
 };
 
 moduleAid.UNLOADMODULE = function() {
-	setWatchers(engineName, true);
+	objectWatcher.removeAttributeWatcher($('omnibar-defaultEngineName'), 'value', window.openLocation);
 };

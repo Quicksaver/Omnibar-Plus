@@ -1,10 +1,9 @@
-moduleAid.VERSION = '1.2.0';
-moduleAid.VARSLIST = [];
+moduleAid.VERSION = '1.2.1';
 
 moduleAid.LOADMODULE = function() {
 	overlayAid.overlayURI("chrome://browser/content/browser.xul", "F6");
 };
 
 moduleAid.UNLOADMODULE = function() {
-	overlayAid.unOverlayURI("chrome://browser/content/browser.xul", "F6");
+	overlayAid.removeOverlayURI("chrome://browser/content/browser.xul", "F6");
 };

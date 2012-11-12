@@ -1,6 +1,7 @@
-moduleAid.VERSION = '1.0.8';
-moduleAid.VARSLIST = ['gBrowser', 'escaped', 'types', 'deletedIndex', 'deletedText', 'delayOrganize', 'doIndexes', 'organize', 'getTypes', 'getEntryType', 'removeEntry', 'urlBarKeyDown', 'onGoClick', 'checkOnTextEntered', 'fixContextMenu', 'pasteAndGo', 'paste', 'fireOnSelect'];
+moduleAid.VERSION = '1.0.9';
 
+this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
+this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
 
 this.escaped = false;
@@ -294,7 +295,7 @@ this.onGoClick = function(aEvent) {
 this.checkOnTextEntered = function() {
 	if(gURLBar.getAttribute('ontextentered').indexOf(objName) < 0) {
 		gURLBar._ontextentered = gURLBar.getAttribute('ontextentered');
-		gURLBar.setAttribute('ontextentered', objName+'.fireOnSelect(param);');
+		setAttribute(gURLBar, 'ontextentered', objName+'.fireOnSelect(param);');
 	}
 };
 
@@ -323,7 +324,7 @@ this.fixContextMenu = function(areWeOrganizing) {
 		}
 		if(pasteAndGoItem) {
 			pasteAndGoItem._oncommand = pasteAndGoItem.getAttribute('oncommand');
-			pasteAndGoItem.setAttribute('oncommand', objName+'.pasteAndGo(event);');
+			setAttribute(pasteAndGoItem, 'oncommand', objName+'.pasteAndGo(event);');
 		}
 	}
 	else {
@@ -337,7 +338,7 @@ this.fixContextMenu = function(areWeOrganizing) {
 			listenerAid.remove(pasteItem, 'command', paste, false);
 		}
 		if(pasteAndGoItem) {
-			pasteAndGoItem.setAttribute('oncommand', pasteAndGoItem._oncommand);
+			setAttribute(pasteAndGoItem, 'oncommand', pasteAndGoItem._oncommand);
 			delete pasteAndGoItem._oncommand;
 		}
 	}
@@ -456,7 +457,7 @@ moduleAid.UNLOADMODULE = function() {
 		richlistbox.removeChild(richlist[0]);
 	}
 	
-	gURLBar.setAttribute("ontextentered", gURLBar._ontextentered);
+	setAttribute(gURLBar, "ontextentered", gURLBar._ontextentered);
 	delete gURLBar._ontextentered;
 	
 	fixContextMenu(false);

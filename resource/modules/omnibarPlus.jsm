@@ -1,5 +1,6 @@
-moduleAid.VERSION = '1.1.3';
-moduleAid.VARSLIST = ['toggleMiddleClick', 'toggleAnimated', 'toggleEngineFocus', 'toggleURLBarHandlers'];
+moduleAid.VERSION = '1.1.4';
+
+this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 
 // Toggle middle click functionality
 this.toggleMiddleClick = function() {
@@ -18,7 +19,7 @@ this.toggleEngineFocus = function() {
 
 // Toggles autoSelect feature
 this.toggleURLBarHandlers = function() {
-	if(window.gURLBar.popup == $('PopupAutoComplete')) { return; }
+	if(gURLBar.popup == $('PopupAutoComplete')) { return; }
 	
 	if(!prefAid.autoSelect && !prefAid.organizePopup) {
 		moduleAid.unload("autoSelect");

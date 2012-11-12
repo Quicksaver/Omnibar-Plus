@@ -1,5 +1,6 @@
-moduleAid.VERSION = '1.0.3';
-moduleAid.VARSLIST = ['willHandle', 'inFirst', 'dontSelect', 'selectI', 'autoSelect', 'delaySelect', 'cancelSelect', 'keySelect'];
+moduleAid.VERSION = '1.0.4';
+
+this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 
 // Helper to check whether the value input is already uri like or not
 this.__defineGetter__('willHandle', function() {

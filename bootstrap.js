@@ -13,23 +13,34 @@
 //	see prepareObject()
 // preparePreferences(window, aName) - loads the preferencesUtils module into that window's object initialized by prepareObject() (if it hasn't yet, it will be initialized)
 //	see prepareObject()
-// listenOnce(window, type, handler, capture) - adds handler to window listening to event type that will be removed after one execution.
-//	window - (xul object) the window object to add the handler to
+// listenOnce(aSubject, type, handler, capture) - adds handler to window listening to event type that will be removed after one execution.
+//	aSubject - (xul object) to add the handler to
 //	type - (string) event type to listen to
-//	handler - (function(event, window)) - method to be called when event is triggered
+//	handler - (function(event, aSubject)) - method to be called when event is triggered
 //	(optional) capture - (bool) capture mode
+// callOnLoad(aSubject, aCallback) - calls aCallback when load event is fired on that window
+//	aSubject - (xul object) to execute aCallback on
+//	aCallback - (function(aSubject)) to be called on aSubject
 // disable() - disables the add-on
+// Note: Firefox 8 is the minimum version supported as the bootstrap requires the chrome.manifest file to be loaded, which was implemented in Firefox 8.
 
-let bootstrapVersion = '1.0.3';
-let unloaded = false;
-let started = false;
+let bootstrapVersion = '1.2.3';
+let UNLOADED = false;
+let STARTED = false;
 let addonData = null;
+let observerLOADED = false;
+let onceListeners = [];
 
-const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
+// Globals - lets me use objects that I can share through all the windows
+let Globals = {};
+
+const {classes: Cc, interfaces: Ci, utils: Cu, manager: Cm} = Components;
 Cu.import("resource://gre/modules/AddonManager.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
+Cu.import("resource://gre/modules/PlacesUIUtils.jsm");
 XPCOMUtils.defineLazyServiceGetter(Services, "fuel", "@mozilla.org/fuel/application;1", "fuelIApplication");
+XPCOMUtils.defineLazyServiceGetter(Services, "navigator", "@mozilla.org/network/protocol;1?name=http", "nsIHttpProtocolHandler");
 XPCOMUtils.defineLazyServiceGetter(Services, "privateBrowsing", "@mozilla.org/privatebrowsing;1", "nsIPrivateBrowsingService");
 XPCOMUtils.defineLazyServiceGetter(Services, "stylesheet", "@mozilla.org/content/style-sheet-service;1", "nsIStyleSheetService");
 
@@ -46,18 +57,19 @@ function prepareObject(window, aName) {
 		// it's easier to reference more specific objects from within the modules for better control, only setting these two here because they're more generalized
 		window: window,
 		get document () { return window.document; },
-		$: function(id) { return window.document.getElementById(id); }
+		$: function(id) { return window.document.getElementById(id); },
+		$$: function(sel) { return window.document.querySelectorAll(sel); }
 	};
 	
-	Services.scriptloader.loadSubScript("resource://"+objPathString+"/modules/moduleAid.jsm", window[objectName]);
-	window[objectName].moduleAid.load("utils");
+	Services.scriptloader.loadSubScript("resource://"+objPathString+"/modules/utils/moduleAid.jsm", window[objectName]);
+	window[objectName].moduleAid.load("utils/windowUtils");
 }
 
 function removeObject(window, aName) {
 	let objectName = aName || objName;
 	
 	if(window[objectName]) {
-		window[objectName].moduleAid.unload("utils");
+		window[objectName].moduleAid.unload("utils/windowUtils");
 		delete window[objectName];
 	}
 }
@@ -68,25 +80,59 @@ function preparePreferences(window, aName) {
 	if(!window[objectName]) {
 		prepareObject(window, objectName);
 	}
-	window[objectName].moduleAid.load("preferencesUtils");
+	window[objectName].moduleAid.load("utils/preferencesUtils");
 }
 
-function listenOnce(window, type, handler, capture) {
-	window.addEventListener(type, function runOnce(event) {
-		window.removeEventListener(type, runOnce, capture);
-		if(!unloaded) {
-			handler(event, window);
+function removeOnceListener(oncer) {
+	for(var i=0; i<onceListeners.length; i++) {
+		if(!oncer) {
+			onceListeners[i]();
+			continue;
 		}
-	}, capture);
-}
-
-function setDefaults() {
-	if(prefList) {
-		prefAid.setDefaults(prefList);
+		
+		if(onceListeners[i] == oncer) {
+			onceListeners.splice(i, 1);
+			return;
+		}
+	}
+	
+	if(!oncer) {
+		onceListeners = [];
 	}
 }
 
+function listenOnce(aSubject, type, handler, capture) {
+	if(UNLOADED || !aSubject || !aSubject.addEventListener) { return; }
+	
+	var runOnce = function(event) {
+		aSubject.removeEventListener(type, runOnce, capture);
+		if(!UNLOADED && event !== undefined) {
+			removeOnceListener(runOnce);
+			try { handler(event, aSubject); }
+			catch(ex) { Cu.reportError(ex); }
+		}
+	};
+	
+	aSubject.addEventListener(type, runOnce, capture);
+	onceListeners.push(runOnce);
+}
+
+function callOnLoad(aSubject, aCallback, arg1) {
+	listenOnce(aSubject, "load", function(event, aSubject) {
+		if(UNLOADED) { return; }
+		
+		try { aCallback(aSubject, arg1); }
+		catch(ex) { Cu.reportError(ex); }
+	}, false);
+}
+
 function setResourceHandler() {
+	// chrome.manifest files are loaded automatically in Firefox 10+.
+	// Got it from https://developer.mozilla.org/en-US/docs/XPCOM_Interface_Reference/nsIComponentManager#addBootstrappedManifestLocation()
+	if(Services.vc.compare(Services.appinfo.platformVersion, "10.0") < 0) {
+		Cm.addBootstrappedManifestLocation(addonData.installPath);
+	}
+	
 	let alias = Services.io.newFileURI(addonData.installPath);
 	let resourceURI = (addonData.installPath.isDirectory()) ? alias.spec : 'jar:' + alias.spec + '!/';
 	resourceURI += 'resource/';
@@ -99,15 +145,21 @@ function setResourceHandler() {
 	resource.setSubstitution(objPathString, alias);
 	
 	// Get the utils.jsm module into our sandbox
-	Services.scriptloader.loadSubScript("resource://"+objPathString+"/modules/moduleAid.jsm", this);
-	moduleAid.load("sandboxUtils");
+	Services.scriptloader.loadSubScript("resource://"+objPathString+"/modules/utils/moduleAid.jsm", this);
+	moduleAid.load("utils/sandboxUtils");
 }
 
 function removeResourceHandler() {
-	moduleAid.unload("sandboxUtils");
+	moduleAid.unload("utils/sandboxUtils");
 	
 	let resource = Services.io.getProtocolHandler("resource").QueryInterface(Ci.nsIResProtocolHandler);
 	resource.setSubstitution(objPathString, null);
+	
+	// chrome.manifest files are loaded automatically in Firefox 10+.
+	// Got it from https://developer.mozilla.org/en-US/docs/XPCOM_Interface_Reference/nsIComponentManager#addBootstrappedManifestLocation()
+	if(Services.vc.compare(Services.appinfo.platformVersion, "10.0") < 0) {
+		Cm.removeBootstrappedManifestLocation(addonData.installPath);
+	}
 }
 
 function disable() {
@@ -117,16 +169,16 @@ function disable() {
 }
 
 function continueStartup(aReason) {
-	started = aReason;
+	STARTED = aReason;
 	
 	// set add-on preferences defaults
-	setDefaults();
+	prefAid.setDefaults(prefList);
 	
 	onStartup(aReason);
 }
 
 function startup(aData, aReason) {
-	unloaded = false;
+	UNLOADED = false;
 	addonData = aData;
 	
 	// add resource:// protocol handler so I can access my modules
@@ -139,17 +191,21 @@ function startup(aData, aReason) {
 }
 
 function shutdown(aData, aReason) {
-	unloaded = aReason;
-	observerAid.callQuits();
+	UNLOADED = aReason;
 	
-	if(aReason == APP_SHUTDOWN) { return; }
+	if(aReason == APP_SHUTDOWN) {
+		if(observerLOADED) { observerAid.callQuits(); }
+		removeOnceListener();
+		return;
+	}
 	
-	if(started) {
+	if(STARTED) {
 		onShutdown(aReason);
 	}
 	
 	// remove resource://
 	removeResourceHandler();
+	removeOnceListener();
 }
 
 function install() {}
