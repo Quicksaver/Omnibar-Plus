@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.0.9';
+moduleAid.VERSION = '1.0.10';
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
@@ -93,10 +93,10 @@ this.getTypes = function() {
 	];
 	
 	// Remove entries that aren't needed as to reduce the number of loops
-	if(typeof(agrenonLoader) == 'undefined') {
+	if(!prefAid.agrenon) {
 		removeEntry('agrenon');
 	}
-	if(typeof(SmarterWiki) == 'undefined') { 
+	if(!prefAid.smarterwiki) { 
 		removeEntry('smarterwiki'); 
 	}
 };

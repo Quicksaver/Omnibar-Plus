@@ -1,13 +1,13 @@
-moduleAid.VERSION = '1.0.4';
+moduleAid.VERSION = '1.0.5';
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
 
-this.goButton = $('go-button');
-this.panel = $('PopupAutoCompleteRichResult');
-this.richlistbox = panel.richlistbox;
-this.richlist = richlistbox.childNodes;
+this.__defineGetter__('goButton', function() { return $('go-button'); });
+this.__defineGetter__('panel', function() { return $('PopupAutoCompleteRichResult'); });
+this.__defineGetter__('richlistbox', function() { return panel.richlistbox; });
+this.__defineGetter__('richlist', function() { return richlistbox.childNodes; });
 
 // helper objects to get current popup status and set it
 this.__defineGetter__('panelState', function() {
