@@ -1,8 +1,4 @@
-moduleAid.VERSION = '1.0.10';
-
-this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
-this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
-this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
+moduleAid.VERSION = '1.1.0';
 
 this.escaped = false;
 this.types = [];
@@ -29,9 +25,7 @@ this.doIndexes = function(selected, current) {
 this.organize = function() {
 	if(!panelState || escaped) { return; }
 	
-	var selectFirst = timerAid.cancel('autoSelect');
-	var originalSelectedIndex = richlistbox.selectedIndex;
-	var originalCurrentIndex = richlistbox.currentIndex;
+	dispatch(panel, { type: 'obpBeginOrganize', cancelable: false });
 	
 	doIndexes();
 	var nodes = [];
@@ -66,15 +60,7 @@ this.organize = function() {
 		}
 	}
 	
-	// AutoSelect if it hasn't already
-	if(prefAid.autoSelect && (selectFirst || (originalSelectedIndex <= 0 && originalCurrentIndex <= 0))) {
-		autoSelect();
-	} else {
-		if(originalSelectedIndex >= richlist.length) { originalSelectedIndex = -1; }
-		if(originalCurrentIndex >= richlist.length) { originalCurrentIndex = -1; }
-		
-		doIndexes(originalSelectedIndex, originalCurrentIndex);
-	}
+	dispatch(panel, { type: 'obpEndOrganize', cancelable: false });
 	
 	panel.adjustHeight();
 };
@@ -134,29 +120,7 @@ this.urlBarKeyDown = function(e) {
 		tab = true;
 	}
 	
-	if(prefAid.autoSelect) {
-		dontSelect = false;
-		if(panelState) {
-			switch(e.keyCode) {
-				case e.DOM_VK_TAB:
-				case e.DOM_VK_PAGE_UP:
-				case e.DOM_VK_PAGE_DOWN:
-				case e.DOM_VK_UP:
-				case e.DOM_VK_DOWN:
-				case e.DOM_VK_ESCAPE:
-				case e.DOM_VK_LEFT:
-				case e.DOM_VK_RIGHT:
-				case e.DOM_VK_HOME:
-				case e.DOM_VK_END:
-				case e.DOM_VK_CONTEXT_MENU:
-				case e.DOM_VK_ENTER:
-				case e.DOM_VK_RETURN:
-					dontSelect = true;
-					break;
-				default: break;
-			}
-		}
-	}
+	dispatch(gURLBar, { type: 'obpBeginKeyDown', cancelable: false, detail: { keyEvent: e } });
 	
 	switch(key) {
 		case e.DOM_VK_PAGE_UP:
@@ -240,18 +204,11 @@ this.urlBarKeyDown = function(e) {
 			
 			// Don't delete before organizing as it can screw up the handler
 			if(timerAid.delayOrganize) {
-				if(prefAid.autoSelect) {
-					dontSelect = true;
-				}
 				return false;
 			}
 			
 			// Delete entries from the popup list if applicable
 			if(richlistbox.currentIndex > -1) {
-				if(prefAid.autoSelect) {
-					dontSelect = true;
-				}
-				
 				deletedIndex = richlistbox.currentIndex;
 				deletedText = richlistbox.currentItem.getAttribute('text');
 				richlistbox.removeChild(richlistbox.currentItem);
@@ -441,10 +398,20 @@ moduleAid.LOADMODULE = function() {
 		this._actualIndex = -1;
 		return null;
 	});
+	
+	addHandler(keyHandlers, urlBarKeyDown, 200);
+	addHandler(unSelectHandlers, doIndexes, 100);
+	
+	listenerAid.add(gURLBar, 'obpSearchComplete', delayOrganize);
 };
 
 moduleAid.UNLOADMODULE = function() {
 	timerAid.cancel('delayOrganize');
+	
+	listenerAid.remove(gURLBar, 'obpSearchComplete', delayOrganize);
+	
+	removeHandler(keyHandlers, urlBarKeyDown, 200);
+	removeHandler(unSelectHandlers, doIndexes, 100);
 	
 	prefAid.unlisten('organize0', getTypes);
 	prefAid.unlisten('organize1', getTypes);

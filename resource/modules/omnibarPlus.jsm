@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.4';
+moduleAid.VERSION = '1.1.5';
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 
@@ -21,15 +21,7 @@ this.toggleEngineFocus = function() {
 this.toggleURLBarHandlers = function() {
 	if(gURLBar.popup == $('PopupAutoComplete')) { return; }
 	
-	if(!prefAid.autoSelect && !prefAid.organizePopup) {
-		moduleAid.unload("autoSelect");
-		moduleAid.unload("organize");
-		moduleAid.unload("urlbarHandlers");
-	} else {
-		moduleAid.load("urlbarHandlers");
-		moduleAid.loadIf("autoSelect", prefAid.autoSelect);
-		moduleAid.loadIf("organize", prefAid.organizePopup);
-	}
+	moduleAid.loadIf("urlbarHandlers", prefAid.autoSelect || prefAid.organizePopup);
 };
 	
 moduleAid.LOADMODULE = function() {
@@ -52,10 +44,8 @@ moduleAid.UNLOADMODULE = function() {
 	prefAid.unlisten('engineFocus', toggleEngineFocus);
 	prefAid.unlisten('autoSelect', toggleURLBarHandlers);
 	
-	moduleAid.unload("middleClick");
-	moduleAid.unload("animated");
-	moduleAid.unload("engineFocus");
-	moduleAid.unload("autoSelect");
-	moduleAid.unload("organize");
 	moduleAid.unload("urlbarHandlers");
+	moduleAid.unload("engineFocus");
+	moduleAid.unload("animated");
+	moduleAid.unload("middleClick");
 };

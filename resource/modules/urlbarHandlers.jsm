@@ -1,6 +1,5 @@
-moduleAid.VERSION = '1.0.5';
+moduleAid.VERSION = '1.1.0';
 
-this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
 
@@ -8,6 +7,22 @@ this.__defineGetter__('goButton', function() { return $('go-button'); });
 this.__defineGetter__('panel', function() { return $('PopupAutoCompleteRichResult'); });
 this.__defineGetter__('richlistbox', function() { return panel.richlistbox; });
 this.__defineGetter__('richlist', function() { return richlistbox.childNodes; });
+
+this.unSelectHandlers = [];
+this.keyHandlers = [];
+this.addHandler = function(master, handler, weight) {
+	master.push({ handler: handler, weight: weight });
+	// Handler with the highest weight go first
+	master.sort(function(a,b) { return b.weight-a.weight; });
+};
+this.removeHandler = function(master, handler, weight) {
+	for(var h=0; h<master.length; h++) {
+		if(master[h].handler == handler && master[h].weight == weight) {
+			master.splice(h, 1);
+			return;
+		}
+	}
+};
 
 // helper objects to get current popup status and set it
 this.__defineGetter__('panelState', function() {
@@ -50,20 +65,11 @@ this.__defineGetter__('anyItem', function() {
 });
 
 this.searchBegin = function() {
-	if(prefAid.autoSelect) {
-		delaySelect();
-	}
+	dispatch(gURLBar, { type: 'obpSearchBegin', cancelable: false });
 };
 
 this.searchComplete = function() {
-	if(prefAid.organizePopup) {
-		delayOrganize();
-	}
-	if(prefAid.autoSelect) {
-		if(cancelSelect()) {
-			autoSelect();
-		}
-	}
+	dispatch(gURLBar, { type: 'obpSearchComplete', cancelable: false });
 };
 
 this.onKeyPress = function(e) {
@@ -78,8 +84,9 @@ this.onKeyPress = function(e) {
 	// I'm leaving it like this for now
 	setGo();
 	
-	if(prefAid.organizePopup) { return urlBarKeyDown(e); }
-	if(prefAid.autoSelect) { return keySelect(e); }
+	if(keyHandlers.length > 0) {
+		return keyHandlers[0].handler(e);
+	}
 	return gURLBar._onKeyPress(e);
 };
 
@@ -109,10 +116,17 @@ this.onGo = function(e) {
 };
 
 this.unSelect = function() {
-	if(prefAid.autoSelect) {
-		return selectI(-1);
+	if(unSelectHandlers.length > 0) {
+		unSelectHandlers[0].handler();
 	}
-	return doIndexes();
+};
+
+this.toggleAutoSelect = function() {
+	moduleAid.loadIf("autoSelect", prefAid.autoSelect);
+};
+
+this.toggleOrganize = function() {
+	moduleAid.loadIf("organize", prefAid.organizePopup);
 };
 
 moduleAid.LOADMODULE = function() {
@@ -133,9 +147,21 @@ moduleAid.LOADMODULE = function() {
 	// It will keep the selection if we close the popup by means other than hitting a key, so we unSelect it if there's potential to follow through with previous input
 	listenerAid.add(gURLBar, 'focus', unSelect, true);
 	listenerAid.add(gURLBar, 'click', unSelect, true);
+	
+	prefAid.listen('autoSelect', toggleAutoSelect);
+	prefAid.listen('organizePopup', toggleOrganize);
+	
+	toggleAutoSelect();
+	toggleOrganize();
 };
 
 moduleAid.UNLOADMODULE = function() {
+	prefAid.unlisten('autoSelect', toggleAutoSelect);
+	prefAid.unlisten('organizePopup', toggleOrganize);
+	
+	moduleAid.unload("organize");
+	moduleAid.unload("autoSelect");
+	
 	gURLBar.onKeyPress = gURLBar._onKeyPress;
 	delete gURLBar._onKeyPress;
 	
