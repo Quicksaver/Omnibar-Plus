@@ -6,7 +6,7 @@
 			if(!gURLBar.focused) {
 				openLocation();
 			}
-			else if(focusNextFrame) {
+			else if(typeof(focusNextFrame) != 'undefined') {
 				focusNextFrame(event);
 			}
 			else if(window.content) {
