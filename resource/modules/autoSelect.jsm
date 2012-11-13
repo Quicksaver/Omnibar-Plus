@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.0';
+moduleAid.VERSION = '1.1.1';
 
 // Helper to check whether the value input is already uri like or not
 this.__defineGetter__('willHandle', function() {
@@ -204,6 +204,15 @@ this.autoSelectOnEndOrganize = function() {
 	}
 };
 
+this.autoSelectOnEnter = function(e) {
+	if(prefAid.organizePopup) { return; } // not needed if organizing as it will be taken care of there
+	if(e.keyCode != e.DOM_VK_ENTER && e.keyCode != e.DOM_VK_RETURN) { return; }
+	
+	if(anyItem) {
+		gURLBar.value = anyItem.getAttribute('url');
+	}
+};
+
 moduleAid.LOADMODULE = function() {
 	addHandler(keyHandlers, keySelect, 100);
 	addHandler(unSelectHandlers, selectI, 200);
@@ -214,6 +223,8 @@ moduleAid.LOADMODULE = function() {
 	listenerAid.add(panel, 'obpBeginOrganize', autoSelectOnBeginOrganize);
 	listenerAid.add(panel, 'obpEndOrganize', autoSelectOnEndOrganize);
 	listenerAid.add(gURLBar, 'obpBeginKeyDown', autoSelectOnBeginKeyDown);
+	
+	listenerAid.add(gURLBar, 'keydown', autoSelectOnEnter, true);
 };
 
 moduleAid.UNLOADMODULE = function() {
@@ -225,6 +236,8 @@ moduleAid.UNLOADMODULE = function() {
 	listenerAid.remove(panel, 'obpBeginOrganize', autoSelectOnBeginOrganize);
 	listenerAid.remove(panel, 'obpEndOrganize', autoSelectOnEndOrganize);
 	listenerAid.remove(gURLBar, 'obpBeginKeyDown', autoSelectOnBeginKeyDown);
+	
+	listenerAid.remove(gURLBar, 'keydown', autoSelectOnEnter, true);
 	
 	removeHandler(keyHandlers, keySelect, 100);
 	removeHandler(unSelectHandlers, selectI, 200);
