@@ -33,11 +33,16 @@
 				<tabpanel id="plusTab" orient="vertical">
 					<groupbox align="start">
 						<caption label="&omnibarPlussuggestionList.label;"/>
-						<groupbox align="center">
-							<caption><checkbox id="animatedCheckbox" 
+						<checkbox id="autoSelectCheckbox"
+							label="&omnibarPlusautoSelect.label;"
+							preference="extensions.omnibarplus.autoSelect"
+							dependson="!extensions.omnibar.popupstyle:SIMPLE"/>
+							
+						<vbox align="center">
+							<checkbox id="animatedCheckbox" 
 								label="&omnibarPlusanimated.label;" 
-								preference="extensions.omnibarplus.animated"/></caption>
-							<hbox style="vertical-align: middle;">
+								preference="extensions.omnibarplus.animated"/>
+							<hbox align="center" style="vertical-align: middle;">
 								<label style="margin-top: 7px;" value="&omnibarPlusanimatedScheme.label;"/>
 								<menulist id="animatedMenulist" preference="extensions.omnibarplus.animatedScheme" dependson="animatedCheckbox">
 									<menupopup>
@@ -51,12 +56,12 @@
 									</menupopup>
 								</menulist>
 							</hbox>
-						</groupbox>
-						<groupbox align="start">
-							<caption><checkbox id="organizeCheckbox" 
+						</vbox>
+						<vbox align="start">
+							<checkbox id="organizeCheckbox" 
 								label="&omnibarPlusorganizePopup.label;" 
 								preference="extensions.omnibarplus.organizePopup"
-								dependson="!extensions.omnibar.popupstyle:SIMPLE"/></caption>
+								dependson="!extensions.omnibar.popupstyle:SIMPLE"/>
 							<hbox style="margin: 0 5px;">
 								<tree id="orderList"
 									class="organize"
@@ -106,7 +111,7 @@
 										</treerow></treeitem>
 									</treechildren>
 								</tree>
-								<vbox align="center" style="padding: 3px 0;">
+								<vbox style="padding: 15px 0;">
 									<button id="ListUpButton"
 										oncommand="objName.moveListRow(false);"
 										dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>
@@ -115,11 +120,7 @@
 										dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>
 								</vbox>
 							</hbox>
-						</groupbox>
-						<checkbox id="autoSelectCheckbox"
-							label="&omnibarPlusautoSelect.label;"
-							preference="extensions.omnibarplus.autoSelect"
-							dependson="!extensions.omnibar.popupstyle:SIMPLE"/>
+						</vbox>
 					</groupbox>
 					<groupbox align="start">
 						<caption label="&omnibarPlusfunctionality.label;"/>
