@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.0.6';
+moduleAid.VERSION = '1.0.7';
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 this.usingRichlist = (gURLBar.popup == $('PopupAutoComplete')) ? false : true;
@@ -34,6 +34,16 @@ moduleAid.LOADMODULE = function() {
 	
 	// Sometimes the sheets are unloaded for some reason
 	listenerAid.add(gURLBar.popup, 'popupshowing', loadSheets, false);
+	
+	// Bugfix: it wouldn't apply the theme at startup when using the slim style, so we force a reload of the theme in this case
+	if(!usingRichlist) {
+		aSync(function() {
+			if(UNLOADED) { return; }
+			var actual = prefAid.animatedScheme;
+			prefAid.animatedScheme = (actual == 'sky') ? 'ruby' : 'sky';
+			prefAid.animatedScheme = actual;
+		});
+	}
 };
 
 moduleAid.UNLOADMODULE = function() {
