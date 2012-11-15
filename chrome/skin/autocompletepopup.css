@@ -1,12 +1,12 @@
 @namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 @-moz-document url("chrome://browser/content/browser.xul") {
 	
-	/*AwesomeBar_Popup by frog V6 for fx4+*/
+	/*AwesomeBar_Popup by frog V6.2 for fx4+ modified by Quicksaver*/
 	#PopupAutoCompleteRichResult[animatedPopup]:not(.omnibar-style-slim) richlistitem.autocomplete-richlistitem:not([current]) .ac-url-box {
 		visibility: collapse !important;
 		opacity: 0 !important;
-		-moz-transform: translateX(-.7em) !important;
-		transform: translateX(-.7em) !important; /* Firefox 16 */
+		-moz-transform: translateX(-.65em) !important;
+		transform: translateX(-.65em) !important; /* Firefox 16 */
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox > scrollbox {
@@ -14,23 +14,28 @@
 		width: -moz-available !important;
 	}
 	
-	#PopupAutoComplete[animatedPopup] {
-		background-color: white !important;
+	#PopupAutoComplete[animatedPopup],
+	#PopupAutoCompleteRichResult[animatedPopup] {
+		background: white padding-box !important;
+		-moz-appearance: none !important;
+		border-radius: 2.15px;
 	}
 	#PopupAutoCompleteRichResult[animatedPopup] {
 		padding: 0 !important;
 		margin-top: -1px !important;
-		background-color: white !important;
 	}
 	
 	#PopupAutoComplete[animatedPopup] .autocomplete-treebody {
 		background: white !important;
 	}
+	
 	#PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox {
 		margin: 1px !important;
-		background: white -moz-linear-gradient(left, rgb(242,242,242) 26px, transparent 0) repeat-y !important;
-		background: white linear-gradient(to right, rgb(242,242,242) 26px, transparent 0) repeat-y !important; /* Firefox 16 */
+		background-size: 28px auto !important;
+		background: white -moz-linear-gradient(left, hsl(0,0%,97%) 27px, hsl(0,0%,90%) 28px, transparent 0) repeat-y !important;
+		background: white linear-gradient(to right, hsl(0,0%,97%) 27px, hsl(0,0%,90%) 28px, transparent 0) repeat-y !important; /* Firefox 16 */
 	}
+	
 	#PopupAutoCompleteRichResult[animatedPopup]:not([linux]) .autocomplete-richlistbox {
 		display: block !important;
 	}
@@ -43,41 +48,51 @@
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] .ac-site-icon {
-		margin: 0 8px 0 0 !important;
+		margin: 0 10px 0 1px !important;
 	}
+	
 	#PopupAutoCompleteRichResult[animatedPopup] .ac-title-box {
 		margin: 0 !important;
 		padding: 0 !important;
 		color: black !important;
 	}
+	
 	#PopupAutoComplete[animatedPopup] .autocomplete-treebody::-moz-tree-cell-text {
 		color: black !important;
 	}
+	
 	#PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox .autocomplete-richlistitem .ac-url-box {
 		margin: 0 !important;
-		padding: 0 0 1px 0 !important;
+		padding: 1px 0 !important;
 		color: hsl(0,0%,44%) !important;
-		font-size: 95% !important;
-		-moz-transition: opacity .22s linear 0.03s, -moz-transform .22s ease-out 0.03s !important;
-		transition: opacity .22s linear 0.03s, transform .22s ease-out 0.03s !important; /* Firefox 16 */
+		font-size: 95.5% !important;
+		-moz-transition: opacity .21s linear 0.02s, -moz-transform .21s ease-out 0.02s !important;
+		transition: opacity .21s linear 0.02s, transform .21s ease-out 0.02s !important; /* Firefox 16 */
 	}
 	
 	#PopupAutoComplete[animatedPopup] .autocomplete-treebody::-moz-tree-row {
-		border: 1px solid transparent !important;
-		border-bottom-color: transparent !important;
-		border-top: 1px dotted rgba(242,242,242,.7) !important;
 		padding: 0px 4px !important;
-		background: none !important;
 	}
+	
+	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem,
+	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"],
+	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"] {
+		padding: 2px 4px !important;
+	}
+	
+	#PopupAutoComplete[animatedPopup] .autocomplete-treebody::-moz-tree-row,
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem,
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"],
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"] {
 		border: 1px solid transparent !important;
 		border-bottom-color: transparent !important;
-		border-top: 1px dotted rgba(242,242,242,.7) !important;
+		border-top: 1px solid hsla(0,0%,97%,.31) !important;
 		box-shadow: none !important;
-		padding: 2px 4px !important;
 		background: none !important;
+	}
+	
+	#PopupAutoComplete[animatedPopup] .autocomplete-richlistitem:first-child {
+		border-top-color: transparent !important;
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current] + richlistitem.autocomplete-richlistitem,
@@ -103,12 +118,12 @@
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current],
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"][current],
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][current] {
-		background-size: 26px auto, auto !important;
-		border-radius: 2.3px !important;
+		background-size: 28px auto, auto !important;
+		border-radius: 2.15px !important;
 		box-shadow: inset hsla(0,0%,100%,.43) 0 0 0 1px !important;
-		text-shadow: hsla(0,0%,100%,.3) 0 0 2px, hsla(0,0%,100%,.5) 0 1px 0 !important;
-		-moz-transition: box-shadow .23s ease 0.02s !important;
-		transition: box-shadow .23s ease 0.02s !important; /* Firefox 16 */
+		outline: 0px !important;
+		-moz-transition: box-shadow .21s ease 0.02s !important;
+		transition: box-shadow .21s ease 0.02s !important; /* Firefox 16 */
 	}
 	
 	#PopupAutoComplete[animatedPopup] .autocomplete-treebody::-moz-tree-row(selected) {
@@ -120,17 +135,16 @@
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"][current]:not([selected]),
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][current]:not([selected])  {
 		border-color: rgb(190,190,190) !important;
-		background-image: -moz-linear-gradient(left, rgba(0,0,0,.055) 25px, rgba(0,0,0,0) 25px, rgba(0,0,0,.2)), -moz-linear-gradient(rgb(248,248,248) 0%, rgb(229,229,229) 100%) !important;
-		background-image: linear-gradient(to right, rgba(0,0,0,.055) 25px, rgba(0,0,0,0) 25px, rgba(0,0,0,.2)), linear-gradient(rgb(248,248,248) 0%, rgb(229,229,229) 100%) !important; /* Firefox 16 */
+		background-image: -moz-linear-gradient(left, rgba(0,0,0,.055) 27px, rgba(0,0,0,0) 27px, rgba(0,0,0,.2)), -moz-linear-gradient(rgb(248,248,248) 0%, rgb(229,229,229) 100%) !important;
+		background-image: linear-gradient(to right, rgba(0,0,0,.055) 27px, rgba(0,0,0,0) 27px, rgba(0,0,0,.2)), linear-gradient(rgb(248,248,248) 0%, rgb(229,229,229) 100%) !important; /* Firefox 16 */
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] span.ac-emphasize-text {
 		font-weight: normal !important;
 		text-decoration: none !important;
 		box-shadow: inset hsla(60,100%,35%,.2) 0 0 0 1px, inset hsla(0,0%,100%,.15) 0 0 0 2px !important;
-		border-radius: 2px !important;
-		background: hsla(60,91%,75%,.38) -moz-linear-gradient(bottom, hsla(37,100%,55%,.15) 4px, hsla(40,100%,60%,.2) 0px, hsla(60,100%,80%,.07) 100%) border-box !important;
-		background: hsla(60,91%,75%,.38) linear-gradient(to top, hsla(37,100%,55%,.15) 4px, hsla(40,100%,60%,.2) 0px, hsla(60,100%,80%,.07) 100%) border-box !important; /* Firefox 16 */
+		border-radius: 2.15px !important;
+		background: hsla(60,91%,75%,.38) border-box !important;
 	}
 	
 	/* Fix for Peers 2 entries */
