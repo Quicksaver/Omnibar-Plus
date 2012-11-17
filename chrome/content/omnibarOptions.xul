@@ -74,13 +74,13 @@
 									hidecolumnpicker="true"
 									onblur="objName.aSync(objName.blurOrderList);"
 									dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox">
-									<treecols style="visibility: hidden; height: 0;">
-										<treecol label="" flex="1" style="text-align: right;"/>
-										<treecol label="" flex="5"/>
+									<treecols>
+										<treecol label="" flex="1" class="right"/>
+										<treecol label="" flex="7"/>
 									</treecols>
 									<treechildren id="orderListChildren">
 										<treeitem id="treeitem-0"><treerow>
-											<treecell style="text-align: right;" label="0"/>
+											<treecell label="0"/>
 											<treecell id="treecell-0"
 												preference="extensions.omnibarplus.organize0"
 												preference-editable="true"
@@ -88,7 +88,7 @@
 												onsynctopreference="return this.getAttribute('value');"/>
 										</treerow></treeitem>
 										<treeitem id="treeitem-1"><treerow>
-											<treecell style="text-align: right;" label="1"/>
+											<treecell label="1"/>
 											<treecell id="treecell-1"
 												preference="extensions.omnibarplus.organize1"
 												preference-editable="true"
@@ -96,7 +96,7 @@
 												onsynctopreference="return this.getAttribute('value');"/>
 										</treerow></treeitem>
 										<treeitem id="treeitem-2"><treerow>
-											<treecell style="text-align: right;" label="2"/>
+											<treecell label="2"/>
 											<treecell id="treecell-2"
 												preference="extensions.omnibarplus.organize2"
 												preference-editable="true"
@@ -104,7 +104,7 @@
 												onsynctopreference="return this.getAttribute('value');"/>
 										</treerow></treeitem>
 										<treeitem id="treeitem-3"><treerow>
-											<treecell style="text-align: right;" label="3"/>
+											<treecell label="3"/>
 											<treecell id="treecell-3"
 												preference="extensions.omnibarplus.organize3"
 												preference-editable="true"
@@ -112,7 +112,7 @@
 												onsynctopreference="return this.getAttribute('value');"/>
 										</treerow></treeitem>
 										<treeitem id="treeitem-4"><treerow>
-											<treecell style="text-align: right;" label="4"/>
+											<treecell label="4"/>
 											<treecell id="treecell-4"
 												preference="extensions.omnibarplus.organize4"
 												preference-editable="true"
@@ -120,7 +120,7 @@
 												onsynctopreference="return this.getAttribute('value');"/>
 										</treerow></treeitem>
 										<treeitem id="treeitem-5"><treerow>
-											<treecell style="text-align: right;" label="5"/>
+											<treecell label="5"/>
 											<treecell id="treecell-5"
 												preference="extensions.omnibarplus.organize5"
 												preference-editable="true"

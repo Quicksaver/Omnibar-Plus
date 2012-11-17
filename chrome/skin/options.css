@@ -25,10 +25,19 @@
 #ListDownButton { -moz-image-region: rect(24px 24px 48px 0px); }
 
 .buttonBox {
-	padding: 35px 0 !important;
+	padding: 23px 0 !important;
 }
 
 #orderList[disabled] {
 	color: rgb(109, 109, 109);
 	border-color: rgb(109, 109, 109);
+}
+
+#orderList treecols {
+	visibility: hidden !important;
+	height: 0 !important;
+}
+
+#orderList .right {
+	text-align: right !important;
 }
