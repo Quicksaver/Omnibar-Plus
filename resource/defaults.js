@@ -1,4 +1,4 @@
-var defaultsVersion = '1.0.6';
+var defaultsVersion = '1.0.7';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
@@ -24,10 +24,7 @@ function startConditions(aReason) {
 		if(addon && addon.isActive) {
 			continueStartup(aReason);
 		} else {
-			windowMediator.callOnMostRecent(function(window) {
-				window.alert(stringsAid.get('addon', 'requirementWarning'));
-			}, 'navigator:browser');
-			disable();
+			Cu.reportError('Omnibar not found.');
 		}
 	});
 	return false;
