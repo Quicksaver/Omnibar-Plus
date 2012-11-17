@@ -18,6 +18,8 @@
 			<preference id="extensions.omnibarplus.organize1" name="extensions.omnibarplus.organize1" type="string" />
 			<preference id="extensions.omnibarplus.organize2" name="extensions.omnibarplus.organize2" type="string" />
 			<preference id="extensions.omnibarplus.organize3" name="extensions.omnibarplus.organize3" type="string" />
+			<preference id="extensions.omnibarplus.organize4" name="extensions.omnibarplus.organize4" type="string" />
+			<preference id="extensions.omnibarplus.organize5" name="extensions.omnibarplus.organize5" type="string" />
 			<preference id="extensions.omnibarplus.autoSelect" name="extensions.omnibarplus.autoSelect" type="bool" />
 		</preferences>
 		
@@ -66,7 +68,7 @@
 								<tree id="orderList"
 									class="organize"
 									flex="1"
-									rows="4"
+									rows="6"
 									width="350"
 									seltype="single"
 									hidecolumnpicker="true"
@@ -109,9 +111,25 @@
 												onsyncfrompreference="objName.getLabel(this);"
 												onsynctopreference="return this.getAttribute('value');"/>
 										</treerow></treeitem>
+										<treeitem id="treeitem-4"><treerow>
+											<treecell style="text-align: right;" label="4"/>
+											<treecell id="treecell-4"
+												preference="extensions.omnibarplus.organize4"
+												preference-editable="true"
+												onsyncfrompreference="objName.getLabel(this);"
+												onsynctopreference="return this.getAttribute('value');"/>
+										</treerow></treeitem>
+										<treeitem id="treeitem-5"><treerow>
+											<treecell style="text-align: right;" label="5"/>
+											<treecell id="treecell-5"
+												preference="extensions.omnibarplus.organize5"
+												preference-editable="true"
+												onsyncfrompreference="objName.getLabel(this);"
+												onsynctopreference="return this.getAttribute('value');"/>
+										</treerow></treeitem>
 									</treechildren>
 								</tree>
-								<vbox style="padding: 15px 0;">
+								<vbox class="buttonBox">
 									<button id="ListUpButton"
 										oncommand="objName.moveListRow(false);"
 										dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>

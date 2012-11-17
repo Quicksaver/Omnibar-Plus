@@ -1,4 +1,4 @@
-var defaultsVersion = '1.0.5';
+var defaultsVersion = '1.0.6';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
@@ -10,10 +10,12 @@ var prefList = {
 	animatedScheme: 'sky',
 	agrenon: false,
 	smarterwiki: false,
-	organize0: 'EE',
-	organize1: 'agrenon',
-	organize2: 'smarterwiki',
-	organize3: 'omnibar',
+	organize0: 'bookmark',
+	organize1: 'favicon',
+	organize2: 'agrenon',
+	organize3: 'smarterwiki',
+	organize4: 'omnibar',
+	organize5: 'EE',
 	autoSelect: true
 };
 
@@ -52,6 +54,21 @@ function onStartup(aReason) {
 	AddonManager.getAddonByID("smarterwiki@wikiatic.com", function(addon) {
 		prefAid.smarterwiki = (addon && addon.isActive) ? true : false;
 	});
+	
+	// Make sure that we only have one entry of the same type in the organizing categories, duplicates could happen when adding new entries in new version
+	var checkEntries = {};
+	for(var i=0; i<=5; i++) {
+		if(checkEntries[prefAid['organize'+i]]) {
+			prefAid.reset('organize0');
+			prefAid.reset('organize1');
+			prefAid.reset('organize2');
+			prefAid.reset('organize3');
+			prefAid.reset('organize4');
+			prefAid.reset('organize5');
+			break;
+		}
+		checkEntries[prefAid['organize'+i]] = true;
+	}
 	
 	// Apply the add-on to every window opened and to be opened
 	windowMediator.callOnAll(startAddon, 'navigator:browser');

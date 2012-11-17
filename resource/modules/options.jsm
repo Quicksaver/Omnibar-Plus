@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.0.4';
+moduleAid.VERSION = '1.0.5';
 
 this.__defineGetter__('tree', function() { return $('orderList'); });
 this.__defineGetter__('list', function() { return tree.view; });
@@ -10,7 +10,7 @@ this.getLabel = function(cell) {
 this.removeEntries = function() {
 	var toHide = ['agrenon', 'smarterwiki'];
 	for(var h = 0; h < toHide.length; h++) {
-		for(var i = 0; i <= 3; i++) {
+		for(var i = 0; i <= 5; i++) {
 			if(prefAid['organize'+i] == toHide[h]) {
 				$('treeitem-'+i).hidden = !prefAid[toHide[h]];
 			}
@@ -18,7 +18,7 @@ this.removeEntries = function() {
 	}
 	
 	var j = 1;
-	for(var i = 0; i <= 3; i++) {
+	for(var i = 0; i <= 5; i++) {
 		$('treecell-'+i).previousSibling.setAttribute('label', j);
 		if(!$('treeitem-'+i).hidden) {
 			j++;

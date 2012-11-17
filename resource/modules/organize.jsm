@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.0';
+moduleAid.VERSION = '1.1.1';
 
 this.escaped = false;
 this.types = [];
@@ -75,7 +75,9 @@ this.getTypes = function() {
 		prefAid.organize0,
 		prefAid.organize1,
 		prefAid.organize2,
-		prefAid.organize3
+		prefAid.organize3,
+		prefAid.organize4,
+		prefAid.organize5
 	];
 	
 	// Remove entries that aren't needed as to reduce the number of loops
