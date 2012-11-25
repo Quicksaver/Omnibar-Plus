@@ -59,6 +59,13 @@
 		</em:localized>
 		<em:localized>
 			<Description>
+				<em:locale>pt-BR</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>Funcionalidades extras para a sua Omnibar.</em:description>
+				<em:translator>Gutierrez PS (http://about.me/gutierrezps)</em:translator>
+			</Description>
+		<em:localized>
+			<Description>
 				<em:locale>pt-PT</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Mais funcionalidade na sua Omnibar.</em:description>

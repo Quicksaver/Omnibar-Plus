@@ -1,7 +1,7 @@
-<!ENTITY omnibarPlusorganizePopup.label "ארגון רשימה הצעה">
-<!ENTITY omnibarPlusautoSelect.label "בחירה אוטומטית בהצעה הראשונה ברשימה">
-<!ENTITY omnibarPlusF6.label "התמקד בשורת כתובת ה־URL ע&quot;י לחיצה על F6">
-<!ENTITY omnibarPlusengineFocus.label "התמקד בשורת כתובת ה־URL לאחר שינוי מנוע החיפוש">
+<!ENTITY omnibarPlusorganizePopup.label "סידור רשימת הצעה">
+<!ENTITY omnibarPlusautoSelect.label "בחירה עצמית של ההצעה הראשונה ברשימה">
+<!ENTITY omnibarPlusF6.label "התמקדות בשורת כתובת Url ע&quot;י לחיצה על F6">
+<!ENTITY omnibarPlusengineFocus.label "התמקדות בשורת כתובת Url לאחר שינוי מנוע החיפוש">
 <!ENTITY omnibarPlusanimated.label "מוקטן, סגנון מונפש (עוצב ע&quot;י המשתמש frog)">
 <!ENTITY omnibarPlusanimatedScheme.label "ערכת צבעים:">
 <!ENTITY omnibarPlusanimatedScheme.sky "שמים">
@@ -15,5 +15,5 @@
 <!ENTITY omnibarPlusplus.label "Plus">
 <!ENTITY omnibarPlussuggestionList.label "הצעות קופצות">
 <!ENTITY omnibarPlusfunctionality.label "קיצורי דרך">
-<!ENTITY omnibarPlusmiddleClick.mac "לחיצה אמצעית, (או Command/Option + לחיצה שמאלית, עבור משתמשי Mac) על סמל מנוע החיפוש פותחת את דף הבית שלו">
-<!ENTITY omnibarPlusmiddleClick.win "לחיצה אמצעית (או Ctrl/Alt + לחיצה שמאלית, עבור משתמשי Mac) על סמל מנוע החיפוש פותחת דף הבית שלו">
+<!ENTITY omnibarPlusmiddleClick.mac "לחיצה אמצעית על סמל מנוע החיפוש (או Command\Option + לחיצה שמאלית) פותחת את דף הבית שלו">
+<!ENTITY omnibarPlusmiddleClick.win "לחיצה אמצעית על סמל מנוע החיפוש (או Ctrl\Alt + לחיצה שמאלית) פותחת דף הבית שלו">
