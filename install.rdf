@@ -64,6 +64,7 @@
 				<em:description>Funcionalidades extras para a sua Omnibar.</em:description>
 				<em:translator>Gutierrez PS (http://about.me/gutierrezps)</em:translator>
 			</Description>
+		</em:localized>
 		<em:localized>
 			<Description>
 				<em:locale>pt-PT</em:locale>
