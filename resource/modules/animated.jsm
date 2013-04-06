@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.0.7';
+moduleAid.VERSION = '1.0.8';
 
 this.__defineGetter__('gURLBar', function() { return window.gURLBar; });
 this.usingRichlist = (gURLBar.popup == $('PopupAutoComplete')) ? false : true;
@@ -21,17 +21,6 @@ moduleAid.LOADMODULE = function() {
 	
 	toggleScheme();
 	
-	if(!usingRichlist) {
-		gURLBar.popup._adjustHeight = gURLBar.popup.adjustHeight;
-		gURLBar.popup.adjustHeight = modifyFunction(gURLBar.popup._adjustHeight, [
-			['var rows = this.maxRows;',
-			<![CDATA[
-			var rows = Math.round(this.maxRows * 2.5);
-			]]>
-			]
-		]);
-	}
-	
 	// Sometimes the sheets are unloaded for some reason
 	listenerAid.add(gURLBar.popup, 'popupshowing', loadSheets, false);
 	
@@ -51,11 +40,6 @@ moduleAid.UNLOADMODULE = function() {
 	
 	gURLBar.popup.removeAttribute('animatedPopup');
 	gURLBar.popup.removeAttribute('linux');
-	
-	if(!usingRichlist) {
-		gURLBar.popup.adjustHeight = gURLBar.popup._adjustHeight;
-		delete gURLBar.popup._adjustHeight;
-	}
 	
 	listenerAid.remove(gURLBar.popup, 'popupshowing', loadSheets, false);
 	
