@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.1';
+moduleAid.VERSION = '1.1.2';
 
 this.escaped = false;
 this.types = [];
@@ -137,7 +137,7 @@ this.urlBarKeyDown = function(e) {
 			}
 	
 			// Just discriminating using the same criteria the original onKeyPress does
-			if (e.defaultPrevented || e.getPreventDefault()) { return false; } // can't put this before switch or enter won't be triggered
+			if (e.defaultPrevented) { return false; } // can't put this before switch or enter won't be triggered
 			if (gURLBar.disableKeyNavigation || e.ctrlKey || e.altKey) { return false; }
 			
 			// There's something wrong with using tab, it focuses other elements

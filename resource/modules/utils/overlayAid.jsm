@@ -1,4 +1,4 @@
-moduleAid.VERSION = '2.2.0';
+moduleAid.VERSION = '2.2.3';
 moduleAid.LAZY = true;
 
 // overlayAid - to use overlays in my bootstraped add-ons. The behavior is as similar to what is described in https://developer.mozilla.org/en/XUL_Tutorial/Overlays as I could manage.
@@ -10,6 +10,7 @@ moduleAid.LAZY = true;
 //	DTD's by the usual method: <!DOCTYPE window [ <!ENTITY % nameDTD SYSTEM "chrome://addon/locale/file.dtd"> %nameDTD; ]>
 //	scripts using the script tag when as a direct child of the overlay element (effects of these won't be undone when unloading the overlay, I have to 
 //		undo it in the onunload function passed to overlayURI() ). Any script that changes the DOM structure might produce unpredictable results!
+//		To avoid using eval unnecessarily, only scripts with src will be imported for now.
 // The overlay element surrounds the overlay content. It uses the same namespace as XUL window files. The id of these items should exist in the window's content.
 // Its content will be added to the window where a similar element exists with the same id value. If such an element does not exist, that part of the overlay is ignored.
 // If there is content inside both the XUL window and in the overlay, the window's content will be used as is and the overlay's content will be appended to the end.
@@ -278,7 +279,7 @@ this.overlayAid = {
 		function showArcs(res, arcs) {
 			while(arcs.hasMoreElements()) {
 				var curArc = arcs.getNext().QueryInterface(Ci.nsIRDFResource);
-				var arcTargets = PlacesUIUtils.localStore.GetTargets(res, curArc, true);
+				var arcTargets = Services.localStore.GetTargets(res, curArc, true);
 				while(arcTargets.hasMoreElements()) {
 					var curTarget = arcTargets.getNext();
 					try {
@@ -295,17 +296,17 @@ this.overlayAid = {
 					}
 					catch(e) {
 						if(curTarget.Value) {
-							showArcs(curTarget, PlacesUIUtils.localStore.ArcLabelsOut(curTarget));
+							showArcs(curTarget, Services.localStore.ArcLabelsOut(curTarget));
 						}
 					}
 				}
 			}
 		}
 		
-		var allResources = PlacesUIUtils.localStore.GetAllResources();
+		var allResources = Services.localStore.GetAllResources();
 		while(allResources.hasMoreElements()) {
 			var curResource = allResources.getNext().QueryInterface(Ci.nsIRDFResource);
-			showArcs(curResource, PlacesUIUtils.localStore.ArcLabelsOut(curResource));
+			showArcs(curResource, Services.localStore.ArcLabelsOut(curResource));
 		}
 		
 		var uri = aWindow.document.baseURI;
@@ -382,8 +383,6 @@ this.overlayAid = {
 									continue currentset_loop;
 								}
 							}
-							
-							this.traceBack(aWindow, { action: 'insertToolbar', node: node, palette: palette });
 						}
 					}
 				}
@@ -740,9 +739,10 @@ this.overlayAid = {
 						}
 						break;
 					
-					case 'insertToolbar':
+					case 'addToolbar':
 						closeCustomize();
 						
+						// Move the buttons to the palette first, so they can still be accessed afterwards
 						if(action.node && action.palette) {
 							var button = action.node.firstChild;
 							while(button) {
@@ -757,9 +757,7 @@ this.overlayAid = {
 								button = button.nextSibling;
 							}
 						}
-						break;
-					
-					case 'addToolbar':
+						
 						if(action.node && action.toolboxid) {
 							var toolbox = aWindow.document.getElementById(action.toolboxid);
 							if(toolbox) {
@@ -955,12 +953,13 @@ this.overlayAid = {
 			
 			// Overlaying script elements when direct children of the overlay element
 			// With src attribute we import it as a subscript of aWindow, otherwise we eval the inline content of the script tag
+			// (to avoid using eval unnecessarily, only scripts with src will be imported for now)
 			if(overlayNode.nodeName == 'script' && overlay.nodeName == 'overlay') {
 				if(overlayNode.hasAttribute('src')) {
 					Services.scriptloader.loadSubScript(overlayNode.getAttribute('src'), aWindow);
-				} else {
+				}/* else {
 					aWindow.eval(overlayNode.textContent);
-				}
+				}*/
 				continue;
 			}
 			
@@ -1099,10 +1098,12 @@ this.overlayAid = {
 						toolbox.externalToolbars.push(node);
 					}
 					
+					var palette = aWindow.document.getElementById(node.getAttribute('toolboxid')).palette;
 					this.traceBack(aWindow, {
 						action: 'addToolbar',
 						node: node,
-						toolboxid: node.getAttribute('toolboxid')
+						toolboxid: node.getAttribute('toolboxid'),
+						palette: palette
 					});
 				}
 			}
