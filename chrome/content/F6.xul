@@ -18,8 +18,9 @@
 		"/>
 	</commandset>
 	
-	<key id="xxx_key33_Browser:FocusNextFrame" disabled="true"/>
-	<key id="xxx_key35_Browser:FocusNextFrame" disabled="true"/>
+	<key id="xxx_key32_Browser:FocusNextFrame" disabled="true"/> <!-- FF12, 20 21 22 (key33 shift) -->
+	<key id="xxx_key33_Browser:FocusNextFrame" disabled="true"/> <!-- FF13, 14 (key34 shift) -->
+	<key id="xxx_key35_Browser:FocusNextFrame" disabled="true"/> <!-- FF15 16 17 18 19 (key36 shift) -->
 	
 	<window id="main-window">
 		<keyset id="keyset_objPathString">
