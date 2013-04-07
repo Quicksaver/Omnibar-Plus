@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.0';
+moduleAid.VERSION = '1.1.1';
 
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
@@ -52,6 +52,9 @@ this.__defineSetter__('panelState', function(val) {
 
 // Goes through currentIndex, selectedIndex and _actualIndex and returns the item associated with it, or null
 this.__defineGetter__('anyItem', function() {
+	// This should only return an item when the popup is open
+	if(!panelState) { return null; }
+	
 	if(richlistbox.currentItem) {
 		return richlistbox.currentItem;
 	}
