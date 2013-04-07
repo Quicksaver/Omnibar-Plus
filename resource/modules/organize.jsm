@@ -1,4 +1,9 @@
-moduleAid.VERSION = '1.1.2';
+moduleAid.VERSION = '1.1.3';
+
+// This is for the modified functions, since they take the scope of the sandbox these wouldn't be reachable
+this.__defineGetter__('openUILinkIn', function() { return window.openUILinkIn; });
+this.__defineGetter__('whereToOpenLink', function() { return window.whereToOpenLink; });
+this.__defineGetter__('Tabmix', function() { return window.Tabmix; });
 
 this.escaped = false;
 this.types = [];
@@ -363,33 +368,22 @@ moduleAid.LOADMODULE = function() {
 		return richlistbox._appendChild(aNode);
 	}
 	
-	// At first I was going to simply replace this with a pre-written function, but TabMixPlus also changes this function and there's no way to
-	// discriminate without saving at least two pre-written functions, this method seems much more direct
-	panel._onPopupClick = panel.onPopupClick;
-	panel.onPopupClick = modifyFunction(panel.onPopupClick, [
-		['if (aEvent.button == 2) {',
-		<![CDATA[
-		if (aEvent.button == 2) {
-			if(this.richlistbox.currentItem) {
-				this.input.value = this.richlistbox.currentItem.getAttribute('url') || this.richlistbox.currentItem.getAttribute('text');
-			}
-		]]>
+	// At first I was going to simply replace this with a pre-written function, but TabMixPlus also changes this function (and it isn't the only one)
+	// and there's no way to discriminate without saving at least two pre-written functions, this method seems much more direct
+	toCode.modify(panel, "panel.onPopupClick", [
+		['if (aEvent.button == 2)',
+			 ' if(aEvent.button == 2 &&this.richlistbox.currentItem) {'
+			+" 	this.input.value = this.richlistbox.currentItem.getAttribute('url') || this.richlistbox.currentItem.getAttribute('text');"
+			+' }'
+			+' if (aEvent.button == 2)'
 		],
-		['controller.handleEnter(true);',
-		'fireOnSelect(aEvent);'
-		],
-		['openUILink',
-		'window.openUILink'
-		]
+		['controller.handleEnter(true);', 'fireOnSelect(aEvent);']
 	]);
 	
 	// mPopupOpen simply is not reliable in some cases, f.i. for a split second after deleting all entries it thinks the popup is closed when it is not,
 	// so it doesn't actually close when I want it to
-	panel._closePopup = panel.closePopup;
-	panel.closePopup = modifyFunction(panel.closePopup, [
-		['this.mPopupOpen',
-		'panelState'
-		]
+	toCode.modify(panel, "panel.closePopup", [
+		['this.mPopupOpen', 'panelState']
 	]);
 	
 	richlistbox._actualIndex = -1;
@@ -434,10 +428,8 @@ moduleAid.UNLOADMODULE = function() {
 	richlistbox.appendChild = richlistbox._appendChild;
 	delete richlistbox._appendChild;
 	
-	panel.onPopupClick = panel._onPopupClick;
-	panel.closePopup = panel._closePopup;
-	delete panel._onPopupClick;
-	delete panel._closePopup;
+	toCode.revert(panel, "panel.onPopupClick");
+	toCode.revert(panel, "panel.closePopup");
 	
 	delete richlistbox._actualIndex;
 	delete richlistbox._actualItem;
