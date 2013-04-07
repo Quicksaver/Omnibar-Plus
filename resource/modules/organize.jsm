@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.3';
+moduleAid.VERSION = '1.1.4';
 
 // This is for the modified functions, since they take the scope of the sandbox these wouldn't be reachable
 this.__defineGetter__('openUILinkIn', function() { return window.openUILinkIn; });
@@ -9,6 +9,7 @@ this.escaped = false;
 this.types = [];
 this.deletedIndex = null;
 this.deletedText = null;
+this.popupClickMethod = "onPopupClick";
 
 // Called when a search ends in the location bar
 this.delayOrganize = function() {
@@ -370,7 +371,11 @@ moduleAid.LOADMODULE = function() {
 	
 	// At first I was going to simply replace this with a pre-written function, but TabMixPlus also changes this function (and it isn't the only one)
 	// and there's no way to discriminate without saving at least two pre-written functions, this method seems much more direct
-	toCode.modify(panel, "panel.onPopupClick", [
+	// QuietUrl moves this function to a backup place, so have to change it there
+	if(panel._QuietUrlPopupClickOld) {
+		popupClickMethod = "_QuietUrlPopupClickOld";
+	}
+	toCode.modify(panel, "panel."+popupClickMethod, [
 		['if (aEvent.button == 2)',
 			 ' if(aEvent.button == 2 &&this.richlistbox.currentItem) {'
 			+" 	this.input.value = this.richlistbox.currentItem.getAttribute('url') || this.richlistbox.currentItem.getAttribute('text');"
@@ -428,7 +433,7 @@ moduleAid.UNLOADMODULE = function() {
 	richlistbox.appendChild = richlistbox._appendChild;
 	delete richlistbox._appendChild;
 	
-	toCode.revert(panel, "panel.onPopupClick");
+	toCode.revert(panel, "panel."+popupClickMethod);
 	toCode.revert(panel, "panel.closePopup");
 	
 	delete richlistbox._actualIndex;
