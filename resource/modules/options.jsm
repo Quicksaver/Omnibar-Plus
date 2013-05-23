@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.0.5';
+moduleAid.VERSION = '1.1.0';
 
 this.__defineGetter__('tree', function() { return $('orderList'); });
 this.__defineGetter__('list', function() { return tree.view; });
@@ -83,17 +83,56 @@ this.blurOrderList = function() {
 };
 
 this.onOverlayLoad = function() {
+	if(window.willClose) { return; }
+	
+	if(document.baseURI == Addon.optionsURL) {
+		$('omnibarTab').hidden = true;
+		$('omnibarTabBox').selectedIndex = 1;
+	}
+	
 	removeEntries();
 	objectWatcher.addAttributeWatcher(tree, 'disabled', blurOnDisabled);
 };
 
+this.handleOmnibarWindow = function() {
+	if(!Addon.optionsURL) {
+		aSync(handleOmnibarWindow);
+		return;
+	}
+	
+	if(document.baseURI == Addon.optionsURL) {
+		// If Omnibar is enabled, we should use its preferences dialog, it contains our own as well, and there are dependencies on it that would otherwise fail.
+		if(prefAid.omnibar) {
+			// Close it as it's done being overlayed, to let it fully initialize first.
+			window.willClose = true;
+			observerAid.add(closePlusWindow, 'window-overlayed');
+			return;
+		}
+	} else {
+		window.Options._updateDependents = window.Options.updateDependents;
+		window.Options.updateDependents = function(c) { return; };
+	}
+};
+
+this.closePlusWindow = function(aSubject) {
+	if(window == aSubject) {
+		observerAid.remove(closePlusWindow, 'window-overlayed');
+		window.close();
+		if(!windowMediator.callOnMostRecent(function(aWindow) { aWindow.focus(); return true; }, null, "chrome://omnibar/content/options.xul")) {
+			Services.wm.getMostRecentWindow('navigator:browser').openDialog("chrome://omnibar/content/options.xul", '', 'chrome,resizable=false');
+		}
+	}
+};
+
 moduleAid.LOADMODULE = function() {
-	window.Options._updateDependents = window.Options.updateDependents;
-	window.Options.updateDependents = function(c) { return; };
+	handleOmnibarWindow();
 };
 
 moduleAid.UNLOADMODULE = function() {
 	objectWatcher.removeAttributeWatcher(tree, 'disabled', blurOnDisabled);
-	window.Options.updateDependents = window.Options._updateDependents;
-	delete window.Options._updateDependents;
+	
+	if(window.Options && window.Options._updateDependents) {
+		window.Options.updateDependents = window.Options._updateDependents;
+		delete window.Options._updateDependents;
+	}
 };

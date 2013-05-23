@@ -1,7 +1,9 @@
-var defaultsVersion = '1.0.7';
+var defaultsVersion = '1.1.0';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
+	omnibar: false,
+	
 	f6: true,
 	middleClick: true,
 	organizePopup: true,
@@ -21,11 +23,8 @@ var prefList = {
 
 function startConditions(aReason) {
 	AddonManager.getAddonByID("omnibar@ajitk.com", function(addon) {
-		if(addon && addon.isActive) {
-			continueStartup(aReason);
-		} else {
-			Cu.reportError('Omnibar not found.');
-		}
+		prefAid.omnibar = (addon && addon.isActive);
+		continueStartup(aReason);
 	});
 	return false;
 }
@@ -37,6 +36,31 @@ function startAddon(window) {
 
 function stopAddon(window) {
 	removeObject(window);
+}
+
+function beforeLoadOptions(window) {
+	// This prevents a (very weird) zombie compartment. Without this fix, if I enable the add-on, open Omnibar's preferences dialog, close it and disable the add-on,
+	// a ZC will exist until I open Ominbar's preferences dialog again. This ZC won't exist if I disable the add-on with the preferences dialog still open or if
+	// I never open it in the first place. With this fix, there will only be a ZC if I disable the add-on with the preferences dialog still opened, but it will
+	// disappear once I close the dialog (it will hold the reference to runOnce() from within listenOnce()).
+	listenOnce(window, "unload", function(event, window) { overlayAid.unloadAll(window); });
+	
+	prepareObject(window);
+	window[objName].moduleAid.load('options');
+}
+
+function onLoadOptions(window) {
+	preparePreferences(window);
+	window[objName].onOverlayLoad();
+}
+
+function overlayOwnOptions() {
+	if(!Addon.optionsURL) {
+		aSync(overlayOwnOptions, 100); // Give FF time to initialize if necessary
+		return;
+	}
+	
+	overlayAid.overlayURI(Addon.optionsURL, "chrome://"+objPathString+"/content/omnibarOptions.xul", beforeLoadOptions, onLoadOptions, stopAddon);
 }
 
 // Toggle F6 functionality
@@ -76,25 +100,8 @@ function onStartup(aReason) {
 	prefAid.listen('f6', toggleF6);
 	
 	// Apply overlay to Omnibar preferences dialog
-	overlayAid.overlayURI("chrome://omnibar/content/options.xul", "chrome://"+objPathString+"/content/omnibarOptions.xul", 
-		function(window) {
-			// This prevents a (very weird) zombie compartment. Without this fix, if I enable the add-on, open Omnibar's preferences dialog, close it and disable the add-on,
-			// a ZC will exist until I open Ominbar's preferences dialog again. This ZC won't exist if I disable the add-on with the preferences dialog still open or if
-			// I never open it in the first place. With this fix, there will only be a ZC if I disable the add-on with the preferences dialog still opened, but it will
-			// disappear once I close the dialog (it will hold the reference to runOnce() from within listenOnce()).
-			listenOnce(window, "unload", function(event, window) { overlayAid.unloadAll(window); });
-			
-			prepareObject(window);
-			window[objName].moduleAid.load('options');
-		},
-		function(window) {
-			preparePreferences(window);
-			window[objName].onOverlayLoad();
-		},
-		function(window) {
-			removeObject(window);
-		}
-	);
+	overlayAid.overlayURI("chrome://omnibar/content/options.xul", "chrome://"+objPathString+"/content/omnibarOptions.xul", beforeLoadOptions, onLoadOptions, stopAddon);
+	overlayOwnOptions();
 	if(Services.appinfo.OS == 'Darwin') {
 		overlayAid.overlayURI("chrome://"+objPathString+"/content/omnibarOptions.xul", "chrome://"+objPathString+"/content/omnibarOptionsMac.xul");
 	}

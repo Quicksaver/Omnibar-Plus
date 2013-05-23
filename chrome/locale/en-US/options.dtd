@@ -15,6 +15,7 @@
 
 <!ENTITY omnibarPlusmain.label "Omnibar">
 <!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY Options.title "Omnibar Plus">
 
 <!ENTITY omnibarPlussuggestionList.label "Suggestions Popup">
 <!ENTITY omnibarPlusfunctionality.label "Shortcuts">

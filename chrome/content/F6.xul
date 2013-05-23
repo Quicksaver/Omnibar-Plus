@@ -2,7 +2,7 @@
 
 <overlay id="F6-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<commandset id="mainCommandSet">
-		<command id="command_objPathString_f6" oncommand="
+		<command id="objPathString_command_f6" oncommand="
 			if(!gURLBar.focused) {
 				openLocation();
 			}
@@ -18,13 +18,13 @@
 		"/>
 	</commandset>
 	
-	<key id="xxx_key32_Browser:FocusNextFrame" disabled="true"/> <!-- FF12, 20 21 22 (key33 shift) -->
+	<key id="xxx_key32_Browser:FocusNextFrame" disabled="true"/> <!-- FF12, 20 21 22 23 (key33 shift) -->
 	<key id="xxx_key33_Browser:FocusNextFrame" disabled="true"/> <!-- FF13, 14 (key34 shift) -->
 	<key id="xxx_key35_Browser:FocusNextFrame" disabled="true"/> <!-- FF15 16 17 18 19 (key36 shift) -->
 	
 	<window id="main-window">
-		<keyset id="keyset_objPathString">
-			<key id="key_objPathString_f6" command="command_objPathString_f6" keycode="VK_F6"/>
+		<keyset id="objPathString_keyset">
+			<key id="objPathString_key_f6" command="objPathString_command_f6" keycode="VK_F6"/>
 		</keyset>
 	</window>
 </overlay>

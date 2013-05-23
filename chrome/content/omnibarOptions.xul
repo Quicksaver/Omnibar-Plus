@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://omnibarplus/skin/options.css" type="text/css"?>
-<!DOCTYPE window [
-  <!ENTITY % optionsDTD SYSTEM "chrome://omnibarplus/locale/options.dtd">
-  %optionsDTD;
-]>
+<!DOCTYPE optionsDTD SYSTEM "chrome://omnibarplus/locale/options.dtd">
 
 <overlay id="OmnibarPlus-options-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<prefpane id="mainPane">
 		<preferences>
-			<preference id="extensions.omnibarplus.organizePopup" name="extensions.omnibarplus.organizePopup" type="bool" />
-			<preference id="extensions.omnibarplus.middleClick" name="extensions.omnibarplus.middleClick" type="bool" />
-			<preference id="extensions.omnibarplus.animated" name="extensions.omnibarplus.animated" type="bool" />
-			<preference id="extensions.omnibarplus.animatedScheme" name="extensions.omnibarplus.animatedScheme" type="string" />
-			<preference id="extensions.omnibarplus.f6" name="extensions.omnibarplus.f6" type="bool" />
-			<preference id="extensions.omnibarplus.engineFocus" name="extensions.omnibarplus.engineFocus" type="bool" />
-			<preference id="extensions.omnibarplus.organize0" name="extensions.omnibarplus.organize0" type="string" />
-			<preference id="extensions.omnibarplus.organize1" name="extensions.omnibarplus.organize1" type="string" />
-			<preference id="extensions.omnibarplus.organize2" name="extensions.omnibarplus.organize2" type="string" />
-			<preference id="extensions.omnibarplus.organize3" name="extensions.omnibarplus.organize3" type="string" />
-			<preference id="extensions.omnibarplus.organize4" name="extensions.omnibarplus.organize4" type="string" />
-			<preference id="extensions.omnibarplus.organize5" name="extensions.omnibarplus.organize5" type="string" />
-			<preference id="extensions.omnibarplus.autoSelect" name="extensions.omnibarplus.autoSelect" type="bool" />
+			<preference id="pref-omnibar" name="extensions.omnibarplus.omnibar" type="bool" />
+			<preference id="pref-organizePopup" name="pref-organizePopup" type="bool" />
+			<preference id="pref-middleClick" name="extensions.omnibarplus.middleClick" type="bool" />
+			<preference id="pref-animated" name="extensions.omnibarplus.animated" type="bool" />
+			<preference id="pref-animatedScheme" name="extensions.omnibarplus.animatedScheme" type="string" />
+			<preference id="pref-f6" name="extensions.omnibarplus.f6" type="bool" />
+			<preference id="pref-engineFocus" name="extensions.omnibarplus.engineFocus" type="bool" />
+			<preference id="pref-organize0" name="extensions.omnibarplus.organize0" type="string" />
+			<preference id="pref-organize1" name="extensions.omnibarplus.organize1" type="string" />
+			<preference id="pref-organize2" name="extensions.omnibarplus.organize2" type="string" />
+			<preference id="pref-organize3" name="extensions.omnibarplus.organize3" type="string" />
+			<preference id="pref-organize4" name="extensions.omnibarplus.organize4" type="string" />
+			<preference id="pref-organize5" name="extensions.omnibarplus.organize5" type="string" />
+			<preference id="pref-autoSelect" name="extensions.omnibarplus.autoSelect" type="bool" />
 		</preferences>
 		
 		<tabbox id="omnibarTabBox" flex="1">
@@ -37,16 +35,14 @@
 						<caption label="&omnibarPlussuggestionList.label;"/>
 						<checkbox id="autoSelectCheckbox"
 							label="&omnibarPlusautoSelect.label;"
-							preference="extensions.omnibarplus.autoSelect"
-							dependson="!extensions.omnibar.popupstyle:SIMPLE"/>
+							preference="pref-autoSelect"
+							dependson="pref-omnibar,!extensions.omnibar.popupstyle:SIMPLE"/>
 							
 						<vbox align="center">
-							<checkbox id="animatedCheckbox" 
-								label="&omnibarPlusanimated.label;" 
-								preference="extensions.omnibarplus.animated"/>
+							<checkbox label="&omnibarPlusanimated.label;" preference="pref-animated"/>
 							<hbox align="center" style="vertical-align: middle;">
 								<label style="margin-top: 7px;" value="&omnibarPlusanimatedScheme.label;"/>
-								<menulist id="animatedMenulist" preference="extensions.omnibarplus.animatedScheme" dependson="animatedCheckbox">
+								<menulist id="animatedMenulist" preference="pref-animatedScheme" dependson="pref-animated">
 									<menupopup>
 										<menuitem id="scheme1" value="sky" label="&omnibarPlusanimatedScheme.sky;"/>
 										<menuitem id="scheme2" value="ruby" label="&omnibarPlusanimatedScheme.ruby;"/>
@@ -60,10 +56,7 @@
 							</hbox>
 						</vbox>
 						<vbox align="start">
-							<checkbox id="organizeCheckbox" 
-								label="&omnibarPlusorganizePopup.label;" 
-								preference="extensions.omnibarplus.organizePopup"
-								dependson="!extensions.omnibar.popupstyle:SIMPLE"/>
+							<checkbox label="&omnibarPlusorganizePopup.label;" preference="pref-organizePopup" dependson="pref-omnibar,!extensions.omnibar.popupstyle:SIMPLE"/>
 							<hbox style="margin: 0 5px;">
 								<tree id="orderList"
 									class="organize"
@@ -73,7 +66,7 @@
 									seltype="single"
 									hidecolumnpicker="true"
 									onblur="objName.aSync(objName.blurOrderList);"
-									dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox">
+									dependson="pref-omnibar,!extensions.omnibar.popupstyle:SIMPLE,pref-organizePopup">
 									<treecols>
 										<treecol label="" flex="1" class="right"/>
 										<treecol label="" flex="7"/>
@@ -82,7 +75,7 @@
 										<treeitem id="treeitem-0"><treerow>
 											<treecell label="0"/>
 											<treecell id="treecell-0"
-												preference="extensions.omnibarplus.organize0"
+												preference="pref-organize0"
 												preference-editable="true"
 												onsyncfrompreference="objName.getLabel(this);"
 												onsynctopreference="return this.getAttribute('value');"/>
@@ -90,7 +83,7 @@
 										<treeitem id="treeitem-1"><treerow>
 											<treecell label="1"/>
 											<treecell id="treecell-1"
-												preference="extensions.omnibarplus.organize1"
+												preference="pref-organize1"
 												preference-editable="true"
 												onsyncfrompreference="objName.getLabel(this);"
 												onsynctopreference="return this.getAttribute('value');"/>
@@ -98,7 +91,7 @@
 										<treeitem id="treeitem-2"><treerow>
 											<treecell label="2"/>
 											<treecell id="treecell-2"
-												preference="extensions.omnibarplus.organize2"
+												preference="pref-organize2"
 												preference-editable="true"
 												onsyncfrompreference="objName.getLabel(this);"
 												onsynctopreference="return this.getAttribute('value');"/>
@@ -106,7 +99,7 @@
 										<treeitem id="treeitem-3"><treerow>
 											<treecell label="3"/>
 											<treecell id="treecell-3"
-												preference="extensions.omnibarplus.organize3"
+												preference="pref-organize3"
 												preference-editable="true"
 												onsyncfrompreference="objName.getLabel(this);"
 												onsynctopreference="return this.getAttribute('value');"/>
@@ -114,7 +107,7 @@
 										<treeitem id="treeitem-4"><treerow>
 											<treecell label="4"/>
 											<treecell id="treecell-4"
-												preference="extensions.omnibarplus.organize4"
+												preference="pref-organize4"
 												preference-editable="true"
 												onsyncfrompreference="objName.getLabel(this);"
 												onsynctopreference="return this.getAttribute('value');"/>
@@ -122,7 +115,7 @@
 										<treeitem id="treeitem-5"><treerow>
 											<treecell label="5"/>
 											<treecell id="treecell-5"
-												preference="extensions.omnibarplus.organize5"
+												preference="pref-organize5"
 												preference-editable="true"
 												onsyncfrompreference="objName.getLabel(this);"
 												onsynctopreference="return this.getAttribute('value');"/>
@@ -132,19 +125,19 @@
 								<vbox class="buttonBox">
 									<button id="ListUpButton"
 										oncommand="objName.moveListRow(false);"
-										dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>
+										dependson="pref-omnibar,!extensions.omnibar.popupstyle:SIMPLE,pref-organizePopup"/>
 									<button id="ListDownButton"
 										oncommand="objName.moveListRow(true);"
-										dependson="!extensions.omnibar.popupstyle:SIMPLE,organizeCheckbox"/>
+										dependson="pref-omnibar,!extensions.omnibar.popupstyle:SIMPLE,pref-organizePopup"/>
 								</vbox>
 							</hbox>
 						</vbox>
 					</groupbox>
 					<groupbox align="start">
 						<caption label="&omnibarPlusfunctionality.label;"/>
-						<checkbox label="&omnibarPlusF6.label;" preference="extensions.omnibarplus.f6"/>
-						<checkbox id="middleClickCheckbox" label="&omnibarPlusmiddleClick.win;" preference="extensions.omnibarplus.middleClick"/>
-						<checkbox label="&omnibarPlusengineFocus.label;" preference="extensions.omnibarplus.engineFocus"/>
+						<checkbox label="&omnibarPlusF6.label;" preference="pref-f6"/>
+						<checkbox id="middleClickCheckbox" label="&omnibarPlusmiddleClick.win;" dependson="pref-omnibar" preference="pref-middleClick"/>
+						<checkbox label="&omnibarPlusengineFocus.label;" dependson="pref-omnibar" preference="pref-engineFocus"/>
 					</groupbox>
 				</tabpanel>
 			</tabpanels>
