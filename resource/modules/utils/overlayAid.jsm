@@ -1,4 +1,4 @@
-moduleAid.VERSION = '2.2.8';
+moduleAid.VERSION = '2.2.9';
 moduleAid.LAZY = true;
 
 // overlayAid - to use overlays in my bootstraped add-ons. The behavior is as similar to what is described in https://developer.mozilla.org/en/XUL_Tutorial/Overlays as I could manage.
@@ -992,7 +992,7 @@ this.overlayAid = {
 				for(var a=0; a<toolbox.length; a++) {
 					if(toolbox[a].palette && toolbox[a].palette.id == overlayNode.id) {
 						buttons_loop: for(var e=0; e<overlayNode.childNodes.length; e++) {
-							var button = aWindow.document.importNode(overlayNode.childNodes[e], true); // Firefox 9- deep argument is mandatory
+							var button = aWindow.document.importNode(overlayNode.childNodes[e]);
 							if(button.id) {
 								// change or remove the button on the toolbar if it is found in the document
 								var existButton = aWindow.document.getElementById(button.id);
@@ -1074,7 +1074,7 @@ this.overlayAid = {
 				this.loadInto(aWindow, overlay.childNodes[i]);
 			}
 			else if(overlayNode.parentNode.nodeName != 'overlay') {
-				var node = aWindow.document.importNode(overlayNode, true); // Firefox 9- deep argument is mandatory
+				var node = aWindow.document.importNode(overlayNode);
 				
 				// Add the node to the correct place
 				node = this.moveAround(aWindow, node, overlayNode, aWindow.document.getElementById(overlayNode.parentNode.id));
@@ -1365,7 +1365,7 @@ this.overlayAid = {
 	
 	appendXMLSS: function(aWindow, node) {
 		try {
-			node = aWindow.document.importNode(node, true); // Firefox 9- deep argument is mandatory
+			node = aWindow.document.importNode(node);
 			// these have to come before the actual window element
 			node = aWindow.document.insertBefore(node, aWindow.document.documentElement);
 		} catch(ex) { node = null; }
@@ -1383,7 +1383,7 @@ this.overlayAid = {
 		var prefElements = prefPane.getElementsByTagName('preferences');
 		if(prefElements.length == 0) {
 			try {
-				var prefs = aWindow.document.importNode(node, true); // Firefox 9- deep argument is mandatory
+				var prefs = aWindow.document.importNode(node);
 				prefs = prefPane.appendChild(prefs);
 			} catch(ex) { prefs = null; }
 			this.traceBack(aWindow, {
@@ -1398,7 +1398,7 @@ this.overlayAid = {
 			if(!node.childNodes[p].id) { continue; }
 			
 			try {
-				var pref = aWindow.document.importNode(node.childNodes[p], true); // Firefox 9- deep argument is mandatory
+				var pref = aWindow.document.importNode(node.childNodes[p]);
 				pref = prefs.appendChild(pref);
 			} catch(ex) { pref = null; }
 			this.traceBack(aWindow, {

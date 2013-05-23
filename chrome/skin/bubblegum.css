@@ -9,33 +9,28 @@
 	#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][actiontype="switchtab"],
 	#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][actiontype="switchtab"] {
 		box-shadow: inset hsla(320,50%,35%,.15) 0 0 0 1px, inset hsla(0,0%,100%,.2) 0 0 0 2px !important;
-		background: -moz-linear-gradient(hsla(320,55%,94%,.2) 0px, hsla(320,25%,80%,.2) 100%) border-box !important;
-		background: linear-gradient(hsla(320,55%,94%,.2) 0px, hsla(320,25%,80%,.2) 100%) border-box !important; /* Firefox 16 */
+		background: linear-gradient(hsla(320,55%,94%,.2) 0px, hsla(320,25%,80%,.2) 100%) border-box !important;
 	}
 	
 	#PopupAutoComplete[animatedPopup="bubblegum"] .autocomplete-treebody::-moz-tree-row(selected) {
 		border: 1px solid hsla(320,57%,69%,1) !important;
-		background: padding-box -moz-linear-gradient(hsla(320,100%,96%,1) 0%, hsla(320,100%,91%,1) 100%) repeat-x !important;
-		background: padding-box linear-gradient(hsla(320,100%,96%,1) 0%, hsla(320,100%,91%,1) 100%) repeat-x !important; /* Firefox 16 */
+		background: padding-box linear-gradient(hsla(320,100%,96%,1) 0%, hsla(320,100%,91%,1) 100%) repeat-x !important;
 	}
 	#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[current],
 	#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][current],
 	#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][current] {
 		border: 1px solid hsla(320,57%,69%,1) !important;
 		text-shadow: hsla(320,97%,97%,1) 0 1px 0 !important;
-		background: border-box -moz-linear-gradient(left, hsla(320,100%,2%,.06) 27px, hsla(320,57%,69%,0) 27px, hsla(320,57%,69%,.75)) repeat-y, padding-box -moz-linear-gradient(hsla(320,100%,96%,1) 0%, hsla(320,100%,91%,1) 100%) repeat-x !important;
-		background: border-box linear-gradient(to right, hsla(320,100%,2%,.06) 27px, hsla(320,57%,69%,0) 27px, hsla(320,57%,69%,.75)) repeat-y, padding-box linear-gradient(hsla(320,100%,96%,1) 0%, hsla(320,100%,91%,1) 100%) repeat-x !important; /* Firefox 16 */
+		background: border-box linear-gradient(to right, hsla(320,100%,2%,.06) 27px, hsla(320,57%,69%,0) 27px, hsla(320,57%,69%,.75)) repeat-y, padding-box linear-gradient(hsla(320,100%,96%,1) 0%, hsla(320,100%,91%,1) 100%) repeat-x !important;
 	}
 	
 	#PopupAutoComplete[animatedPopup="bubblegum"] .autocomplete-treebody::-moz-tree-row(hover) {
-		background-image: -moz-linear-gradient(hsla(320,89%,93%,1) 0, hsla(320,94%,88%,1) 100%) !important;
-		background-image: linear-gradient(hsla(320,89%,93%,1) 0, hsla(320,94%,88%,1) 100%) !important; /* Firefox 16 */
+		background-image: linear-gradient(hsla(320,89%,93%,1) 0, hsla(320,94%,88%,1) 100%) !important;
 	}
 	#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[selected]:active:hover,
 	#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault"][selected]:active:hover,
 	#PopupAutoCompleteRichResult[animatedPopup="bubblegum"] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][selected]:active:hover {
-		background-image: -moz-linear-gradient(left, hsla(320,100%,2%,.06) 27px, hsla(320,57%,69%,0) 27px, hsla(320,57%,69%,.75)), -moz-linear-gradient(hsla(320,89%,93%,1) 0, hsla(320,94%,88%,1) 100%) !important;
-		background-image: linear-gradient(to right, hsla(320,100%,2%,.06) 27px, hsla(320,57%,69%,0) 27px, hsla(320,57%,69%,.75)), linear-gradient(hsla(320,89%,93%,1) 0, hsla(320,94%,88%,1) 100%) !important; /* Firefox 16 */
+		background-image: linear-gradient(to right, hsla(320,100%,2%,.06) 27px, hsla(320,57%,69%,0) 27px, hsla(320,57%,69%,.75)), linear-gradient(hsla(320,89%,93%,1) 0, hsla(320,94%,88%,1) 100%) !important;
 	}
 
 }

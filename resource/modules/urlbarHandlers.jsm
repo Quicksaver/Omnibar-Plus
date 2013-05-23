@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.1';
+moduleAid.VERSION = '1.1.2';
 
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
@@ -133,14 +133,8 @@ this.toggleOrganize = function() {
 };
 
 moduleAid.LOADMODULE = function() {
-	// Not sure in which version of Firefox were these implemented, maybe 14?
-	if(typeof(gURLBar._searchBeginHandler) != 'undefined') {
-		gURLBar._searchBeginHandler = searchBegin;
-		gURLBar._searchCompleteHandler = searchComplete;
-	} else {
-		setAttribute(gURLBar, 'onsearchbegin', objName+".searchBegin();");
-		setAttribute(gURLBar, 'onsearchcomplete', objName+".searchComplete();");
-	}
+	gURLBar._searchBeginHandler = searchBegin;
+	gURLBar._searchCompleteHandler = searchComplete;
 	
 	gURLBar._onKeyPress = gURLBar.onKeyPress;
 	gURLBar.onKeyPress = onKeyPress;
@@ -168,13 +162,8 @@ moduleAid.UNLOADMODULE = function() {
 	gURLBar.onKeyPress = gURLBar._onKeyPress;
 	delete gURLBar._onKeyPress;
 	
-	if(typeof(gURLBar._searchBeginHandler) != 'undefined') {
-		gURLBar._searchBeginHandler = null;
-		gURLBar._searchCompleteHandler = null;
-	} else {
-		gURLBar.removeAttribute('onsearchbegin');
-		gURLBar.removeAttribute('onsearchcomplete');
-	}
+	gURLBar._searchBeginHandler = null;
+	gURLBar._searchCompleteHandler = null;
 	
 	// Changed in checkOnHandlers()
 	if(goButton._onclick) {
