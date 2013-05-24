@@ -13,6 +13,7 @@
 <!ENTITY omnibarPlusanimatedScheme.bubblegum "Tuggummi">
 <!ENTITY omnibarPlusmain.label "Omnibar">
 <!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY Options.title "Omnibar Plus">
 <!ENTITY omnibarPlussuggestionList.label "Förslagsruta">
 <!ENTITY omnibarPlusfunctionality.label "Kortkommandon">
 <!ENTITY omnibarPlusmiddleClick.mac "Mittenklick eller Cmd/Option+Vänsterklick på sökmotor öppnar dess webbplats">

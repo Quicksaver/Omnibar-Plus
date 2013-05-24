@@ -13,6 +13,7 @@
 <!ENTITY omnibarPlusanimatedScheme.bubblegum "Pastilha elástica">
 <!ENTITY omnibarPlusmain.label "Omnibar">
 <!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY Options.title "Omnibar Plus">
 <!ENTITY omnibarPlussuggestionList.label "Painel de sugestões">
 <!ENTITY omnibarPlusfunctionality.label "Atalhos">
 <!ENTITY omnibarPlusmiddleClick.mac "Clique com o botão do meio ou Comando/Opção + Clique esquerdo no motor de procura abre a sua página principal">

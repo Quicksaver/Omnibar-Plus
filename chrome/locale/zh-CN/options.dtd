@@ -13,6 +13,7 @@
 <!ENTITY omnibarPlusanimatedScheme.bubblegum "泡泡糖">
 <!ENTITY omnibarPlusmain.label "Omnibar">
 <!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY Options.title "Omnibar Plus">
 <!ENTITY omnibarPlussuggestionList.label "弹出建议表单">
 <!ENTITY omnibarPlusfunctionality.label "捷径">
 <!ENTITY omnibarPlusmiddleClick.mac "中键点击或Command/Option + 左键点击搜索引擎打开其主页">

@@ -13,6 +13,7 @@
 <!ENTITY omnibarPlusanimatedScheme.bubblegum "מסטיק">
 <!ENTITY omnibarPlusmain.label "Omnibar">
 <!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY Options.title "Omnibar Plus">
 <!ENTITY omnibarPlussuggestionList.label "הצעות קופצות">
 <!ENTITY omnibarPlusfunctionality.label "קיצורי דרך">
 <!ENTITY omnibarPlusmiddleClick.mac "לחיצה אמצעית על סמל מנוע החיפוש (או Command\Option + לחיצה שמאלית) פותחת את דף הבית שלו">
