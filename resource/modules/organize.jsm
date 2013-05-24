@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.5';
+moduleAid.VERSION = '1.1.4';
 
 // This is for the modified functions, since they take the scope of the sandbox these wouldn't be reachable
 this.__defineGetter__('openUILinkIn', function() { return window.openUILinkIn; });
@@ -267,7 +267,8 @@ this.checkOnTextEntered = function() {
 // Make sure all the paste commands trigger our .overrideURL
 // Note that all the returns and checks are just prevention, I have no reason to put them here other than just making sure it works correctly
 this.fixContextMenu = function(areWeOrganizing) {
-	var getFromHere = document.getAnonymousElementByAttribute(gURLBar, 'anonid', 'textbox-container').childNodes[0];
+	// Don't know exactly in which version of firefox .inputBox was removed, I just noticed it in 9.0a1
+	var getFromHere = gURLBar.inputBox || document.getAnonymousElementByAttribute(gURLBar, 'anonid', 'textbox-container').childNodes[0];
 	var contextMenu = document.getAnonymousElementByAttribute(getFromHere, 'anonid', 'input-box-contextmenu');
 	if(!contextMenu) { return; }
 	
