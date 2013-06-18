@@ -7,7 +7,6 @@
 		<em:version>1.0.7</em:version>
 		<em:creator>Quicksaver</em:creator>
 		<em:iconURL>chrome://omnibarplus/skin/icon.png</em:iconURL>
-		<em:homepageURL>https://addons.mozilla.org/en-US/firefox/addon/omnibar-plus/</em:homepageURL>
 		<em:optionsURL>chrome://omnibarplus/content/options.xul</em:optionsURL>
 		<em:bootstrap>true</em:bootstrap>
 		
@@ -24,6 +23,7 @@
 				<em:locale>en-US</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Extra functionality for your Omnibar.</em:description>
+				<em:homepageURL>https://addons.mozilla.org/en-US/firefox/addon/omnibar-plus/</em:homepageURL>
 			</Description>
 		</em:localized>
 		<em:localized>
@@ -31,6 +31,7 @@
 				<em:locale>cs</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Nové funkce pro váš omnibar.</em:description>
+				<em:homepageURL>https://addons.mozilla.org/cs/firefox/addon/omnibar-plus/</em:homepageURL>
 				<em:translator>zvedavaolihen - BabelZilla</em:translator>
 			</Description>
 		</em:localized>
@@ -39,6 +40,7 @@
 				<em:locale>de</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Zusätzliche Funktionen für deine Omnibar</em:description>
+				<em:homepageURL>https://addons.mozilla.org/de/firefox/addon/omnibar-plus/</em:homepageURL>
 				<em:translator>FatherDeath</em:translator>
 			</Description>
 		</em:localized>
@@ -47,6 +49,7 @@
 				<em:locale>fr</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Fonctionnalités supplémentaires pour votre Omnibar.</em:description>
+				<em:homepageURL>https://addons.mozilla.org/fr/firefox/addon/omnibar-plus/</em:homepageURL>
 				<em:translator>Jojaba - BabelZilla</em:translator>
 			</Description>
 		</em:localized>
@@ -55,6 +58,7 @@
 				<em:locale>he-IL</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>אפשרויות נוספות עבור תוסף ה - Omnibar שלך.</em:description>
+				<em:homepageURL>https://addons.mozilla.org/he-IL/firefox/addon/omnibar-plus/</em:homepageURL>
 				<em:translator>barryoni</em:translator>
 			</Description>
 		</em:localized>
@@ -63,6 +67,7 @@
 				<em:locale>pt-BR</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Funcionalidades extras para a sua Omnibar.</em:description>
+				<em:homepageURL>https://addons.mozilla.org/pt-BR/firefox/addon/omnibar-plus/</em:homepageURL>
 				<em:translator>Gutierrez PS (http://about.me/gutierrezps)</em:translator>
 			</Description>
 		</em:localized>
@@ -71,6 +76,7 @@
 				<em:locale>pt-PT</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Mais funcionalidade na sua Omnibar.</em:description>
+				<em:homepageURL>https://addons.mozilla.org/pt-PT/firefox/addon/omnibar-plus/</em:homepageURL>
 				<em:translator>Quicksaver</em:translator>
 			</Description>
 		</em:localized>
@@ -79,6 +85,7 @@
 				<em:locale>sv-SE</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Extrafunktioner för tillägget Omnibar.</em:description>
+				<em:homepageURL>https://addons.mozilla.org/sv-SE/firefox/addon/omnibar-plus/</em:homepageURL>
 				<em:translator>Mikael Hiort af Ornäs</em:translator>
 			</Description>
 		</em:localized>
@@ -87,6 +94,7 @@
 				<em:locale>zh-CN</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>为Omnibar添加额外的功能</em:description>
+				<em:homepageURL>https://addons.mozilla.org/zh-CN/firefox/addon/omnibar-plus/</em:homepageURL>
 				<em:translator>http://t.qq.com/HeartBlade</em:translator>
 			</Description>
 		</em:localized>
@@ -95,6 +103,7 @@
 				<em:locale>zh-TW</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>為Omnibar添加額外的功能</em:description>
+				<em:homepageURL>https://addons.mozilla.org/zh-TW/firefox/addon/omnibar-plus/</em:homepageURL>
 				<em:translator>Tony</em:translator>
 			</Description>
 		</em:localized>
