@@ -48,7 +48,10 @@
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] .ac-site-icon {
-		margin: 0 10px 0 1px !important;
+		margin-top: 0 !important;
+		margin-bottom: 0 !important;
+		-moz-margin-start: 1px !important;
+		-moz-margin-end: 10px !important;
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] .ac-title-box {
