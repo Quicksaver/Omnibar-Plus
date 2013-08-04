@@ -1,4 +1,4 @@
-var defaultsVersion = '1.1.0';
+var defaultsVersion = '1.1.1';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
@@ -94,6 +94,16 @@ function onStartup(aReason) {
 	// Apply the add-on to every window opened and to be opened
 	windowMediator.callOnAll(startAddon, 'navigator:browser');
 	windowMediator.register(startAddon, 'domwindowopened', 'navigator:browser');
+	
+	// When updating Firefox version, the first window on the first startup wouldn't be initialized with the add-on.
+	// For some reason, windowMediator returned an empty browser enumerator of type 'navigator:browser', I have no idea why but I couldn't find the browser in sync here.
+	// So, by setting this aSync for later, I can be sure the add-on is initialized at all times.
+	if(Services.startup.interrupted) {
+		aSync(function() {
+			if(typeof(UNLOADED) == 'undefined' || UNLOADED) { return; }
+			windowMediator.callOnAll(startAddon, 'navigator:browser');
+		}, 500);
+	}
 	
 	// Toggle F6 functionality
 	toggleF6();
