@@ -1,4 +1,4 @@
-moduleAid.VERSION = '2.1.0';
+moduleAid.VERSION = '2.1.2';
 moduleAid.LAZY = true;
 
 // window - Similarly to windowMediator.callOnMostRecent, the window property returns the most recent navigator:browser window object
@@ -72,7 +72,7 @@ this.replaceObjStrings = function(node) { loadSandboxTools(); return replaceObjS
 this.openOptions = function() {
 	if(UNLOADED || !Addon.optionsURL) { return; }
 	if(!windowMediator.callOnMostRecent(function(aWindow) { aWindow.focus(); return true; }, null, Addon.optionsURL)) {
-		window.openDialog(Addon.optionsURL, '', 'chrome,resizable=false');
+		window.openDialog(Addon.optionsURL, '', 'chrome,toolbar,resizable=false');
 	}
 };
 this.closeOptions = function() {
@@ -88,6 +88,9 @@ this.removeAttribute = function(obj, attr) { loadAttributesTools(); return remov
 
 // toggleAttribute() - sets attr on obj if condition is true; I'm uber lazy
 this.toggleAttribute = function(obj, attr, condition, trueval, falseval) { loadAttributesTools(); return toggleAttribute(obj, attr, condition, trueval, falseval); };
+
+// trueAttribute() - checks if attr on obj has value 'true'; once again, I'm uber lazy
+this.trueAttribute = function(obj, attr) { loadAttributesTools(); return trueAttribute(obj, attr); };
 
 this.loadSandboxTools = function() {
 	delete this.xmlHttpRequest;
@@ -106,6 +109,7 @@ this.loadAttributesTools = function() {
 	delete this.setAttribute;
 	delete this.removeAttribute;
 	delete this.toggleAttribute;
+	delete this.trueAttribute;
 	moduleAid.load('utils/attributes');
 };
 

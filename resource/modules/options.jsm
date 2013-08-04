@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.0';
+moduleAid.VERSION = '1.1.1';
 
 this.__defineGetter__('tree', function() { return $('orderList'); });
 this.__defineGetter__('list', function() { return tree.view; });
@@ -77,7 +77,7 @@ this.blurOnDisabled = function(attr, oldval, newval) {
 };
 
 this.blurOrderList = function() {
-	if($('orderList').getAttribute('disabled') == 'true') {
+	if(trueAttribute($('orderList'), 'disabled')) {
 		$('orderList').view.selection.clearSelection();
 	}
 };
