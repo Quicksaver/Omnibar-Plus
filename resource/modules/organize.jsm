@@ -1,9 +1,10 @@
-moduleAid.VERSION = '1.1.4';
+moduleAid.VERSION = '1.1.5';
 
 // This is for the modified functions, since they take the scope of the sandbox these wouldn't be reachable
 this.__defineGetter__('openUILinkIn', function() { return window.openUILinkIn; });
 this.__defineGetter__('whereToOpenLink', function() { return window.whereToOpenLink; });
 this.__defineGetter__('Tabmix', function() { return window.Tabmix; });
+this.__defineGetter__('stayopen', function() { return window.stayopen; });
 
 this.escaped = false;
 this.types = [];
@@ -377,10 +378,10 @@ moduleAid.LOADMODULE = function() {
 	}
 	toCode.modify(panel, "panel."+popupClickMethod, [
 		['if (aEvent.button == 2)',
-			 ' if(aEvent.button == 2 &&this.richlistbox.currentItem) {'
-			+" 	this.input.value = this.richlistbox.currentItem.getAttribute('url') || this.richlistbox.currentItem.getAttribute('text');"
-			+' }'
-			+' if (aEvent.button == 2)'
+			 'if(aEvent.button == 2 && this.richlistbox.currentItem) {\n'
+			+"		this.input.value = this.richlistbox.currentItem.getAttribute('url') || this.richlistbox.currentItem.getAttribute('text');\n"
+			+'	}\n'
+			+'	if (aEvent.button == 2)'
 		],
 		['controller.handleEnter(true);', 'fireOnSelect(aEvent);']
 	]);
