@@ -1,10 +1,12 @@
-moduleAid.VERSION = '1.1.5';
+moduleAid.VERSION = '1.1.6';
 
 // This is for the modified functions, since they take the scope of the sandbox these wouldn't be reachable
-this.__defineGetter__('openUILinkIn', function() { return window.openUILinkIn; });
-this.__defineGetter__('whereToOpenLink', function() { return window.whereToOpenLink; });
-this.__defineGetter__('Tabmix', function() { return window.Tabmix; });
-this.__defineGetter__('stayopen', function() { return window.stayopen; });
+this.__defineGetter__('openUILink', function() { return window.openUILink; }); // native onPopupClick()
+this.__defineGetter__('Tabmix', function() { return window.Tabmix; }); // Tab Mix Plus modifies onPopupClick()
+this.__defineGetter__('openUILinkIn', function() { return window.openUILinkIn; }); // Tab Mix Plus
+this.__defineGetter__('whereToOpenLink', function() { return window.whereToOpenLink; }); // Tab Mix Plus
+this.__defineGetter__('stayopen', function() { return window.stayopen; }); // Stay-Open Menu add-on modifies onPopupClick()
+this.__defineGetter__('Application', function() { return window.Application; }); // Stay-Open Menu
 
 this.escaped = false;
 this.types = [];
