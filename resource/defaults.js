@@ -1,4 +1,4 @@
-var defaultsVersion = '1.1.1';
+var defaultsVersion = '1.1.2';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
@@ -23,7 +23,7 @@ var prefList = {
 
 function startConditions(aReason) {
 	AddonManager.getAddonByID("omnibar@ajitk.com", function(addon) {
-		prefAid.omnibar = (addon && addon.isActive);
+		prefAid.omnibar = (addon && addon.isActive) ? true : false;
 		continueStartup(aReason);
 	});
 	return false;
