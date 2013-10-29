@@ -1,7 +1,7 @@
 @namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 @-moz-document url("chrome://browser/content/browser.xul") {
 	
-	/*AwesomeBar_Popup by frog V6.2 for fx4+ modified by Quicksaver*/
+	/*AwesomeBar_Popup by frog V7.5 for fx4+ modified by Quicksaver*/
 	#PopupAutoCompleteRichResult[animatedPopup]:not(.omnibar-style-slim) richlistitem.autocomplete-richlistitem:not([current]) .ac-url-box {
 		visibility: collapse !important;
 		opacity: 0 !important;
@@ -14,11 +14,18 @@
 		width: -moz-available !important;
 	}
 	
+	#PopupAutoCompleteRichResult[animatedPopup]:not([width]) {
+		opacity: 0 !important;
+	}
+	
 	#PopupAutoComplete[animatedPopup],
 	#PopupAutoCompleteRichResult[animatedPopup] {
-		background: white padding-box !important;
+		background: Window padding-box !important;
 		-moz-appearance: none !important;
-		border-radius: 2.15px;
+		border-radius: 1px !important;
+		border: 1px solid hsla(0,0%,50%,.5) !important;
+		-moz-transition: opacity .15s linear 0s !important;
+		transition: opacity .15s linear 0s !important; /* Firefox 16 */
 	}
 	#PopupAutoCompleteRichResult[animatedPopup] {
 		padding: 0 !important;
@@ -26,14 +33,14 @@
 	}
 	
 	#PopupAutoComplete[animatedPopup] .autocomplete-treebody {
-		background: white !important;
+		background: Window !important;
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox {
 		margin: 1px !important;
 		background-size: 28px auto !important;
-		background: white -moz-linear-gradient(left, hsl(0,0%,97%) 27px, hsl(0,0%,90%) 28px, transparent 0) repeat-y !important;
-		background: white linear-gradient(to right, hsl(0,0%,97%) 27px, hsl(0,0%,90%) 28px, transparent 0) repeat-y !important; /* Firefox 16 */
+		background: transparent -moz-linear-gradient(left, hsla(0,0%,95%,.5) 27px, hsla(0,0%,83%,.5) 28px, transparent 0) repeat-y !important;
+		background: transparent linear-gradient(to right, hsla(0,0%,95%,.5) 27px, hsla(0,0%,83%,.5) 28px, transparent 0) repeat-y !important; /* Firefox 16 */
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup]:not([linux]) .autocomplete-richlistbox {
@@ -42,35 +49,41 @@
 	
 	#PopupAutoComplete[animatedPopup] *,
 	#PopupAutoCompleteRichResult[animatedPopup] * {
-		font: inherit !important;
+		font: menu !important;
 		font-family: "Segoe ui", sans-serif !important;
-		color: inherit !important;
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] .ac-site-icon {
 		margin-top: 0 !important;
 		margin-bottom: 0 !important;
-		-moz-margin-start: 1px !important;
-		-moz-margin-end: 10px !important;
+		-moz-margin-start: 0 !important;
+		-moz-margin-end: 12px !important;
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] .ac-title-box {
 		margin: 0 !important;
 		padding: 0 !important;
-		color: black !important;
+		color: WindowText !important;
 	}
 	
 	#PopupAutoComplete[animatedPopup] .autocomplete-treebody::-moz-tree-cell-text {
-		color: black !important;
+		color: WindowText !important;
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] .autocomplete-richlistbox .autocomplete-richlistitem .ac-url-box {
-		margin: 0 !important;
-		padding: 1px 0 !important;
-		color: hsl(0,0%,44%) !important;
+		margin-top: 1px !important;
+		margin-bottom: 0 !important;
+		-moz-margin-start: 0 !important;
+		-moz-margin-end: 0 !important;
+		padding: 0 !important;
 		font-size: 95.5% !important;
 		-moz-transition: opacity .21s linear 0.02s, -moz-transform .21s ease-out 0.02s !important;
 		transition: opacity .21s linear 0.02s, transform .21s ease-out 0.02s !important; /* Firefox 16 */
+	}
+	
+	#PopupAutoCompleteRichResult .ac-url-text,
+	#PopupAutoCompleteRichResult .ac-action-text {
+		color: GrayText !important;
 	}
 	
 	#PopupAutoComplete[animatedPopup] .autocomplete-treebody::-moz-tree-row {
@@ -80,7 +93,7 @@
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem,
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"],
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"] {
-		padding: 2px 4px !important;
+		padding: 3px 5px !important;
 	}
 	
 	#PopupAutoComplete[animatedPopup] .autocomplete-treebody::-moz-tree-row,
@@ -89,19 +102,19 @@
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"] {
 		border: 1px solid transparent !important;
 		border-bottom-color: transparent !important;
-		border-top: 1px solid hsla(0,0%,97%,.31) !important;
+		border-top: 1px solid hsla(0,0%,97.5%,.22) !important;
 		box-shadow: none !important;
 		background: none !important;
+		border-radius: 0 !important;
+		outline: 0px !important;
+		margin: 0 !important;
 	}
 	
-	#PopupAutoComplete[animatedPopup] .autocomplete-richlistitem:first-child {
-		border-top-color: transparent !important;
-	}
-	
+	#PopupAutoComplete[animatedPopup] .autocomplete-richlistitem:first-child,
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current] + richlistitem.autocomplete-richlistitem,
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current] + richlistitem.autocomplete-richlistitem[type="agrenondefault"],
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[current] + richlistitem.autocomplete-richlistitem[type="agrenondefault-first"] {
-		border-top-style: solid !important;
+		border-top-color: transparent !important;
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type*="omnibar-suggestion"]:not([actiontype="switchtab"]):not([current]):not([selected]):not(:active):not(:hover) {
@@ -111,7 +124,7 @@
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[actiontype="switchtab"],
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault"][actiontype="switchtab"],
 	#PopupAutoCompleteRichResult[animatedPopup] richlistitem.autocomplete-richlistitem[type="agrenondefault-first"][actiontype="switchtab"] {
-		color: hsla(0,0%,44%,1) !important;
+		color: GrayText !important;
 	}
 	
 	#PopupAutoComplete[animatedPopup] .autocomplete-treebody::-moz-tree-row(selected) {
@@ -143,11 +156,11 @@
 	}
 	
 	#PopupAutoCompleteRichResult[animatedPopup] span.ac-emphasize-text {
-		font-weight: normal !important;
+		text-shadow: none !important;
 		text-decoration: none !important;
-		box-shadow: inset hsla(60,100%,35%,.2) 0 0 0 1px, inset hsla(0,0%,100%,.15) 0 0 0 2px !important;
-		border-radius: 2.15px !important;
-		background: hsla(60,91%,75%,.38) border-box !important;
+		box-shadow: inset hsla(0,0%,67%,.2) 0 0 0 1px, inset hsla(0,0%,100%,.15) 0 0 0 2px !important;
+		border-radius: 2px !important;
+		background: hsla(0,0%,97%,.75) padding-box !important;
 	}
 	
 	/* Fix for Peers 2 entries */
