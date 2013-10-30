@@ -1,7 +1,8 @@
-var defaultsVersion = '1.1.2';
+var defaultsVersion = '1.1.3';
 var objName = 'OmnibarPlus';
 var objPathString = 'omnibarplus';
 var prefList = {
+	NoSync_omnibar: true,
 	omnibar: false,
 	
 	f6: true,
