@@ -1,9 +1,9 @@
-moduleAid.VERSION = '1.1.1';
+moduleAid.VERSION = '1.1.2';
 
 this.__defineGetter__('Omnibar', function() { return window.Omnibar; });
 this.__defineGetter__('gBrowser', function() { return window.gBrowser; });
 
-this.__defineGetter__('goButton', function() { return $('go-button'); });
+this.__defineGetter__('goButton', function() { return (!Australis) ? $('go-button') : $('urlbar-go-button'); });
 this.__defineGetter__('panel', function() { return $('PopupAutoCompleteRichResult'); });
 this.__defineGetter__('richlistbox', function() { return panel.richlistbox; });
 this.__defineGetter__('richlist', function() { return richlistbox.childNodes; });
