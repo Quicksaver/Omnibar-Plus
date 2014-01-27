@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.6';
+moduleAid.VERSION = '1.1.7';
 
 // This is for the modified functions, since they take the scope of the sandbox these wouldn't be reachable
 this.__defineGetter__('openUILink', function() { return window.openUILink; }); // native onPopupClick()
@@ -102,6 +102,9 @@ this.getEntryType = function(aType) {
 	for(var type in types) {
 		if(types[type] == 'EE') {
 			var returnEE = type;
+		}
+		else if(types[type] == 'bookmark' && aType.indexOf('tag') > -1) {
+			return type;
 		}
 		else if(aType.indexOf(types[type]) > -1) {
 			return type;
