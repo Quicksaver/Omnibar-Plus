@@ -6,7 +6,7 @@
 	<prefpane id="mainPane">
 		<preferences>
 			<preference id="pref-omnibar" name="extensions.omnibarplus.omnibar" type="bool" />
-			<preference id="pref-organizePopup" name="pref-organizePopup" type="bool" />
+			<preference id="pref-organizePopup" name="extensions.omnibarplus.organizePopup" type="bool" />
 			<preference id="pref-middleClick" name="extensions.omnibarplus.middleClick" type="bool" />
 			<preference id="pref-animated" name="extensions.omnibarplus.animated" type="bool" />
 			<preference id="pref-animatedScheme" name="extensions.omnibarplus.animatedScheme" type="string" />
