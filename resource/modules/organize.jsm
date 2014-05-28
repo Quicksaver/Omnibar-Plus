@@ -1,4 +1,4 @@
-moduleAid.VERSION = '1.1.7';
+moduleAid.VERSION = '1.1.8';
 
 // This is for the modified functions, since they take the scope of the sandbox these wouldn't be reachable
 this.__defineGetter__('openUILink', function() { return window.openUILink; }); // native onPopupClick()
@@ -28,6 +28,8 @@ this.doIndexes = function(selected, current) {
 	richlistbox.selectedIndex = selected;
 	richlistbox.currentIndex = current;
 	richlistbox._actualIndex = (current > -1) ? current : selected;
+	
+	richlistbox.ensureSelectedElementIsVisible();
 };
 
 // Goes by each 'type' to be organized and organizes each entry of type 'type'
