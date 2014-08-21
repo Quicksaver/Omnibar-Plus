@@ -1,0 +1,20 @@
+<!ENTITY omnibarPlusorganizePopup.label "Организовать список предложений">
+<!ENTITY omnibarPlusautoSelect.label "Авто-выбор первого предложения в списке">
+<!ENTITY omnibarPlusF6.label "Фокусироваться на адресной строке, при нажатии F6">
+<!ENTITY omnibarPlusengineFocus.label "Фокусироваться на адресной строке после смены поисковой системы">
+<!ENTITY omnibarPlusanimated.label "Компактный, анимированный стиль от frog">
+<!ENTITY omnibarPlusanimatedScheme.label "Цветовая схема:">
+<!ENTITY omnibarPlusanimatedScheme.sky "Небо">
+<!ENTITY omnibarPlusanimatedScheme.ruby "Рубин">
+<!ENTITY omnibarPlusanimatedScheme.taupe "Тёмно-серый">
+<!ENTITY omnibarPlusanimatedScheme.grass "Трава">
+<!ENTITY omnibarPlusanimatedScheme.sea "Море">
+<!ENTITY omnibarPlusanimatedScheme.lavender "Лаванда">
+<!ENTITY omnibarPlusanimatedScheme.bubblegum "Жвачка">
+<!ENTITY omnibarPlusmain.label "Omnibar">
+<!ENTITY omnibarPlusplus.label "Plus">
+<!ENTITY Options.title "Omnibar Plus">
+<!ENTITY omnibarPlussuggestionList.label "Всплывающие предложения">
+<!ENTITY omnibarPlusfunctionality.label "Ярлыки">
+<!ENTITY omnibarPlusmiddleClick.mac "Щелчок средней кнопкой мыши или Command/Option + щелчок левой кнопкой мыши на поисковой системе, откроет её домашнюю страницу">
+<!ENTITY omnibarPlusmiddleClick.win "Щелчок средней кнопкой мыши или Ctrl/Alt + щелчок левой кнопкой мыши на поисковой системе, откроет её домашнюю страницу">

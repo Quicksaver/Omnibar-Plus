@@ -82,6 +82,15 @@
 		</em:localized>
 		<em:localized>
 			<Description>
+				<em:locale>ru</em:locale>
+				<em:name>Omnibar Plus</em:name>
+				<em:description>Дополнительная функциональность для вашего Omnibar.</em:description>
+				<em:homepageURL>https://addons.mozilla.org/ru/firefox/addon/omnibar-plus/</em:homepageURL>
+				<em:translator>Kapranov - BabelZilla</em:translator>
+			</Description>
+		</em:localized>
+		<em:localized>
+			<Description>
 				<em:locale>sv-SE</em:locale>
 				<em:name>Omnibar Plus</em:name>
 				<em:description>Extrafunktioner för tillägget Omnibar.</em:description>
